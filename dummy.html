@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FilmBit Admin Panel</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body, html {
+      height: 100%;
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .sidebar {
+      width: 10%;
+      height: 100vh;
+      background-color: #222;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+      overflow-x: hidden;
+      transition: 0.3s;
+    }
+
+    .sidebar .nav-link {
+      color: #ccc;
+      padding: 20px;
+      display: block;
+    }
+
+    .sidebar .nav-link:hover {
+      background-color: #FFD700;
+      color: #000;
+    }
+
+    .nav-text {
+      display: none;
+    }
+
+    .sidebar:hover .nav-text {
+      display: inline;
+      margin-left: 10px;
+    }
+
+    .main-content {
+      margin-left: 10%;
+      width: 90%;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    .header {
+      background-color: #f8f9fa;
+      padding: 10px 20px;
+      border-bottom: 1px solid #ddd;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .content-area {
+      padding: 20px;
+    }
+
+    .card {
+      min-height: 100px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar pt-4">
+    <ul class="nav flex-column">
+      <li class="nav-item"><a class="nav-link" href="#" onclick="loadSection('dashboard')">📊<span class="nav-text"> Dashboard</span></a></li>
+      <li class="nav-item"><a class="nav-link" href="#" onclick="loadSection('movies')">🎬<span class="nav-text"> Movies</span></a></li>
+      <li class="nav-item"><a class="nav-link" href="#" onclick="loadSection('actors')">🧑‍🎤<span class="nav-text"> Actors</span></a></li>
+      <li class="nav-item"><a class="nav-link" href="#" onclick="loadSection('roles')">🎭<span class="nav-text"> Roles</span></a></li>
+      <li class="nav-item"><a class="nav-link" href="#" onclick="loadSection('users')">👥<span class="nav-text"> Users</span></a></li>
+      <li class="nav-item"><a class="nav-link" href="#" onclick="loadSection('investments')">💼<span class="nav-text"> Investments</span></a></li>
+      <li class="nav-item"><a class="nav-link" href="#" onclick="loadSection('reports')">📈<span class="nav-text"> Reports</span></a></li>
+      <li class="nav-item"><a class="nav-link" href="#" onclick="loadSection('announcements')">📢<span class="nav-text"> Announcement</span></a></li>
+      <li class="nav-item"><a class="nav-link" href="#" onclick="loadSection('payouts')">🏦<span class="nav-text"> Payout</span></a></li>
+      <li class="nav-item"><a class="nav-link" href="#" onclick="loadSection('settings')">⚙️<span class="nav-text"> Settings</span></a></li>
+    </ul>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="header">
+      <h5 class="m-0">🎬 FilmBit Admin</h5>
+      <button class="btn btn-outline-secondary btn-sm">Logout</button>
+    </div>
+
+    <div class="content-area">
+      <!-- Sections -->
+      <div id="dashboard-section">
+        <h4 class="mb-4">📊 Dashboard</h4>
+        <div class="row g-3">
+          <div class="col-md-3"><div class="card text-bg-light"><div class="card-body"><h6>💰 Total Investment</h6><p>₹1.2 Cr</p></div></div></div>
+          <div class="col-md-3"><div class="card text-bg-light"><div class="card-body"><h6>🎞️ Total Movies</h6><p>42</p></div></div></div>
+          <div class="col-md-3"><div class="card text-bg-light"><div class="card-body"><h6>👥 Total Users</h6><p>12,450</p></div></div></div>
+          <div class="col-md-3"><div class="card text-bg-light"><div class="card-body"><h6>📤 Earnings Paid</h6><p>₹34 Lakh</p></div></div></div>
+        </div>
+      </div>
+
+      <div id="movies-section" style="display: none;"><h4>🎬 Movies Management</h4><p>Add, update, and manage movie records.</p></div>
+      <div id="actors-section" style="display: none;"><h4>🧑‍🎤 Actors Management</h4><p>Manage actor details and profiles.</p></div>
+      <div id="roles-section" style="display: none;"><h4>🎭 Roles in Movies</h4><p>Define character roles in each movie.</p></div>
+      <div id="users-section" style="display: none;"><h4>👥 Users</h4><p>View and manage registered users.</p></div>
+      <div id="investments-section" style="display: none;"><h4>💼 Investments</h4><p>Track all user investments per movie.</p></div>
+      <div id="reports-section" style="display: none;"><h4>📈 Reports</h4><p>View analytics and export reports.</p></div>
+      <div id="announcements-section" style="display: none;"><h4>📢 Announcements</h4><p>Publish updates, news, or alerts to users.</p></div>
+      <div id="payouts-section" style="display: none;"><h4>🏦 Payouts</h4><p>Initiate and monitor investor payments.</p></div>
+      <div id="settings-section" style="display: none;"><h4>⚙️ Settings</h4><p>Change system preferences and permissions.</p></div>
+    </div>
+  </div>
+
+  <!-- Script for Switching Sections -->
+  <script>
+    function loadSection(section) {
+      const sections = ['dashboard', 'movies', 'actors', 'roles', 'users', 'investments', 'reports', 'announcements', 'payouts', 'settings'];
+      sections.forEach(id => {
+        document.getElementById(`${id}-section`).style.display = 'none';
+      });
+      document.getElementById(`${section}-section`).style.display = 'block';
+    }
+  </script>
+
+</body>
+</html>

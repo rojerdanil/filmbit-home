@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FilmBit Admin Panel</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="adminPanel.css">
+
+<script>
+
+    var baseUrlApi = 'http://localhost:8080';
+	var readMovieUrl = baseUrlApi + "/movie/datatable";
+    var readMovieStatusUrl = baseUrlApi + "/movie-status/allstatus";
+    var readMovieTypeUrl = baseUrlApi + "/movie-types/alltypes";
+	var readMovLanguageUrl = baseUrlApi + "/languages/alllangugage";
+	var readMovSummaryByIdURl = baseUrlApi + "/movie/moviebyId?id=";
+
+	
+	
+
+	let idNameMovieStatusMap = {};
+	let idNameMovieTypeMap = {};
+	let movieLanuguageList = [];
+	
+    function loadSection(section) {
+	
+	
+	if (Object.keys(idNameMovieStatusMap).length === 0) {
+	 sendAjaxRequest(readMovieStatusUrl, "GET", getAppHeaer(), null,readMovieCallBack );
+	 }
+	 if (Object.keys(idNameMovieTypeMap).length === 0) {
+	 	 sendAjaxRequest(readMovieTypeUrl, "GET", getAppHeaer(), null,readMovieTypeCallBack );
+
+	 }
+        if (!movieLanuguageList || movieLanuguageList.length === 0) {
+	        sendAjaxRequest(readMovLanguageUrl, "GET", getAppHeaer(), null,readLanguageCallBack );
+
+	 }
+	
+      const sections = ['dashboard', 'movies', 'actors', 'roles', 'users', 'investments', 'reports', 'announcements', 'payouts', 'settings'];
+      sections.forEach(id => {
+        document.getElementById(`${id}-section`).style.display = 'none';
+      });
+      document.getElementById(`${section}-section`).style.display = 'block';
+	  
+	  var pageName = section +"-section.html";
+	  var currId = "#"+section +"-section";
+	  console.log(currId);
+      
+      if($(currId).children().length === 0)
+	      {
+		  $(currId).load(pageName, function () {
+		  if(section == 'dashboard')
+		      loadDashBoardDetails();
+		  if(section == 'movies')
+              loadMovieSection();
+          if(section == 'announcements')
+                 renderAnnouncementsTable();
+          if(section == 'reports')
+		     renderReportCharts();
+		  if(section == 'users')
+		     loadUserSection();
+		  if(section == 'actors')
+	         loadActorSection();			 
+		  });
+           }
+	 
+	  // Clear existing highlights
+  $('.sidebar .nav-link').removeClass('active');
+
+  // Highlight the matching menu item
+  $(`.sidebar .nav-link[data-section="${section}"]`).addClass('active');
+
+
+
+  // Highlight the matching menu item
+	  $('.sidebar .nav-link').each(function () {
+    const linkText = $(this).text().trim().toLowerCase();
+    if (linkText.includes(section.toLowerCase())) {
+	console.log("test"+section);
+      $(this).addClass('active');
+    }
+  });
+
+  
+    }
+function viewMovie(rowId)
+{
+
+openDropDown("#movieDetailPanel","movieDetailPanel.html");
+console.log(readMovSummaryByIdURl+rowId);
+sendAjaxRequest(readMovSummaryByIdURl+rowId, "GET", getAppHeaer(), null,movieDetailSumIDCallback );
+
+
+
+}
+
+
+	
+const readMovieTypeCallBack = function (response) {
+  if(response != null)
+  {
+  items = response.result;
+   if (Array.isArray(items)) {
+  for (let i = 0; i < items.length; i++) {
+    const item = items[i];
+    idNameMovieTypeMap[item.id] = item.name;
+  }
+  }
+  }
+  
+};
+
+function convertMapToArray(idNameMap)
+{
+
+const idNameArray = [];
+
+for (let key in idNameMap) {
+  if (idNameMap.hasOwnProperty(key)) {
+    idNameArray.push({
+      id: parseInt(key),
+      name: idNameMap[key]
+    });
+  }
+}
+
+return idNameArray;
+}
+
+const readLanguageCallBack =   function (response) {
+  if(response != null)
+  {
+    console.log("status" );
+	if(response.status == "success")
+	movieLanuguageList = response.result;
+	  
+  }
+  
+  
+}; 	
+	function populateLanguageSelect(selectId, languageList,selectType) {
+  const select = document.getElementById(selectId);
+  console.log("selectId" + selectId);
+  
+  select.innerHTML = ""; // Clear previous options
+
+  // Add default "All Languages" option
+  const defaultOption = document.createElement("option");
+  if(selectType == "language")
+  {
+  defaultOption.value = "";
+  defaultOption.text = "🌐 All Languages";
+  defaultOption.disabled = true;
+  defaultOption.selected = true;
+  select.appendChild(defaultOption);
+  }
+  else
+  {
+  defaultOption.value = "";
+  defaultOption.text = "Please select";
+  defaultOption.disabled = true;
+defaultOption.selected = true;
+  select.appendChild(defaultOption);
+  }
+
+
+  // Add languages from array
+  languageList.forEach(lang => {
+    const option = document.createElement("option");
+	
+	 if(selectType == "language")
+  {
+    option.value = lang.name;
+    option.text = `${lang.name} (${lang.nativeScript})`;
+    select.appendChild(option);
+	}
+	else if(selectType == "addlanguage")
+  {
+    option.value = lang.id;
+    option.text = `${lang.name} (${lang.nativeScript})`;
+    select.appendChild(option);
+	}
+	else
+	{
+	option.value = lang.id;
+    option.text = lang.name;
+    select.appendChild(option);
+	}
+  });
+}
+	
+const readMovieCallBack = function (response) {
+  console.log("Response:", response);
+  if(response != null)
+  {
+  items = response.result;
+   if (Array.isArray(items)) {
+  for (let i = 0; i < items.length; i++) {
+    const item = items[i];
+    idNameMovieStatusMap[item.id] = item.name;
+  }
+  }
+  }
+  
+};
+ 
+	function getValueFromMap(mabObj,keyToFind)
+	{
+	if (Object.keys(mabObj).length === 0) {
+  	   return ""+keyToFind;
+} else {
+  const value = mabObj[keyToFind];
+
+if (value !== undefined) {
+  return value;
+} else {
+  	   return ""+keyToFind;
+
+}
+  
+}
+	
+	}
+	
+	
+	function sendAjaxRequest(url, method, headers, body, onSuccess) {
+  $.ajax({
+    url: url,
+    type: method.toUpperCase(),
+    contentType: 'application/json',
+    headers: headers || {},
+    data: method.toUpperCase() === 'GET' ? null : JSON.stringify(body),
+    success: function (response) {
+      if (typeof onSuccess === 'function') {
+        onSuccess(response);
+      } else {
+        console.log("✅ Success:", response);
+      }
+    },
+    error: function (xhr, status, error) {
+      
+        alert("❌ Error: " + (xhr.responseText || error));
+      
+    }
+  });
+}
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	let actorTable;
+  let actorModal;
+
+function loadActorSection()
+{
+
+  
+    actorTable = $('#actorTable').DataTable({
+	stripeClasses: [],
+
+      pageLength: 10,
+	  lengthChange: false
+	  
+    });
+
+    $('#actorSearch').on('input', function () {
+      actorTable.search(this.value).draw();
+    });
+
+  
+   
+
+}
+
+	function loadUserSection()
+	{
+	
+	const table = $('#userTable').DataTable({
+      pageLength: 5
+    });
+
+    $('#userSearch').on('input', function () {
+      table.search(this.value).draw();
+    });
+	}
+	
+	function  loadDashBoardDetails()
+	{
+	new Chart(document.getElementById('investmentChart'), {
+      type: 'line',
+      data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+        datasets: [{
+          label: 'Investment (₹)',
+          data: [20, 40, 60, 80, 100, 120],
+          fill: false,
+          borderColor: '#FFD700',
+          tension: 0.4
+        }]
+      }
+	  
+    });
+
+    // User Growth Chart
+    new Chart(document.getElementById('userChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+        datasets: [{
+          label: 'New Users',
+          data: [150, 200, 300, 250, 400, 500],
+          backgroundColor: '#ffdd57'
+        }]
+      }
+    });
+
+    // Profit Distribution Chart
+    new Chart(document.getElementById('profitChart'), {
+      type: 'pie',
+      data: {
+        labels: ['Investor Earnings', 'Company Profit'],
+        datasets: [{
+          data: [85, 15],
+          backgroundColor: ['#00c851', '#ffbb33']
+        }]
+      }
+    });
+	
+		   
+
+	
+	}
+	function formatDate(dateStr) {
+    if (!dateStr) return 'N/A';
+    const d = new Date(dateStr);
+    return isNaN(d) ? 'Invalid Date' : d.toLocaleDateString();
+  }
+  function getAppHeaer()
+  {
+  
+  
+      var headerObj = {};
+	  headerObj.deviceId = 'xxx';
+	  headerObj.phoneNumber = 999;
+	   headerObj.accessToken = 'xdfsdf';
+  
+       /*   {
+    
+	           'deviceId' : 'xxx',
+			   'phoneNumber' : 999,
+			   'accessToken' : 'xdfsdf'
+          }*/
+		  
+		  return headerObj;
+  
+  }
+  
+  function enableCheckboxSelectAll(tableId) {
+  const $table = $('#' + tableId);
+  console.log("button clicked");
+  const $selectAll = $table.find('thead input[type="checkbox"].select-all');
+
+  // Handle header checkbox click
+  $selectAll.on('change', function () {
+    console.log("header checkbox clicked");
+    const isChecked = $(this).prop('checked');
+    $table.find('tbody input[type="checkbox"].row-checkbox').prop('checked', isChecked);
+  });
+
+  // Handle individual row checkbox click
+  $table.on('change', 'tbody input[type="checkbox"].row-checkbox', function () {
+    const total = $table.find('tbody input[type="checkbox"].row-checkbox').length;
+    const checked = $table.find('tbody input[type="checkbox"].row-checkbox:checked').length;
+    $selectAll.prop('checked', total === checked);
+  });
+}
+  
+	
+	function loadMovieSection()
+	{
+	console.log("calling laodMovieSection");
+	
+	var mvTable = $('#movieTable').DataTable({
+		stripeClasses: [],
+		     dom: '<"top"f>rt<"bottom"p><"clear">', // Only filter (f), remove length (l)
+    pageLength: 10,
+    lengthChange: false ,// hides "Show entries" dropdown
+	processing: true,
+    serverSide: true,
+	   ajax: {
+        url: readMovieUrl,
+        type: 'POST',
+        contentType: 'application/json',
+		headers: getAppHeaer(),
+        data: function (d) {
+		 d.language =  $('#languageFilter').val();
+
+  return JSON.stringify(d);                // 👈 no wrapper!
+        },
+		dataFilter: function (responseStr) {
+        const fullResponse = JSON.parse(responseStr);
+        const obj = fullResponse.result;
+        $("#movieCount").text(obj.recordsTotal ?? 0);
+	    $("#movieCountFilter").text(obj.recordsFiltered);
+
+      // Debug: make sure obj is valid
+      console.log("Transformed for DataTables:", obj.recordsFiltered );
+      return JSON.stringify({
+        draw: obj.draw > 0 ? obj.draw : 1,
+        recordsTotal: obj.recordsTotal ?? 0,
+        recordsFiltered: obj.recordsFiltered ?? 0,
+        data: obj.data ?? []
+      });
+    },
+    error: function (xhr, status, error) {
+      console.error('AJAX Error:', error);
+	  Alert("Issue on dataLoading");
+    }
+      },
+ columns: [
+        {
+          data: 'id',
+          orderable: false,
+          render: function (data) {  
+            return `<input type="checkbox" class="rowCheckbox" value="${data}" onclick="enableRowSelected(this)">`;
+          }
+        },
+        { data: 'title' },
+        { data: 'description' },
+        { data: 'language' },
+        { data: 'budget' },
+        { data: 'perShareAmount' },
+        { data: 'statusId' ,
+          render: function (data) {
+            return getValueFromMap(idNameMovieStatusMap,data);
+          }
+		
+		
+			   
+
+		
+		},
+        { data: 'movieTypeId',
+		render: function (data) {
+            return getValueFromMap(idNameMovieTypeMap,data);
+          }
+
+		},
+        {
+          data: 'createdDate',
+          render: function (data) {
+            return formatDate(data);
+          }
+        },
+        {
+          data: 'releaseDate',
+          render: function (data) {
+            return formatDate(data);
+          }
+        },
+        {
+          data: 'trailerDate',
+          render: function (data) {
+            if (!data) return 'Comming Soon';
+    const d = new Date(data);
+    return isNaN(d) ? 'Invalid Date' : d.toLocaleDateString();
+          }
+        }
+		,
+        {
+          data: 'trailerUrl',
+          render: function (data) {
+            return `<a href="${data}" target="_blank">Trailer</a>`;
+          }
+        }
+		,
+        {
+          data: 'posterUrl',
+  render: function (data, type, row) {
+          return `<button class="btn btn-sm btn-primary viewBtn" onclick="viewMovie(${row.id})">View</button>`;
+          }
+        }
+      ],
+	   language: {
+    emptyTable: "🔍 No records found matching your criteria."
+  },
+    drawCallback: function () {
+      //enableCheckboxSelectAll('movieTable');
+    },
+    initComplete: function () {
+      const table = this.api();
+      $(table.rows().nodes()).off('click').on('click', function (e) {
+        if ($(e.target).is('input')) return;
+
+        if($(this).hasClass("row_selected"))
+							{
+							 $(this).removeClass("row_selected");
+							 var $checkboxValue=$(this).find("input:checkbox");
+						     $checkboxValue.prop('checked',false);
+							}
+							else
+							{
+							 $(this).addClass("row_selected");
+							 var $checkboxValue=$(this).find("input:checkbox");
+							 $checkboxValue.prop('checked',true);
+							}
+      });
+    },
+    columnDefs: [
+      { targets: 0, orderable: false, className: 'no-sort' }
+    ]
+	  
+	
+	
+		   }
+		   );
+		   
+
+
+		   $('#movieTable_filter input')
+  .off() // unbind default search event
+  .on('keyup', function (e) {
+    if (e.key === 'Enter') {
+      mvTable.search(this.value).draw();
+    }
+  });
+	console.log(movieLanuguageList.length);
+	if (!movieLanuguageList || movieLanuguageList.length > 0) {
+	       populateLanguageSelect("languageFilter", movieLanuguageList,"language")
+
+	  
+           }
+
+
+$('#languageFilter').on('change', function () {
+    mvTable.ajax.reload();
+  });
+	
+	}
+	var movieDetailSumIDCallback = function (response)
+	{
+        console.log("movieDetailSumIDCallback" + response);	
+		console.log(response);
+		if(response != null)
+		{
+		  if(response.status == "success")
+		  {
+		     var data = response.result;
+			 $("#movieTitle").text(data.title);
+		     $("#movieCast").text(data.actorDetails);
+			 $("#movieType").text(data.movieType);
+			 $("#movieStatus").text( data.status);
+			 $("#trailerDate").text( data.trailerDate);
+			 $("#releaseDate").text( data.releaseDate);
+			 $("#movieAmount").text( data.budget);
+			 $("#collectedAmount").text( data.investedAmount);
+			 var remaining = data.budget - data.investedAmount;
+			 $("#pendingAmount").text(remaining);
+			 $("#perShareAmount").text(data.perShareAmount);
+
+			 
+		  
+		  }
+		
+		
+		}
+	
+	}
+
+function updateSelectedActor()
+{
+
+
+}
+
+function openDropDownWithCallBack(modalId,page,onSuccess)
+{
+
+
+console.log("comming inside");
+    $("#modalContainer").empty();
+
+    $('#modalContainer').load(page, function () {
+      $(modalId).modal('show');
+	  onSuccess();
+    });
+  
+  
+
+
+
+}
+
+var setMovieAddSelect = function ()
+{
+	  if (movieLanuguageList != null && movieLanuguageList.length > 0) {
+	  	       populateLanguageSelect("mLanguageSelect", movieLanuguageList,"addlanguage");
+			   }
+			   
+			   	console.log("idNameMovieTypeMap " +idNameMovieTypeMap.length);
+
+		if (Object.keys(idNameMovieTypeMap).length > 0) { 
+                 var arrayObj = convertMapToArray(idNameMovieTypeMap);
+	  	       populateLanguageSelect("addmovieTypeSelect", arrayObj,"");
+			   }	
+			   
+			  if (Object.keys(idNameMovieStatusMap).length > 0) { 
+			                    var arrayObj = convertMapToArray(idNameMovieStatusMap);
+
+	  	       populateLanguageSelect("addstatusSelect", arrayObj,"");
+			   }	
+    			   
+			   
+ 
+}
+
+function addMovieDropClick()
+{
+      openDropDownWithCallBack('#addMovieModal','add-movie-modal.html',setMovieAddSelect);
+	  
+	  
+
+ 
+  }
+  function closeMoviePanel() {
+   $("#movieDetailPanel").fadeOut(200, function () {
+    $(this).css("display", "none");
+  });
+}
+	
+function openDropDown(modalId,page)
+{
+
+
+console.log("comming inside");
+    $("#modalContainer").empty();
+
+    $('#modalContainer').load(page, function () {
+	 console.log("comming inside");
+      $(modalId).modal('show');
+    });
+  
+  
+
+
+
+}
+
+	
+  $(document).ready(function () {
+ 
+   // Investment Trend Chart
+   //showPopupLoader();
+   $(document).ready(function () {
+  $('.sidebar').hover(
+    function () {
+      $(this).addClass('expanded');
+      $('.main-content').addClass('shifted');
+    },
+    function () {
+      $(this).removeClass('expanded');
+      $('.main-content').removeClass('shifted');
+    }
+  );
+  
+	
+  
+});
+
+   
+   loadSection('dashboard');
+    
+ 
+  });
+  
+  function showPopupLoader() {
+  $('#loadingPopup').show();
+}
+
+function hidePopupLoader() {
+  $('#loadingPopup').hide();
+}
+  function callMovieTable()
+  {
+  $('#movieTable').DataTable({
+      serverSide: true,
+      processing: true,
+      ajax: {
+        url: '/api/movies', // Replace with your backend URL
+        type: 'GET',
+        dataSrc: function (json) {
+          // You can transform data here if needed
+          return json.data;
+        }
+      },
+     columns: [
+  {
+    data: 'id',
+    orderable: false,
+    render: function (data) {
+      return `<input type="checkbox" class="rowCheckbox" value="${data}">`;
+    }
+  },
+  { data: 'title' },
+  { data: 'description' },
+  { data: 'language' },
+  { data: 'budget' },
+  { data: 'perShareAmount' },
+  { data: 'statusId' },
+  { data: 'movieTypeId' },
+  {
+    data: 'posterUrl',
+    render: function(data) {
+      return `<img src="${data}" width="50" height="50"/>`;
+    }
+  },
+  {
+    data: 'trailerUrl',
+    render: function(data) {
+      return `<a href="${data}" target="_blank">Trailer</a>`;
+    }
+  },
+  {
+    data: 'createdDate',
+    render: function(data) {
+      return new Date(data).toLocaleDateString();
+    }
+  },
+  {
+    data: 'releaseDate',
+    render: function(data) {
+      return data ? new Date(data).toLocaleDateString() : 'Coming Soon';
+    }
+  },
+  {
+    data: 'id',
+    render: function(data) {
+      return `<button onclick="editMovie(${data})">Edit</button> <button onclick="deleteMovie(${data})">Delete</button>`;
+    }
+  }
+]
+,
+      pageLength: 10,
+      lengthMenu: [10, 20, 50, 100]
+    });
+  
+  
+  }
+
+
+// annoncement
+
+  let announcements = [
+    { id: 1, title: "New Movie: Sky Flame", date: "2025-06-10", status: "Active" },
+    { id: 2, title: "Server Maintenance", date: "2025-06-05", status: "Inactive" }
+  ];
+
+  let announcementTable;
+
+  function renderAnnouncementsTable() {
+    const tbody = $('#announcementTable tbody');
+    tbody.empty();
+
+    announcements.forEach((a, i) => {
+      tbody.append(`
+        <tr>
+          <td>${i + 1}</td>
+          <td>${a.title}</td>
+          <td>${a.date}</td>
+          <td><span class="badge ${a.status === 'Active' ? 'bg-success' : 'bg-secondary'}">${a.status}</span></td>
+          <td>
+            <button class="btn btn-sm btn-primary" onclick="editAnnouncement(${a.id})">Edit</button>
+            <button class="btn btn-sm btn-danger" onclick="deleteAnnouncement(${a.id})">Delete</button>
+          </td>
+        </tr>
+      `);
+    });
+
+    if ($.fn.DataTable.isDataTable('#announcementTable')) {
+      $('#announcementTable').DataTable().destroy(); // reinit
+    }
+
+    $('#announcementTable').DataTable({
+      pageLength: 5,
+      ordering: true,
+      stripeClasses: ['table-light', ''],
+      language: {
+        searchPlaceholder: "Search announcement..."
+      }
+    });
+  }
+
+  function openAnnouncementModal() {
+  
+  openDropDown('#announcementModal','add-annoncement-modal.html');
+  
+  
+    $('#announcementId').val('');
+    $('#announcementTitle').val('');
+    $('#announcementMessage').val('');
+    $('#announcementDate').val(new Date().toISOString().split('T')[0]);
+    $('#announcementStatus').val('Active');
+    $('#announcementModal').addClass('show');
+  }
+
+  function closeAnnouncementModal() {
+  $('#modalContainer').hide(); // removes modal HTML
+
+  }
+
+  function saveAnnouncement() {
+    const id = $('#announcementId').val();
+    const title = $('#announcementTitle').val();
+    const date = $('#announcementDate').val();
+    const status = $('#announcementStatus').val();
+
+    if (id) {
+      const index = announcements.findIndex(a => a.id == id);
+      announcements[index] = { id: Number(id), title, date, status };
+    } else {
+      const newId = announcements.length ? announcements[announcements.length - 1].id + 1 : 1;
+      announcements.push({ id: newId, title, date, status });
+    }
+
+    closeAnnouncementModal();
+    renderAnnouncementsTable();
+  }
+
+  function editAnnouncement(id) {
+    const a = announcements.find(a => a.id == id);
+    $('#announcementId').val(a.id);
+    $('#announcementTitle').val(a.title);
+    $('#announcementDate').val(a.date);
+    $('#announcementStatus').val(a.status);
+    $('#announcementModal').addClass('show');
+  }
+
+  function deleteAnnouncement(id) {
+    if (confirm("Are you sure you want to delete this?")) {
+      announcements = announcements.filter(a => a.id != id);
+      renderAnnouncementsTable();
+    }
+  }
+
+// reports
+ 
+
+  function renderReportCharts() {
+  
+    new Chart(document.getElementById('reportinvestmentChart'), {
+      type: 'line',
+      data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+        datasets: [{
+          label: 'Monthly Investments',
+          data: [15, 25, 35, 28, 40, 22],
+          borderColor: '#FFD700',
+          backgroundColor: 'rgba(255, 215, 0, 0.2)',
+          tension: 0.4
+        }]
+      }
+    });
+
+    new Chart(document.getElementById('reportsuserGrowthChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+        datasets: [{
+          label: 'New Users',
+          data: [300, 400, 520, 600, 750, 850],
+          backgroundColor: '#FFD700'
+        }]
+      }
+    });
+  }
+
+  function exportCSV() {
+    alert("CSV Export (hook your backend later)");
+  }
+
+  function exportPDF() {
+    alert("PDF Export (you can integrate html2pdf or jsPDF)");
+  }
+
+  
+
+  
+  function openActorModal() {
+      openDropDown('#actorModal','add_actor_modal.html');
+	      $('#actorForm')[0].reset();
+
+  }
+
+  function closeActorModal() {
+    actorModal.hide();
+  }
+
+  function saveActor() {
+    const values = $('#actorForm').serializeArray().map(i => i.value);
+    const newRow = `
+      <tr>
+        <td>${values[0]}</td>
+        <td>${values[1]}</td>
+        <td>${values[2]}</td>
+        <td>${values[3]}</td>
+        <td>${values[4]}</td>
+        <td>${values[5]}</td>
+        <td><img src="${values[6]}" alt="Actor" width="40"></td>
+      </tr>`;
+    $('#actorTable tbody').append(newRow);
+    actorTable.row.add($(newRow)).draw();
+    closeActorModal();
+  }
+  
+  
+  function enableRowSelected(checkbox) {
+  const $checkbox = $(checkbox);
+  const $row = $checkbox.closest('tr');
+
+  if ($checkbox.is(':checked')) {
+    $row.addClass('row_selected');
+  } else {
+    $row.removeClass('row_selected');
+  }
+  
+  }
+  
+  
+  function deleteMovies()
+ {
+   var data={};
+   var ids=[];
+   data.ftype="deleteItems";
+   $("#movieTable").find("tr").each(function()
+   {
+       if($(this).hasClass("row_selected"))
+	   {
+	     var id=parseInt($(this).find("td:first").find("a").attr("value"));
+		 //(id);
+		 ids.push(id);
+		}
+	  
+   });
+   if(ids.length==0)
+   alert("please select one row");
+  else
+  {
+   data.ids=ids;
+   var inp=JSON.stringify(data);
+   console.log(inp);
+   /*$.post("",inp,
+   function(data,status){
+   if(status=="success")
+   {
+     
+	  $("#md").hide();
+	   $("#itemTable").dataTable().fnDestroy();
+	   $("#itemTable").html('');
+	   $("#itemTable").css("width","100%");
+	   getItemTable();
+	
+   } 
+   else
+   {
+   alert("network error");
+   }
+ 
+ });*/
+ }
+}	
+
+
+
+function saveMovie() {
+  const form = document.getElementById('movieForm');
+  form.classList.remove('was-validated');
+
+  // Reset field styles
+  form.querySelectorAll('input, select').forEach(field => {
+    field.classList.remove('is-invalid', 'is-valid');
+  });
+
+  let isValid = true;
+
+  // Required fields
+  const requiredFields = form.querySelectorAll('[required]');
+  requiredFields.forEach(field => {
+    if (!field.value.trim()) {
+      field.classList.add('is-invalid');
+      isValid = false;
+    }
+  });
+
+  // Budget and Per Share Amount validation
+  const budgetField = document.getElementById('budget');
+  const perShareField = document.getElementById('addperShareAmount');
+  const budgetError = document.getElementById('budgetError');
+  const perShareError = document.getElementById('perShareError');
+
+  const budgetVal = budgetField.value.trim();
+  const perShareVal = perShareField.value.trim();
+
+  const isBudgetInteger = /^\d+$/.test(budgetVal);
+  const isPerShareInteger = /^\d+$/.test(perShareVal);
+
+  const fileInput = document.getElementById("addposterFile");
+  const posterFile = fileInput.files[0];
+  console.log("file url"+ posterFile);
+
+  if (!isBudgetInteger) {
+    budgetField.classList.add('is-invalid');
+    budgetError.innerText = "❌ Budget must be a whole number.";
+    isValid = false;
+  }
+
+  if (!isPerShareInteger) {
+    perShareField.classList.add('is-invalid');
+    perShareError.innerText = "❌ Per Share must be a whole number.";
+    isValid = false;
+  }
+
+  if (isBudgetInteger && isPerShareInteger) {
+    const budgetInt = parseInt(budgetVal, 10);
+    const perShareInt = parseInt(perShareVal, 10);
+    if (perShareInt >= budgetInt) {
+      perShareField.classList.add('is-invalid');
+      perShareError.innerText = "❌ Per Share must be less than Budget.";
+      isValid = false;
+    } else {
+      budgetField.classList.add('is-valid');
+      perShareField.classList.add('is-valid');
+    }
+  }
+
+const shareTimeInput = document.getElementById("shareStartTime");
+const shareTimeValue = shareTimeInput.value.trim();
+
+if (!shareTimeValue) {
+  shareTimeInput.classList.add("is-invalid");
+  document.getElementById("shareTimeError").innerText = "⛔ Sharing start time is required.";
+  return;
+}
+
+// Convert to Date object for comparison
+const selectedDateTime = new Date(shareTimeValue);
+const currentDateTime = new Date();
+
+if (selectedDateTime <= currentDateTime) {
+  shareTimeInput.classList.add("is-invalid");
+  document.getElementById("shareTimeError").innerText = "⏳ Please select a future date and time.";
+  return;
+} else {
+  shareTimeInput.classList.remove("is-invalid");
+}
+
+
+
+  // Date validation (you already have)
+  const releaseField = document.getElementById('addreleaseDate');
+  const trailerField = document.getElementById('addtrailerDate');
+  const releaseDateVal = releaseField.value;
+  const trailerDateVal = trailerField.value;
+  const releaseDateError = document.getElementById('releaseDateError');
+  releaseDateError.innerText = "Please select a release date.";
+
+  if (releaseDateVal && trailerDateVal) {
+    const release = new Date(releaseDateVal);
+    const trailer = new Date(trailerDateVal);
+
+    if (release <= trailer) {
+      releaseField.classList.add('is-invalid');
+      trailerField.classList.add('is-invalid');
+      releaseDateError.innerText = "❌ Release date must be after trailer date.";
+      isValid = false;
+    } else {
+      releaseField.classList.add('is-valid');
+      trailerField.classList.add('is-valid');
+    }
+  }
+  
+  if(typeof posterFile != 'undefined')
+  {
+  if (!posterFile || !posterFile.type.startsWith("image/")) {
+    fileInput.classList.add("is-invalid");
+    document.getElementById("posterError").innerText = "❌ Please select a valid image file.";
+    return;
+  } else {
+    fileInput.classList.remove("is-invalid");
+  }
+  
+  }
+  const trailerUrlInput = document.getElementById("addtrailerUrl");
+const trailerUrl = trailerUrlInput.value.trim();
+
+// Simple URL format validation
+const urlPattern = /^(https?:\/\/)[^\s$.?#].[^\s]*$/;
+
+if (trailerUrl && !urlPattern.test(trailerUrl)) {
+  trailerUrlInput.classList.add("is-invalid");
+  document.getElementById("trailerUrlError").innerText = "❌ Please enter a valid trailer URL (starting with http:// or https://)";
+  return;
+} else {
+  trailerUrlInput.classList.remove("is-invalid");
+}
+
+
+
+
+  if (isValid) {
+  
+ // console.log(buildMovieObjectFromUI());
+ // closeModelWindowById("addMovieModal");
+    movieData =   buildMovieObjectFromUI()
+  const formData = new FormData();
+formData.append("movie", new Blob([JSON.stringify(movieData)], { type: "application/json" }));
+formData.append("poster", document.getElementById('addposterFile').files[0]);
+
+fetch("http://localhost:8080/movie/addMovie", {
+  method: "POST",
+  body: formData,
+  headers: getAppHeaer()
+}).then(response => {
+    if (!response.ok) {
+      // ✅ HTTP error (like 400, 401, 500)
+      throw new Error("Server returned error: " + response.status);
+    }
+    return response.json(); // Or response.text() if not JSON
+  })
+  .then(data => {
+    // ✅ Success callback
+    console.log("🎉 Movie saved successfully:", data);
+    alert("✅ Movie saved successfully!");
+    // Optional: refresh datatable, reset form, close modal, etc.
+  })
+  .catch(error => {
+    // ❌ Failure callback
+    console.error("⚠️ Failed to save movie:", error);
+    alert("❌ Failed to save movie. " + error.message);
+  });
+  
+   
+    // Proceed to submit
+  } else {
+    form.classList.add('was-validated');
+  }
+}
+
+function buildMovieObjectFromUI() {
+
+const posterInput = document.getElementById('addposterFile');
+ posterUrlx  = "";
+const file = posterInput.files[0];
+
+if (file) {
+  const previewURL = URL.createObjectURL(file);
+  console.log("Preview URL:", previewURL);
+  posterUrlx =previewURL;
+  // Example: Set preview image
+}
+
+
+  const movie = {
+    title: document.getElementById('title').value.trim() || "",
+	shareStartTime: document.getElementById('shareStartTime').value.trim() || "",
+    description:document.getElementById('description').value.trim() || "", // If you add description input later
+    language: document.getElementById('mLanguageSelect').value || "",
+    budget: parseInt(document.getElementById('budget').value.trim()) || 0,
+    releaseDate: document.getElementById('addreleaseDate').value.trim() || "",
+    trailerDate: document.getElementById('addtrailerDate').value.trim() || "",
+    status: parseInt(document.getElementById('addstatusSelect').value) || 0,
+    perShareAmount: parseInt(document.getElementById('addperShareAmount').value.trim()) || 0,
+    movieTypeId: parseInt(document.getElementById('addmovieTypeSelect').value) || 0,
+    posterUrl: posterUrlx,
+    trailerUrl: document.getElementById('addtrailerUrl').value.trim() || ""
+  };
+
+  return movie;
+}
+
+function closeModelWindowById(modalId)
+{
+  const modalElement = document.getElementById(modalId);
+  const modalInstance = bootstrap.Modal.getInstance(modalElement);
+  if (modalInstance) {
+    modalInstance.hide();
+  }
+  // Cleanup fallback (optional)
+  document.body.classList.remove('modal-open');
+  document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+	
+}
+
+  </script>
+  <style>
+ 
+  </style>
+</head>
+<body>
+
+<div id="loadingPopup" style="display: none;">
+  <div class="loading-popup-backdrop"></div>
+  <div class="loading-popup-box">
+    <div class="spinner-border text-warning" role="status"></div>
+    <div class="loading-text mt-2">Loading, please wait...</div>
+  </div>
+</div>
+
+<!-- Add Movie Modal -->
+<div id="modalContainer"></div>
+
+
+
+
+
+  <!-- Top Navbar -->
+  <nav class="navbar navbar-dark bg-dark fixed-top px-3">
+    <span class="navbar-brand">🎬 FilmBit Admin Panel</span>
+    <a href="#" class="logout-btn">🔓 Logout</a>
+  </nav>
+
+  <!-- Sidebar -->
+  <div class="sidebar pt-5">
+    <ul class="nav flex-column">
+      <li class="nav-item"><a class="nav-link" href="#" onclick="loadSection('dashboard')">📊 <span class="nav-text">Dashboard</span></a></li>
+     <li class="nav-item">
+    <a class="nav-link" href="#filmSubmenu" data-bs-toggle="collapse">
+      🎬 <span class="nav-text">Film</span>
+    </a>
+    <ul class="collapse list-unstyled ps-3" id="filmSubmenu">
+      <li><a class="nav-link" href="#" onclick="loadSection('movies')" data-section="movies">🎬 <span class="nav-text">Movies</span></a></li>
+      <li><a class="nav-link" href="#" onclick="loadSection('actors')" data-section="actors">🧑 <span class="nav-text">Actors</span></a></li>
+      <li><a class="nav-link" href="#" onclick="loadSection('roles')" data-section="roles">👥 <span class="nav-text">Role Play</span></a></li>
+    </ul>
+  </li>
+  
+       <li class="nav-item">
+    <a class="nav-link" href="#financeSubmenu" data-bs-toggle="collapse">
+      💰 <span class="nav-text">Finance</span>
+    </a>
+    <ul class="collapse list-unstyled ps-3" id="financeSubmenu">
+<li class="nav-item"><a class="nav-link" href="#" onclick="loadSection('investments')" data-section="investments"> 💼<span class="nav-text">Investments</span></a></li>
+      <li class="nav-item"><a class="nav-link" href="#" onclick="loadSection('payouts')" data-section="payouts">📤 <span class="nav-text">Payouts</span></a></li>
+
+    </ul>
+  </li>
+      <li class="nav-item"><a class="nav-link" href="#" onclick="loadSection('users')" data-section="Users">👨‍💼 <span class="nav-text">Users</span></a></li>
+	  <li class="nav-item"><a class="nav-link" href="#" onclick="loadSection('announcements')" data-section="Announcements">📣 <span class="nav-text">Announcements</span></a></li>
+	  <li class="nav-item"><a class="nav-link" href="#" onclick="loadSection('reports')" data-section="Reports">📈  <span class="nav-text">Reports</span></a></li>
+      <li class="nav-item"><a class="nav-link" href="#" onclick="loadSection('settings')" data-section="Settings">⚙️ <span class="nav-text">Settings</span></a></li>
+    </ul>
+  </div>
+
+  <!-- Main Content -->
+  
+  <div class="main-content">
+    <div class="header">
+      <h5 class="m-0">🎬 FilmBit Admin</h5>
+    </div>
+
+    <div class="content-area">
+	
+	
+	
+      <!-- Sections -->
+     <div id="dashboard-section"></div>
+   
+
+<div id = "movies-section"> </div>
+
+      <div id="actors-section" style="display: none;"></div>
+      <div id="roles-section" style="display: none;"></div>
+      <div id="users-section" style="display: none;"></div>
+      <div id="investments-section" style="display: none;"></div>
+      <div id="reports-section" style="display: none;"></div>
+      <div id="announcements-section" style="display: none;"></div>
+      <div id="payouts-section" style="display: none;"></div>
+      <div id="settings-section" style="display: none;"></div>
+    </div>
+  </div>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

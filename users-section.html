@@ -1,0 +1,47 @@
+<!-- Users Section -->
+  <h4 style="color: #FFD700;">👥 Users Management</h4>
+
+  <!-- Top Bar -->
+  <div class="d-flex justify-content-between align-items-center my-3">
+    <div>
+      <input type="text" id="userSearch" placeholder="Search by phone/email" class="form-control form-control-sm">
+    </div>
+    <div>
+      <button class="btn btn-sm btn-warning">+ Add User</button>
+      <button class="btn btn-sm btn-dark">⬇ Export CSV</button>
+    </div>
+  </div>
+
+  <!-- User Table -->
+  <table id="userTable" class="display" style="width:100%">
+    <thead>
+      <tr>
+        <th>📞 Phone</th>
+        <th>🧑 First Name</th>
+        <th>👤 Last Name</th>
+        <th>📧 Email</th>
+        <th>🆔 PAN ID</th>
+        <th>📱 Device ID</th>
+        <th>🌐 Language</th>
+        <th>🔓 Status</th>
+        <th>⚙️ Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>9876543210</td>
+        <td>Arjun</td>
+        <td>Mehta</td>
+        <td>arjun@mail.com</td>
+        <td>AAAAA1234A</td>
+        <td>dev123xyz</td>
+        <td>English</td>
+        <td><span class="badge bg-success">Active</span></td>
+        <td>
+          <button class="btn btn-sm btn-outline-primary">Edit</button>
+          <button class="btn btn-sm btn-outline-danger">Delete</button>
+        </td>
+      </tr>
+      <!-- Add more rows as needed -->
+    </tbody>
+  </table>

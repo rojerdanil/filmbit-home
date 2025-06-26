@@ -1,0 +1,54 @@
+  <h4>🎬 Movies Management </h4>
+<div class="d-flex align-items-center gap-3 flex-wrap">
+  <select id="languageFilter" class="form-select form-select-sm w-auto">
+    <option value="">🌐 All Languages</option>
+    <option value="Tamil">Tamil</option>
+    <option value="Hindi">Hindi</option>
+    <option value="Telugu">Telugu</option>
+  </select>
+
+  <span class="movie-label-highlight">
+  🎬 Total Movie: <span id="movieCount">(0)</span>
+</span>
+<span class="movie-label-highlight">
+   Total Filtered: <span id="movieCountFilter">(0)</span>
+</span>
+</div>
+
+<div class="table-toolbar d-flex justify-content-between align-items-center mb-2">
+  <div></div> <!-- Left empty because search box will float left via DataTables -->
+  <div>
+  
+      <button class="btn btn-sm btn-warning" onclick="addMovieDropClick();" id="btnAddMovie">+ Add</button>
+    <button class="btn btn-sm btn-outline-primary" onclick="updateSelectedActor()">✏️ Update</button>
+    <button class="btn btn-sm btn-outline-danger" onclick="deleteMovies()">🗑️ Delete</button>
+	
+ 
+  </div>
+</div>
+
+	  <table id="movieTable" class="display  table-hover" style="width: 100%;">
+
+
+	  
+    <thead class="table-light">
+ <tr>
+<th><input type="checkbox" class="select-all"></th>
+    <th>🎬 Title</th>
+    <th>📝 Description</th>
+    <th>🌐 Language</th>
+    <th>💸 Budget</th>
+    <th>📊 Per Share</th>
+    <th>📌 Status</th>
+    <th>🏷️ Type</th>
+    <th>📅 Created</th>
+    <th>🚀 Release</th>
+    <th>🎞️ Trailer Date</th>
+	    <th>🎞️ Trailer</th>
+
+	    <th>🖼️ Poster</th>
+
+  </tr>
+    </thead>
+	
+  </table>

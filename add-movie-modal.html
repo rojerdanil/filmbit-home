@@ -1,0 +1,96 @@
+<div class="modal fade" id="addMovieModal" tabindex="-1" aria-labelledby="addMovieLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="addMovieLabel">🎬 Add New Movie</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <form id="movieForm" novalidate>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Title</label>
+              <input type="text" class="form-control" id="title" required>
+              <div class="invalid-feedback">Please enter movie title.</div>
+            </div>
+			<label class="form-label">Description</label>
+<textarea class="form-control" id="description" rows="3" placeholder="Enter a short summary about the movie..."></textarea>
+<div class="invalid-feedback">Description is required.</div>
+
+            <div class="col-md-6">
+              <label class="form-label">Language</label>
+              <select class="form-select" id="mLanguageSelect" required>
+                <option value="">Select language</option>
+              </select>
+              <div class="invalid-feedback">Please select a language.</div>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Movie Type</label>
+              <select class="form-select" id="addmovieTypeSelect" required></select>
+              <div class="invalid-feedback">Please select a movie type.</div>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Status</label>
+              <select class="form-select" id="addstatusSelect" required></select>
+              <div class="invalid-feedback">Please select a status.</div>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Budget</label>
+              <input type="number" class="form-control" id="budget" required>
+    <div class="invalid-feedback" id="budgetError">Please enter a valid budget.</div>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Per Share Amount</label>
+              <input type="number" class="form-control" id="addperShareAmount" required>
+  <div class="invalid-feedback" id="perShareError">Please enter a valid amount per share.</div>
+            </div>
+
+            
+
+            <div class="col-md-6">
+              <label class="form-label">Trailer Date</label>
+              <input type="date" class="form-control" id="addtrailerDate">
+            </div>
+			
+			<div class="col-md-6">
+              <label class="form-label">Release Date</label>
+              <input type="date" class="form-control" id="addreleaseDate" >
+              <div class="invalid-feedback" id="releaseDateError">Please choose a valid release date.</div>           
+			  </div>
+			  
+			  <div class="col-md-6">
+  <label class="form-label">Available for Sharing From</label>
+  <input type="datetime-local" class="form-control" id="shareStartTime" required>
+  <div class="invalid-feedback" id="shareTimeError">⏰ Please select a valid date and time.</div>
+</div>
+
+            <div class="col-md-6">
+              <label class="form-label">Poster URL</label>
+              <input type="file" class="form-control" id="addposterFile" accept="image/*">
+              <div class="invalid-feedback" id="posterError">Please upload a valid image.</div>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Trailer URL</label>
+              <input type="text" class="form-control" id="addtrailerUrl" placeholder="https://example.com/trailer">
+			  <div class="invalid-feedback" id="trailerUrlError">Please enter a valid URL.</div>
+
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-save btn-primary" onclick="saveMovie()">Save Movie</button>
+      </div>
+
+    </div>
+  </div>
+</div>

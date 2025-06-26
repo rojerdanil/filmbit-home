@@ -1,0 +1,32 @@
+<!-- 🎬 Movie Detail Modal -->
+<div class="modal fade" id="movieDetailPanel" tabindex="-1" aria-labelledby="movieDetailsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content" style="background-color: #fff9cc; border-radius: 12px;">
+      <div class="modal-header">
+        <h5 class="modal-title" id="movieDetailsModalLabel">🎬 Movie Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body d-flex flex-wrap gap-4">
+        <!-- Poster -->
+        <div style="flex: 0 0 220px;">
+          <img id="moviePoster" src="images/96-movie-review.png" alt="Movie Poster" class="img-fluid rounded shadow-sm" style="width: 220px; height: 300px; object-fit: cover;">
+        </div>
+
+        <!-- Movie Info -->
+        <div style="flex: 1; min-width: 250px;">
+          <p><strong>Title:</strong> <span id="movieTitle" class="highlight-value"></span></p>
+<p><strong>Cast:</strong> <span id="movieCast" class="highlight-value"></span></p>
+<p><strong>Type:</strong> <span id="movieType" class="highlight-value"></span></p>
+<p><strong>Status:</strong> <span id="movieStatus" class="highlight-value"></span></p>
+<p><strong>Trailer Date:</strong> <span id="trailerDate" class="highlight-value"></span></p>
+<p><strong>Release Date:</strong> <span id="releaseDate" class="highlight-value"></span></p>
+<p><strong>Budget:</strong> ₹<span id="movieAmount" class="highlight-value"></span></p>
+<p><strong>Per Share:</strong> ₹<span id="perShareAmount" class="highlight-value"></span></p>
+<p><strong>Collected:</strong> ₹<span id="collectedAmount" class="highlight-value"></span></p>
+<p><strong>Pending:</strong> ₹<span id="pendingAmount" class="highlight-value"></span></p>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

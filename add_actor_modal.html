@@ -1,0 +1,38 @@
+<!-- Add Actor Modal -->
+<div class="modal fade" id="actorModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: #FFF8DC;">
+        <h5 class="modal-title" style="color:#FFD700;">Add Actor</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" ></button>
+      </div>
+      <div class="modal-body">
+        <form id="actorForm">
+          <input type="text" class="form-control mb-2" placeholder="Name" required>
+          <select class="form-control mb-2">
+            <option>Male</option>
+            <option>Female</option>
+            <option>Other</option>
+          </select>
+          <select class="form-control mb-2">
+            <option>Tamil</option>
+            <option>Hindi</option>
+            <option>Telugu</option>
+          </select>
+          <input type="number" class="form-control mb-2" placeholder="Popularity Score" required>
+          <input type="number" class="form-control mb-2" placeholder="Awards Count" required>
+          <select class="form-control mb-2">
+            <option>Lead</option>
+            <option>Support</option>
+            <option>Villain</option>
+          </select>
+          <input type="text" class="form-control mb-2" placeholder="Image URL" required>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-sm btn-dark" data-bs-dismiss="modal">Close</button>
+        <button class="btn btn-sm btn-warning" onclick="saveActor()">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
