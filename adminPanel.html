@@ -7,6 +7,7 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
   <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
 
@@ -22,14 +23,29 @@
     var readMovieTypeUrl = baseUrlApi + "/movie-types/alltypes";
 	var readMovLanguageUrl = baseUrlApi + "/languages/alllangugage";
 	var readMovSummaryByIdURl = baseUrlApi + "/movie/moviebyId?id=";
+	var readActorsBylanIdUrl = baseUrlApi +"/movie-person/movie_by_languagae?id=";
+	var readMovieRolesUrl = baseUrlApi + "/roles-in-movie/getAllRole";
+	var addMovieRoleUrl   =   baseUrlApi + "/roles-in-movie/addRoleInMovie"
+	var addMovieUrl =  baseUrlApi + "/movie/addMovie"
+	var readActorInMovByMovIdUrl = baseUrlApi  + "/actors-in-movie/actorsInMovieById?id=";
+	var addActorInMovieUrl = baseUrlApi  + "/actors-in-movie/addMovieActor";
+    var deleteActorInMovieUrl = baseUrlApi  + "/actors-in-movie/deleteMoviePlay?id=";
+	var readShareTypeByMovIdUrl = baseUrlApi  + "/share-types/movie/" ;
+	var addUpdateShareTypeUrl = baseUrlApi + "/share-types/updateInsert/";
+	var deleteShareTypeUrl = baseUrlApi + "/share-types/deleteShareType/";
+
+
 
 	
 	
-
+    let currentTable;
 	let idNameMovieStatusMap = {};
 	let idNameMovieTypeMap = {};
 	let movieLanuguageList = [];
 	
+	let  languageMap = 	[];
+	let  actorRolelist = [];
+
     function loadSection(section) {
 	
 	
@@ -92,16 +108,7 @@
 
   
     }
-function viewMovie(rowId)
-{
 
-openDropDown("#movieDetailPanel","movieDetailPanel.html");
-console.log(readMovSummaryByIdURl+rowId);
-sendAjaxRequest(readMovSummaryByIdURl+rowId, "GET", getAppHeaer(), null,movieDetailSumIDCallback );
-
-
-
-}
 
 
 	
@@ -118,6 +125,26 @@ const readMovieTypeCallBack = function (response) {
   }
   
 };
+
+function getKeyValueMapIdName(items)
+{
+var idNameMapx = {};
+  if (Array.isArray(items)) {
+  
+  for(let i = 0; i < items.length; i++) {
+
+    const item = items[i];
+
+    idNameMapx[item.id] = item.name;
+  }
+  
+  }
+  
+  
+  return idNameMapx;
+ }
+
+
 
 function convertMapToArray(idNameMap)
 {
@@ -137,12 +164,19 @@ return idNameArray;
 }
 
 const readLanguageCallBack =   function (response) {
+
+
   if(response != null)
   {
-    console.log("status" );
 	if(response.status == "success")
-	movieLanuguageList = response.result;
-	  
+	{
+	   movieLanuguageList = response.result;
+
+
+	   		 languageMap = getKeyValueMapIdName(movieLanuguageList);
+
+
+	 } 
   }
   
   
@@ -159,8 +193,6 @@ const readLanguageCallBack =   function (response) {
   {
   defaultOption.value = "";
   defaultOption.text = "🌐 All Languages";
-  defaultOption.disabled = true;
-  defaultOption.selected = true;
   select.appendChild(defaultOption);
   }
   else
@@ -174,12 +206,14 @@ defaultOption.selected = true;
 
 
   // Add languages from array
-  languageList.forEach(lang => {
+  
+  
+   languageList.forEach(lang => {
     const option = document.createElement("option");
 	
 	 if(selectType == "language")
   {
-    option.value = lang.name;
+    option.value = lang.id	;
     option.text = `${lang.name} (${lang.nativeScript})`;
     select.appendChild(option);
 	}
@@ -196,6 +230,7 @@ defaultOption.selected = true;
     select.appendChild(option);
 	}
   });
+  
 }
 	
 const readMovieCallBack = function (response) {
@@ -395,9 +430,166 @@ function loadActorSection()
 }
   
 	
-	function loadMovieSection()
+	
+function formatDate(value) {
+  if (!value) return 'N/A';
+  const date = new Date(value);
+  return date.toLocaleDateString('en-IN', {
+    day: '2-digit', month: 'short', year: 'numeric'
+  });
+}
+
+
+function updateSelectedActor()
+{
+
+
+}
+
+function openDropDownWithCallBack(modalId,page,onSuccess)
+{
+
+
+    $("#modalContainer").empty();
+
+    $('#modalContainer').load(page, function () {
+      $(modalId).modal('show');
+	  onSuccess();
+    });
+  
+  
+
+
+
+}
+
+var  openShareTypeWinCallBack = function ()
+{
+console.log("comming inside");
+$("#movieNameHead").text(currentMovieName);
+
+loadShareTypes(currentCastMovId);
+
+
+
+}
+
+function loadShareTypes(movieId) {
+  $.ajax({
+    url: readShareTypeByMovIdUrl +movieId,
+    type: 'GET',
+	headers: getAppHeaer(),
+
+    success: function(response) {
+      const tbody = $('#shareTypeTableBody');
+      tbody.empty();
+       data = response.result;
+      if (data.length === 0) {
+        tbody.append('<tr><td colspan="9" class="text-center">No share types found</td></tr>');
+        return;
+      }
+     totalSoldShare = 0;
+	 totalAllocatedShare = 0;
+	 totalPlatformCommission = 0;
+	 totalProfitCommission = 0;
+	 totalBudget = 0;
+	 isBudgetDone = false;
+	 totalShares = 0;
+	 sharePerAmount = 0;
+      data.forEach(item => {
+	  
+	  if(!isBudgetDone)
+	  {
+	     totalBudget  = item.budget;
+		 isBudgetDone = true;
+		 totalShares = item.totalShare;
+		 sharePerAmount = item.perShareAmount
+		 }
+  const commission = `${item.companyCommissionPercent}% / ${item.profitCommissionPercent}%`;
+  const remainShareType = item.numberOfShares - item.soldShare ;
+  totalSoldShare = totalSoldShare +  item.soldShare;
+  totalAllocatedShare = totalAllocatedShare +item.numberOfShares ;
+  totalPlatformCommission = totalPlatformCommission + item.companyCommission;
+  totalProfitCommission = totalProfitCommission + item.companyProfitCommission;
+  console.log("remmain " +remainShareType);
+  const shares = `${item.numberOfShares}/ ${item.soldShare} / ${remainShareType} `;
+  const earned = `₹${item.companyCommission} / ₹${item.companyProfitCommission}`; 
+  const active = item.isActive ? '✅' : '❌';
+
+  const $row = $("<tr></tr>");
+  $row.append(`<td>${getCategoryName(item.categoryId)}</td>`);
+  $row.append(`<td>${formatDateTime(item.startDate)}</td>`);
+  $row.append(`<td>${formatDateTime(item.endDate)}</td>`);
+  $row.append(`<td>₹${item.pricePerShare}</td>`);
+  $row.append(`<td>${commission}</td>`);
+  $row.append(`<td>${shares}</td>`);
+  $row.append(`<td>${earned}</td>`);
+  $row.append(`<td>${active}</td>`);
+
+  const $editBtn = $(`<button class="btn btn-sm btn-warning">✏️</button>`);
+  $editBtn.on("click", () => editShareType(item));
+
+  const $deleteBtn = $(`<button class="btn btn-sm btn-danger">🗑️</button>`);
+  $deleteBtn.on("click", () => deleteShareType(item.id));
+
+  const $actionTd = $("<td></td>").append($editBtn, " ", $deleteBtn);
+  $row.append($actionTd);
+
+  tbody.append($row);
+});
+
+var totalRemaing = totalAllocatedShare - totalSoldShare;
+$("#allocatedShares").text(totalAllocatedShare);
+$("#soldShares").text(totalSoldShare);
+$("#remainingShares").text(totalRemaing);
+$("#earnedCompany").text(totalPlatformCommission);
+$("#earnedProfit").text(totalProfitCommission);  
+$("#totalShares").text(totalShares); 
+$('#pricePerShare').val(sharePerAmount);
+
+unsoldShare = 0;
+unAllocated = 0;
+if(totalShares > 0)
+{
+        unsoldShare = totalShares - totalSoldShare;
+		unAllocated = totalShares - totalAllocatedShare;
+}
+
+$("#unsoldShares").text(unsoldShare); 
+$("#unallocatedShares").text(unAllocated); 
+$("#editUnallocated").text(unAllocated); 
+
+
+
+    },
+    error: function() {
+      alert('❌ Failed to load share types');
+    }
+  });
+}
+
+// 🔧 Helper to map category ID to name
+function getCategoryName(categoryId) {
+  const categories = {
+    1: "Normal",
+    2: "Premium",
+    3: "Trailer Release",
+	4: "Day Before Release"
+  };
+  return categories[categoryId] || `Category #${categoryId}`;
+}
+
+function viewMovie(rowId)
+{
+
+openDropDown("#movieDetailPanel","movieDetailPanel.html");
+sendAjaxRequest(readMovSummaryByIdURl+rowId, "GET", getAppHeaer(), null,movieDetailSumIDCallback );
+
+
+
+}
+function loadMovieSection()
 	{
-	console.log("calling laodMovieSection");
 	
 	var mvTable = $('#movieTable').DataTable({
 		stripeClasses: [],
@@ -423,7 +615,6 @@ function loadActorSection()
 	    $("#movieCountFilter").text(obj.recordsFiltered);
 
       // Debug: make sure obj is valid
-      console.log("Transformed for DataTables:", obj.recordsFiltered );
       return JSON.stringify({
         draw: obj.draw > 0 ? obj.draw : 1,
         recordsTotal: obj.recordsTotal ?? 0,
@@ -442,61 +633,156 @@ function loadActorSection()
           orderable: false,
           render: function (data) {  
             return `<input type="checkbox" class="rowCheckbox" value="${data}" onclick="enableRowSelected(this)">`;
-          }
+          }	
         },
         { data: 'title' },
-        { data: 'description' },
-        { data: 'language' },
-        { data: 'budget' },
-        { data: 'perShareAmount' },
-        { data: 'statusId' ,
-          render: function (data) {
-            return getValueFromMap(idNameMovieStatusMap,data);
+        { data: 'language' 
+		   ,
+		render: function(data, type, row)  {
+		
+		    const lang = getValueFromMap(languageMap,row.language )|| 'N/A';
+           const typeName = getValueFromMap(idNameMovieTypeMap,row.movieTypeId) || 'N/A';
+		
+return `
+      <div class="type-column">
+        <span class="type-lang">${lang}</span>
+        <span class="type-dot"> · </span>
+        <span class="type-name">${typeName}</span>
+      </div>
+    `; 
           }
 		
+		},
+       // { data: 'budget' },
+       		{
+  data: 'shareSoldAmount',
+  render: function(data, type, row) {
+    const percent = row.fundingPercent || 0;
+    const sold = row.sharesSold * row.perShareAmount;
+    const total = row.totalShares * row.perShareAmount;
+
+    return `
+      <div>
+        ₹${sold.toLocaleString()} 
+        <small style="color:#888;">of ₹${total.toLocaleString()}</small>
+        <div class="progress" style="height: 6px; margin-top: 4px;">
+          <div class="progress-bar bg-success" role="progressbar" style="width: ${percent}%;" aria-valuenow="${percent}" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+      </div>`;
+  }
+}
+,
+{ data: 'perShareAmount' },
+ 
+		 
+		 
+		 { 
+      data: 'shareStatus', // or however you're mapping statusId
+      render: function(data, type, row) {
+       const colorMap = {
+      'Live': 'badge-success',
+      'Sold Out': 'badge-dark',
+      'Not Started': 'badge-secondary',
+      'Closed': 'badge-danger',
+      'Day-Before Only': 'badge-warning'
+    };
+	const dayBending = row.daysBeforeRelease;
+    const badgeClass = colorMap[data] || 'badge-info';
+    return `<span class="badge ${badgeClass}">${data || 'N/A'} ${dayBending || 'N/A'}</span>`;
+      }
+    },
+        { data: 'statusId' ,
+          render: function (data) {
+        let status = getValueFromMap(idNameMovieStatusMap,data);
+       const badgeMap = {
+      'idea stage': 'badge-idea',
+      'pre-production': 'badge-pre',
+      'funding open': 'badge-funding-open',
+      'funding closed': 'badge-funding-closed',
+      'production': 'badge-production',
+      'post-production': 'badge-post',
+      'trailer released': 'badge-trailer',
+      'coming soon': 'badge-coming',
+      'released': 'badge-released',
+      'box office running': 'badge-boxoffice',
+      'profit distribution': 'badge-profit',
+      'archived': 'badge-archived',
+      'on hold': 'badge-hold',
+      'cancelled': 'badge-cancelled'
+    };
+    const badgeClass = badgeMap[status.toLowerCase()]; // default fallback
+    return `<span class="">${status}</span>`;
+  }
+           
 		
 			   
 
 		
-		},
+		}
+	/*,
         { data: 'movieTypeId',
 		render: function (data) {
             return getValueFromMap(idNameMovieTypeMap,data);
           }
 
-		},
-        {
-          data: 'createdDate',
-          render: function (data) {
-            return formatDate(data);
-          }
-        },
-        {
-          data: 'releaseDate',
-          render: function (data) {
-            return formatDate(data);
-          }
-        },
-        {
-          data: 'trailerDate',
-          render: function (data) {
-            if (!data) return 'Comming Soon';
-    const d = new Date(data);
-    return isNaN(d) ? 'Invalid Date' : d.toLocaleDateString();
-          }
-        }
+		}*/
 		,
         {
+          data: 'createdDate',
+          render: function(data, type, row) {
+           
+    const created = formatDate(row.createdDate);
+    const trailer = formatDate(row.trailerDate);
+    const release = formatDate(row.releaseDate);
+        return `
+      <div class="date-column">
+        <div><span class="date-icon">📅</span> <span class="date-label">Created:</span> <span class="date-value">${created}</span></div>
+        <div><span class="date-icon">🎞️</span> <span class="date-label">Trailer:</span> <span class="date-value">${trailer}</span></div>
+        <div><span class="date-icon">🎬</span> <span class="date-label">Release:</span> <span class="date-value">${release}</span></div>
+      </div>
+    `;
+          }
+        },
+		
+		
+		
+		
+		{
           data: 'trailerUrl',
           render: function (data) {
-            return `<a href="${data}" target="_blank">Trailer</a>`;
+     if (!data) return 'N/A';
+    const videoId = extractYouTubeVideoID(data);
+    if (!videoId) return `<span>${data}</span>`;
+
+    const thumbnail = `https://img.youtube.com/vi/${videoId}/0.jpg`;
+    return `
+      <div class="preview-hover">
+        <a href="${data}" target="_blank" style="text-decoration: none; color: inherit;">
+          Watch
+        </a>
+        <div class="preview-box">
+          <img src="${thumbnail}" alt="Trailer Preview">
+        </div>
+      </div>`;
+	  
+	  
+	  
           }
         }
 		,
         {
           data: 'posterUrl',
   render: function (data, type, row) {
-          return `<button class="btn btn-sm btn-primary viewBtn" onclick="viewMovie(${row.id})">View</button>`;
+    const safeTitle = row.title ? row.title.replace(/'/g, "\\'") : '';
+const percent = row.fundingPercent || 0;
+    
+          return `
+    <div class="action-column">
+      <div class="action-link" onclick="viewMovie(${row.id})">View</div>
+      <div class="action-link" onclick="manageCast(${row.id}, '${safeTitle}')">Casting</div>
+      <div class="action-link" onclick="activateDayBefore(${row.id}, '${row.title.replace(/'/g, "\\'")}')">ShareType</div>
+    </div>
+  `;
           }
         }
       ],
@@ -554,6 +840,9 @@ function loadActorSection()
 $('#languageFilter').on('change', function () {
     mvTable.ajax.reload();
   });
+  
+  
+  currentTable = mvTable;
 	
 	}
 	var movieDetailSumIDCallback = function (response)
@@ -585,29 +874,253 @@ $('#languageFilter').on('change', function () {
 		}
 	
 	}
-
-function updateSelectedActor()
+	
+currentMovieName = "";
+function activateDayBefore(movId,movName)
 {
+currentCastMovId = movId;
+currentMovieName = movName;
+     
+     openDropDownWithCallBack("#shareTypeModal","share-type-modal.html",openShareTypeWinCallBack);
+
+
+
+}
+var currentCastMovId ;
+var currentCastMovName;
+
+var castingCallBack = function()
+{
+   
+$('#castingMovieId').val(currentCastMovId);
+  $('#castingMovieTitle').text(currentCastMovName);
+  $('#roleInMovie').val('');
+  $('#actorSelect').val('');
+  $('#castingTableBody').empty(); // clear old data
+
+  // Optionally fetch existing cast from backend
+  //fetchCastList(movieId);
+  if (movieLanuguageList != null && movieLanuguageList.length > 0) {
+	  	       populateLanguageSelect("castingLang", movieLanuguageList,"addlanguage");
+  }
+  
+  if (actorRolelist != null && actorRolelist.length > 0) {
+	  	       populateLanguageSelect("roleInMovieSelect", actorRolelist,"");
+  }
+  else
+  {
+     	 
+   sendAjaxRequest(readMovieRolesUrl, "GET", getAppHeaer(), null,castingRoleFun );
+  
+  }
+     sendAjaxRequest(readActorInMovByMovIdUrl+currentCastMovId, "GET", getAppHeaer(), null,drawdrawActorRoleMovTableFun );
+
+  
+  $('#castingModal').modal('show');
+
+}
+
+var castingRoleFun = function (data)
+{
+
+if(data.status === "success")
+   {
+     console.log("castingRoleFun");
+	 if(data.result != null )
+	 {
+	      var keyMap = getKeyValueMapIdName(data.result)
+		  var arrayObj = convertMapToArray(keyMap);
+		  actorRolelist = arrayObj;
+	  	       populateLanguageSelect("roleInMovieSelect", actorRolelist,"");
+
+	 }
+   
+      
+   }
+
+}
+
+
+var casttingLangSelectFun = function (data)
+{
+   if(data.status === "success")
+   {
+	 if(data.result != null )
+	 {
+	       var keyMap = getKeyValueMapIdName(data.result)
+		   var arrayObj = convertMapToArray(keyMap);
+	       populateLanguageSelect("actorSelect", arrayObj,"");
+
+	 }
+   
+      
+   }
+
 
 
 }
 
-function openDropDownWithCallBack(modalId,page,onSuccess)
+
+function loadActorsByLanguage(language) {
+  if (!language) {
+    $('#actorSelect').html('<option value="">Select Actor</option>');
+    return;
+  }
+  
+  	 sendAjaxRequest(readActorsBylanIdUrl+language, "GET", getAppHeaer(), null,casttingLangSelectFun );
+
+
+ 
+}
+
+var listActorInMovie = function listMovieInActorCallBack(data)
+{
+  if(data.success === "success")
+  {
+  
+     drawdrawActorRoleMovTableFun(data);
+  
+  }
+
+
+}
+
+var addRoleInMovieFun = function(response)
 {
 
+ if(response.status === "success")
+ {
+    
+	     sendAjaxRequest(readActorInMovByMovIdUrl+currentCastMovId, "GET", getAppHeaer(), null,drawdrawActorRoleMovTableFun );
 
-console.log("comming inside");
-    $("#modalContainer").empty();
+    //drawdrawActorRoleMovTableFun(response);
 
-    $('#modalContainer').load(page, function () {
-      $(modalId).modal('show');
-	  onSuccess();
-    });
+ }
+ else {
+        if(response.status === "failure")
+		    alert("❌ Failed to save movie. " + response.message);
+
+ 
+ 
+ }
+
+
+
+}
+
+var drawdrawActorRoleMovTableFun = function drawActorRoleMovieTable(response)
+{
+     if(response.status == "success")
+	 {
+	 $('#castingTableBody').empty();
+      response.result.forEach(function(record, index) {
+                const rowCount = index + 1;  // Index starts from 0, so add 1 for row number
+                const roleName =record.roleName; // You'll need to fetch or map the role name
+                const actorName = record.actorName; // Similarly, map actorId to actorName
+                const id = record.id;
+                // Create a new row
+                const newRow = `
+                    <tr>
+                        <td>${rowCount}</td>
+                        <td>${roleName}</td>
+                        <td>${actorName}</td>
+                        <td>
+                            <span class="text-primary" style="cursor:pointer;" onclick="editCast(${id})">🖉</span>
+                            <span class="text-danger ms-2" style="cursor:pointer;" onclick="deleteCast(${id})">🗑</span>
+                        </td>
+                    </tr>
+                `;
+                // Append the new row to the table body
+                $('#castingTableBody').append(newRow);
+            });
+   
+
+  // Reset fields
+  $('#roleInMovie').val('');
+  $('#actorSelect').val('');
+  $('#castingLang').val('');
+}
+}
+
+function addCastEntry() {
+  const role = $('#roleInMovieSelect').val();
+  const actorId = $('#actorSelect').val();
+  const actorName = $('#actorSelect option:selected').text();
+  const roleName = $('#roleInMovieSelect option:selected').text();
+  const language = $('#castingLang').val();
+  console.log("lang selected " + language);
+
+  // Hide all previous error messages
+  $('.error-message').hide();
+
+  // Check if all fields are selected
+  let isValid = true;
+  
+  if (!language) {
+    $('#languageError').show();
+    isValid = false;
+  }
+  if (!role) {
+    $('#roleError').show();
+    isValid = false;
+  }
+  if (!actorId) {
+    $('#actorError').show();
+    isValid = false;
+  }
+
+  // Stop if any field is invalid
+  if (!isValid) {
+    return;
+  }
+ 
+     var input = {};
+	 input.movieId = currentCastMovId;
+	 input.actorId    = parseInt(actorId); // 123
+	 input.roleMovieId =parseInt(role) ;
+	 input.id = 0;
+	 console.log("casting save ");
+	 console.log(input);
+  	 sendAjaxRequest(addActorInMovieUrl, "POST", getAppHeaer(), input , addRoleInMovieFun );
+ 
   
   
+  
+
+  
+}
 
 
+function editCast(castId) {
+  alert("Edit feature coming soon...");
+}
 
+function deleteCast(castId) {
+console.log("delte id" + castId);
+const confirmDelete = confirm("Are you sure you want to delete this cast record?");
+    
+    if (confirmDelete) {
+        console.log("Delete confirmed. ID:", castId);
+		sendAjaxRequest(deleteActorInMovieUrl+castId, "GET", getAppHeaer(), null , addRoleInMovieFun );
+
+
+        // TODO: Call your delete AJAX function here
+        // Example:
+        // sendAjaxRequest(deleteUrl, "DELETE", getAppHeaer(), JSON.stringify({ id: castId }), callbackFn);
+    } else {
+        console.log("Delete cancelled.");
+    }
+  
+}
+
+function manageCast(movieId, movieName) {
+
+currentCastMovId = movieId;
+currentCastMovName =movieName;
+
+
+     openDropDownWithCallBack("#castingModal","castingModal.html",castingCallBack);
+  
 }
 
 var setMovieAddSelect = function ()
@@ -1054,11 +1567,11 @@ function saveMovie() {
 const shareTimeInput = document.getElementById("shareStartTime");
 const shareTimeValue = shareTimeInput.value.trim();
 
-if (!shareTimeValue) {
+/*if (!shareTimeValue) {
   shareTimeInput.classList.add("is-invalid");
   document.getElementById("shareTimeError").innerText = "⛔ Sharing start time is required.";
   return;
-}
+}*/
 
 // Convert to Date object for comparison
 const selectedDateTime = new Date(shareTimeValue);
@@ -1079,12 +1592,16 @@ if (selectedDateTime <= currentDateTime) {
   const trailerField = document.getElementById('addtrailerDate');
   const releaseDateVal = releaseField.value;
   const trailerDateVal = trailerField.value;
+  
+
   const releaseDateError = document.getElementById('releaseDateError');
   releaseDateError.innerText = "Please select a release date.";
 
   if (releaseDateVal && trailerDateVal) {
     const release = new Date(releaseDateVal);
     const trailer = new Date(trailerDateVal);
+	
+	
 
     if (release <= trailer) {
       releaseField.classList.add('is-invalid');
@@ -1134,7 +1651,7 @@ if (trailerUrl && !urlPattern.test(trailerUrl)) {
 formData.append("movie", new Blob([JSON.stringify(movieData)], { type: "application/json" }));
 formData.append("poster", document.getElementById('addposterFile').files[0]);
 
-fetch("http://localhost:8080/movie/addMovie", {
+fetch(addMovieUrl, {
   method: "POST",
   body: formData,
   headers: getAppHeaer()
@@ -1148,7 +1665,15 @@ fetch("http://localhost:8080/movie/addMovie", {
   .then(data => {
     // ✅ Success callback
     console.log("🎉 Movie saved successfully:", data);
-    alert("✅ Movie saved successfully!");
+	if(data.status.trim() === "success")
+	{
+	console.log("succe");
+	    closeModelWindowById("addMovieModal");
+		    currentTable.ajax.reload();
+ 
+	}
+	else
+    alert("✅"+data.message);
     // Optional: refresh datatable, reset form, close modal, etc.
   })
   .catch(error => {
@@ -1207,6 +1732,27 @@ function closeModelWindowById(modalId)
   document.body.classList.remove('modal-open');
   document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
 	
+}
+function formatDateTime(dateString) {
+  const date = new Date(dateString);
+
+  const pad = n => (n < 10 ? '0' + n : n);
+
+  const day = pad(date.getDate());
+  const month = pad(date.getMonth() + 1);
+  const year = date.getFullYear();
+
+  const hours = pad(date.getHours());
+  const minutes = pad(date.getMinutes());
+
+  return `${day}-${month}-${year} ${hours}:${minutes}`;
+}
+
+
+function extractYouTubeVideoID(url) {
+  const regExp = /(?:youtube\.com.*(?:\?v=|\/embed\/)|youtu\.be\/)([a-zA-Z0-9_-]+)/;
+  const match = url.match(regExp);
+  return match ? match[1] : null;
 }
 
   </script>

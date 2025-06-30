@@ -122,7 +122,6 @@
       min-height: 100px;
     }
 	
-	<style>
 	
 	
 	
@@ -145,6 +144,7 @@ table.dataTable tbody tr:hover {
   
   
   /* Table Container */
+  
 /* Table Container */
 /* Applies to all DataTables */
 table.dataTable {
@@ -280,7 +280,7 @@ div.dataTables_filter {
 }
 
 .modal-header .modal-title {
-  color: #FFD700;
+  color: white;
 }
 //loade
 
@@ -528,12 +528,187 @@ div.dataTables_filter {
     display: inline-block;
     padding: 4px 10px;
     border: 2px solid #ffe066; /* yellow border */
-    background-color: #fffde7; /* very light yellow background */
+    background-color: rgb(255 193 7); /* very light yellow background */
     border-radius: 8px;
     font-weight: 600;
-    color: #5c4400; /* dark amber text */
+    color: white; /* dark amber text */
     font-size: 14px;
     box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.05);
     min-width: 60px;
     text-align: center;
+  }
+  
+  
+  .badge {
+  padding: 4px 10px;
+  border-radius: 12px;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  display: inline-block;
+  text-align: center;
+}
+
+.badge-idea { background-color: #6c757d; }
+.badge-pre { background-color: #17a2b8; }
+.badge-funding-open { background-color: #007bff; }
+.badge-funding-closed { background-color: #343a40; }
+.badge-production { background-color: #fd7e14; }
+.badge-post { background-color: #ffc107; color: black; }
+.badge-trailer { background-color: #20c997; }
+.badge-coming { background-color: #6f42c1; }
+.badge-released { background-color: #28a745; }
+.badge-boxoffice { background-color: #e83e8c; }
+.badge-profit { background-color: #6610f2; }
+.badge-archived { background-color: #adb5bd; }
+.badge-hold { background-color: #f8c471; color: black; }
+.badge-cancelled { background-color: #dc3545; }
+
+
+
+  .preview-hover {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    z-index: 10;
+  }
+
+  .preview-hover .preview-box {
+    display: none;
+    position: absolute;
+    z-index: 9999;
+    top: 100%;
+    left: 0;
+    width: 200px;
+    background: #fff;
+    border: 1px solid #ccc;
+    padding: 4px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  }
+
+  .preview-hover:hover .preview-box {
+    display: block;
+  }
+
+  .preview-box img {
+    width: 100%;
+    height: auto;
+  }
+
+  /* Make sure parent containers don't clip the preview */
+  #movieTable_wrapper,
+  .dataTables_scrollBody,
+  .dataTables_wrapper,
+  .table-responsive {
+    overflow: visible !important;
+  }
+.badge-released { background-color: #28a745; color: white; }
+.badge-warning { background-color: #ffc107; }
+.badge-coming { background-color: #6f42c1; color: white; }
+
+
+
+.badge-success { background-color: #28a745; color: #fff; }
+.badge-dark    { background-color: #343a40; color: #fff; }
+.badge-secondary { background-color: #6c757d; color: #fff; }
+.badge-danger  { background-color: #dc3545; color: #fff; }
+.badge-warning { background-color: #ffc107; color: #000; }
+.badge-info    { background-color: #17a2b8; color: #fff; }
+
+
+.text-muted {
+  color: #888 !important;
+  font-weight: normal;
+  font-size: 90%;
+}	
+
+
+.type-column {
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.type-lang {
+  font-weight: 600;
+  color: #333;
+}
+
+.type-dot {
+  color: #bbb;
+  padding: 0 4px;
+}
+
+.type-name {
+  font-style: italic;
+  color: #666;
+}
+/* Make column wider */
+th:contains("Dates"),
+td.date-column {
+  min-width: 220px;
+}
+
+/* Inner formatting */
+.date-column div {
+  display: flex;
+  gap: 6px;
+  line-height: 1.6;
+}
+
+.date-label {
+  font-weight: 600;
+  color: #333;
+  width: 70px;
+}
+
+.date-icon {
+  width: 18px;
+  text-align: center;
+}
+
+.date-value {
+  color: #555;
+}
+
+
+
+.action-column {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.action-link {
+  color: rgb(255 193 7);
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.action-link:hover {
+  color: #0056b3;
+  text-decoration: none;
+}
+.badge-style {
+  display: inline-block;
+  padding: 5px 15px;
+  background-color: #f39c12; /* Blue background */
+  color: white;
+  font-weight: 600;
+  border-radius: 12px;
+  font-size: 16px;
+}
+.highlight-title {
+  color: white !important;       /* Bright red */
+  font-weight: bold !important;    /* Make it stand out */
+  text-decoration: underline;
+  font-style: italic;
+  font-size: 18px;
+}
+
+
+/* Stretch modal dialog */
+.modal-xl {
+    max-width: 100% !important;
+    width: 100%;
   }

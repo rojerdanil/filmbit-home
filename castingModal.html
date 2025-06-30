@@ -1,0 +1,81 @@
+<!-- 🎭 Casting Modal -->
+<div class="modal fade" id="castingModal" tabindex="-1" aria-labelledby="castingModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header bg-warning">
+        <h5 class="modal-title" id="castingModalLabel">
+          🎭 Manage Casting for: <span id="castingMovieTitle" class=""></span>
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body">
+        <!-- Hidden Movie ID -->
+        <input type="hidden" id="castingMovieId">
+
+        <!-- Language, Role, Actor Selection -->
+        <div class="row mb-3">
+          <!-- Language Select -->
+          <div class="col-md-3">
+            <label for="castingLang" class="form-label">Language</label>
+            <select class="form-select" id="castingLang" onchange="loadActorsByLanguage(this.value)">
+             
+            </select>
+            <!-- Error Message for Language -->
+            <div id="languageError" class="error-message" style="color:red; font-size: 12px; display:none;">Please select a language.</div>
+          </div>
+
+          <!-- Role Select -->
+          <div class="col-md-3">
+            <label for="roleInMovie" class="form-label">Role in Movie</label>
+            <select class="form-select" id="roleInMovieSelect">
+              <option value="">Select</option>
+              
+            </select>
+            <!-- Error Message for Role -->
+            <div id="roleError" class="error-message" style="color:red; font-size: 12px; display:none;">Please select a role in the movie.</div>
+          </div>
+
+          <!-- Actor Select -->
+          <div class="col-md-4">
+            <label for="actorSelect" class="form-label">Actor</label>
+            <select class="form-select" id="actorSelect">
+              <option value="">Select Actor</option>
+            </select>
+            <!-- Error Message for Actor -->
+            <div id="actorError" class="error-message" style="color:red; font-size: 12px; display:none;">Please select an actor.</div>
+          </div>
+
+          <!-- Add Cast Button -->
+          <div class="col-md-2 d-flex align-items-end">
+            <button class="btn btn-success w-100" onclick="addCastEntry()">+ Add</button>
+          </div>
+        </div>
+
+        <!-- Cast Table -->
+        <table class="table table-bordered table-sm">
+          <thead class="table-light">
+            <tr>
+              <th style="width: 40px;">#</th>
+              <th>Role</th>
+              <th>Actor</th>
+              <th style="width: 80px;">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="castingTableBody">
+            <!-- Rows will be dynamically inserted here -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div>
