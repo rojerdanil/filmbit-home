@@ -64,9 +64,12 @@
               <div class="invalid-feedback" id="releaseDateError">Please choose a valid release date.</div>           
 			  </div>
 			  <div class="col-md-6">
-  <label class="form-label">Available for Sharing From</label>
-  <input type="datetime-local" class="form-control" id="shareStartTime" >
-  <div class="invalid-feedback" id="shareTimeError">⏰ Please select a valid date and time.</div>
+  <label class="form-label">Is Active</label>
+  <select class="form-select" id="addVisibleSelect" required>
+  <option value="true">Yes</option>
+  <option value="false">No</option>
+  </select>
+              <div class="invalid-feedback">Please select a status.</div>
 </div>
 
             <div class="col-md-6">

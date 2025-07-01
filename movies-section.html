@@ -20,7 +20,7 @@
   <div>
   
       <button class="btn btn-sm btn-warning" onclick="addMovieDropClick();" id="btnAddMovie">+ Add</button>
-    <button class="btn btn-sm btn-outline-primary" onclick="updateSelectedActor()">✏️ Update</button>
+    <button class="btn btn-sm btn-outline-primary" onclick="updateSelectedMovie()">✏️ Update</button>
     <button class="btn btn-sm btn-outline-danger" onclick="deleteMovies()">🗑️ Delete</button>
 	
  
@@ -50,6 +50,382 @@
 	
   </table>
 <script>
+var updateMovieId  = 0;
+var isUpdateMovie = false;
+var exitPosterUrl = "";
+function updateSelectedMovie()
+{
+var data={};
+   var ids=[];
+   $("#movieTable").find("tr").each(function()
+   {
+       if($(this).hasClass("row_selected"))
+	   {
+	     var id=parseInt($(this).find("td:first input[type='checkbox']").val());
+		 //(id);
+		 ids.push(id);
+		}
+	  
+   });
+   if( ids.length == 1)
+  {
+	updateMovieId = ids[0];
+	
+	  openDropDownWithCallBack('#addMovieModal','add-movie-modal.html',updateMovieModalWindow);
+
+    //sendAjaxRequest(readMovieEintyByMovIdUrl+idx, "GET", getAppHeaer(), null,readMovEntityUpdateCall );
 
 	
+  } 
+   else if(ids.length==0)
+   alert("please select any one row");
+  else if( ids.length > 1)
+    alert("do not select more than one");
+   
+   
+}
+var updateMovieModalWindow = function openModelWinForUpateMov()
+{
+   //alert("update movieId " +updateMovieId);
+   isUpdateMovie = true;
+   $("#addMovieLabel").text("🎬 Update Movie");
+    if (movieLanuguageList != null && movieLanuguageList.length > 0) {
+	  	       populateLanguageSelect("mLanguageSelect", movieLanuguageList,"addlanguage");
+	  }
+			   
+
+		if (Object.keys(idNameMovieTypeMap).length > 0) { 
+                 var arrayObj = convertMapToArray(idNameMovieTypeMap);
+	  	       populateLanguageSelect("addmovieTypeSelect", arrayObj,"");
+			   }	
+			   
+			  if (Object.keys(idNameMovieStatusMap).length > 0) { 
+			                    var arrayObj = convertMapToArray(idNameMovieStatusMap);
+
+	  	       populateLanguageSelect("addstatusSelect", arrayObj,"");
+			   }	
+    sendAjaxRequest(readMovieEintyByMovIdUrl+updateMovieId, "GET", getAppHeaer(), null,readMovEntityUpdateCall );
+
+   
+}
+var  readMovEntityUpdateCall = function readMovEntityUpdate(response)
+{
+ if(response != null)
+  {
+	if(response.status == "success")
+	{
+	  setAllAddMovieForm(response.result);
+	}
+	else {
+        if(response.status === "failure")
+		    alert("❌ Failed to save movie. " + response.message);
+ }	
+
+}
+}
+ function deleteMovies()
+ {  
+   var data={};
+   var ids=[];
+   data.ftype="deleteItems";
+   $("#movieTable").find("tr").each(function()
+   {
+       if($(this).hasClass("row_selected"))
+	   {
+	     var id=parseInt($(this).find("td:first").find("a").attr("value"));
+		 //(id);
+		 ids.push(id);
+		}
+	  
+   });
+   if(ids.length==0)
+   alert("please select one row");
+  else
+  {
+   data.ids=ids;
+   var inp=JSON.stringify(data);
+   console.log(inp);
+   /*$.post("",inp,
+   function(data,status){
+   if(status=="success")
+   {
+     
+	  $("#md").hide();
+	   $("#itemTable").dataTable().fnDestroy();
+	   $("#itemTable").html('');
+	   $("#itemTable").css("width","100%");
+	   getItemTable();
+	
+   } 
+   else
+   {
+   alert("network error");
+   }
+ 
+ });*/
+ }
+}	
+	function saveMovie() {
+  const form = document.getElementById('movieForm');
+  form.classList.remove('was-validated');
+
+  // Reset field styles
+  form.querySelectorAll('input, select').forEach(field => {
+    field.classList.remove('is-invalid', 'is-valid');
+  });
+
+  let isValid = true;
+
+  // Required fields
+  const requiredFields = form.querySelectorAll('[required]');
+  requiredFields.forEach(field => {
+    if (!field.value.trim()) {
+      field.classList.add('is-invalid');
+      isValid = false;
+    }
+  });
+
+  // Budget and Per Share Amount validation
+  const budgetField = document.getElementById('budget');
+  const perShareField = document.getElementById('addperShareAmount');
+  const budgetError = document.getElementById('budgetError');
+  const perShareError = document.getElementById('perShareError');
+
+  const budgetVal = budgetField.value.trim();
+  const perShareVal = perShareField.value.trim();
+
+  const isBudgetInteger = /^\d+$/.test(budgetVal);
+  const isPerShareInteger = /^\d+$/.test(perShareVal);
+
+  const fileInput = document.getElementById("addposterFile");
+  const posterFile = fileInput.files[0];
+  console.log("file url"+ posterFile);
+
+  if (!isBudgetInteger) {
+    budgetField.classList.add('is-invalid');
+    budgetError.innerText = "❌ Budget must be a whole number.";
+    isValid = false;
+  }
+
+  if (!isPerShareInteger) {
+    perShareField.classList.add('is-invalid');
+    perShareError.innerText = "❌ Per Share must be a whole number.";
+    isValid = false;
+  }
+
+  if (isBudgetInteger && isPerShareInteger) {
+    const budgetInt = parseInt(budgetVal, 10);
+    const perShareInt = parseInt(perShareVal, 10);
+    if (perShareInt >= budgetInt) {
+      perShareField.classList.add('is-invalid');
+      perShareError.innerText = "❌ Per Share must be less than Budget.";
+      isValid = false;
+    } else {
+      budgetField.classList.add('is-valid');
+      perShareField.classList.add('is-valid');
+    }
+  }
+
+
+/*
+   const shareTimeInput = document.getElementById("shareStartTime");
+const shareTimeValue = shareTimeInput.value.trim();
+
+if (!shareTimeValue) {
+  shareTimeInput.classList.add("is-invalid");
+  document.getElementById("shareTimeError").innerText = "⛔ Sharing start time is required.";
+  return;
+}*/
+
+// Convert to Date object for comparison
+
+/*const selectedDateTime = new Date(shareTimeValue);
+const currentDateTime = new Date();
+if (selectedDateTime <= currentDateTime) {
+  shareTimeInput.classList.add("is-invalid");
+  document.getElementById("shareTimeError").innerText = "⏳ Please select a future date and time.";
+  return;
+} else {
+  shareTimeInput.classList.remove("is-invalid");
+}*/
+
+
+
+  // Date validation (you already have)
+  const releaseField = document.getElementById('addreleaseDate');
+  const trailerField = document.getElementById('addtrailerDate');
+  const releaseDateVal = releaseField.value;
+  const trailerDateVal = trailerField.value;
+  const releaseDateError = document.getElementById('releaseDateError');
+  releaseDateError.innerText = "Please select a release date.";
+
+  if (releaseDateVal && trailerDateVal) {
+    const release = new Date(releaseDateVal);
+    const trailer = new Date(trailerDateVal);
+	
+	
+
+    if (release <= trailer) {
+      releaseField.classList.add('is-invalid');
+      trailerField.classList.add('is-invalid');
+      releaseDateError.innerText = "❌ Release date must be after trailer date.";
+      isValid = false;
+    } else {
+      releaseField.classList.add('is-valid');
+      trailerField.classList.add('is-valid');
+    }
+  }
+  
+  if(typeof posterFile != 'undefined')
+  {
+  if (!posterFile || !posterFile.type.startsWith("image/")) {
+    fileInput.classList.add("is-invalid");
+    document.getElementById("posterError").innerText = "❌ Please select a valid image file.";
+    return;
+  } else {
+    fileInput.classList.remove("is-invalid");
+  }
+  
+  }
+  const trailerUrlInput = document.getElementById("addtrailerUrl");
+const trailerUrl = trailerUrlInput.value.trim();
+
+// Simple URL format validation
+const urlPattern = /^(https?:\/\/)[^\s$.?#].[^\s]*$/;
+
+if (trailerUrl && !urlPattern.test(trailerUrl)) {
+  trailerUrlInput.classList.add("is-invalid");
+  document.getElementById("trailerUrlError").innerText = "❌ Please enter a valid trailer URL (starting with http:// or https://)";
+  return;
+} else {
+  trailerUrlInput.classList.remove("is-invalid");
+}
+
+
+
+
+  if (isValid) {
+  
+ // console.log(buildMovieObjectFromUI());
+ // closeModelWindowById("addMovieModal");
+    movieData =   buildMovieObjectFromUI()
+	
+	if(isUpdateMovie == true)
+	{
+	   movieData.id = updateMovieId;
+	   movieData.isEdit = true;
+	   
+	   movieData.posterUrl = exitPosterUrl;
+	
+	}  
+	
+  const formData = new FormData();
+formData.append("movie", new Blob([JSON.stringify(movieData)], { type: "application/json" }));
+formData.append("poster", document.getElementById('addposterFile').files[0]);
+
+fetch(addMovieUrl, {
+  method: "POST",
+  body: formData,
+  headers: getAppHeaer()
+}).then(response => {
+    if (!response.ok) {
+      // ✅ HTTP error (like 400, 401, 500)
+      throw new Error("Server returned error: " + response.status);
+    }
+    return response.json(); // Or response.text() if not JSON
+  })
+  .then(data => {
+    // ✅ Success callback
+    console.log("🎉 Movie saved successfully:", data);
+	if(data.status.trim() === "success")
+	{
+	console.log("succe");
+	    closeModelWindowById("addMovieModal");
+		    currentTable.ajax.reload();
+ 
+	}
+	else
+    alert("✅"+data.message);
+    // Optional: refresh datatable, reset form, close modal, etc.
+  })
+  .catch(error => {
+    // ❌ Failure callback
+    console.error("⚠️ Failed to save movie:", error);
+    alert("❌ Failed to save movie. " + error.message);
+  });
+  
+   
+    // Proceed to submit
+  } else {
+    form.classList.add('was-validated');
+  }
+}
+
+function buildMovieObjectFromUI() {
+
+const posterInput = document.getElementById('addposterFile');
+ posterUrlx  = "";
+const file = posterInput.files[0];
+
+if (file) {
+  const previewURL = URL.createObjectURL(file);
+  console.log("Preview URL:", previewURL);
+  posterUrlx =previewURL;
+  // Example: Set preview image
+}
+
+
+   var releDate = toFullSqlTimestamp($("#addreleaseDate").val());
+   var trailDate = toFullSqlTimestamp($("#addtrailerDate").val());
+
+
+  const movie = {
+    title: document.getElementById('title').value.trim() || "",
+    description:document.getElementById('description').value.trim() || "", // If you add description input later
+    language: document.getElementById('mLanguageSelect').value || "",
+    budget: parseInt(document.getElementById('budget').value.trim()) || 0,
+    releaseDate: releDate || "",
+    trailerDate: trailDate || "",
+    status: parseInt(document.getElementById('addstatusSelect').value) || 0,
+    perShareAmount: parseInt(document.getElementById('addperShareAmount').value.trim()) || 0,
+    movieTypeId: parseInt(document.getElementById('addmovieTypeSelect').value) || 0,
+    posterUrl: posterUrlx,
+    trailerUrl: document.getElementById('addtrailerUrl').value.trim() || "",
+	activeStatus : document.getElementById('addVisibleSelect').value || ""
+  };
+
+  return movie;
+}
+function setAllAddMovieForm(input)
+{
+   exitPosterUrl = input.posterUrl;
+      console.log("status :: " + exitPosterUrl);
+
+   $("#title").val( input.title);
+//$("#shareStartTime").val( input.);
+   $("#description").val(input.description );
+   $("#mLanguageSelect").val(input.language );
+   $("#budget").val(input.budget);
+   input.releaseDate ? $("#addreleaseDate").val(input.releaseDate.replace(" ", "T").substring(0, 16)) : null;
+   input.trailerDate ? $("#addtrailerDate").val(input.trailerDate.replace(" ", "T").substring(0, 16)) : null;
+   $("#addperShareAmount").val(input.perShareAmount);
+   $("#addstatusSelect").val(input.statusId);
+   $("#addmovieTypeSelect").val(input.movieTypeId );
+   $("#addtrailerUrl").val(input.trailerUrl != null ? input.trailerUrl : "");
+   $("#addVisibleSelect").val(input.status != null ? input.status : "");
+  // $("#addreleaseDate").val(input.releaseDate);
+  // $("#addtrailerDate").val(input.trailerDate );
+  // $("#addstatusSelect").val(input. );
+
+}
+
+function addMovieDropClick()
+{
+isUpdateMovie = false;
+      openDropDownWithCallBack('#addMovieModal','add-movie-modal.html',setMovieAddSelect);
+	  
+	  
+
+ 
+  }
 </script>

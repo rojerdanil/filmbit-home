@@ -33,6 +33,7 @@
 	var readShareTypeByMovIdUrl = baseUrlApi  + "/share-types/movie/" ;
 	var addUpdateShareTypeUrl = baseUrlApi + "/share-types/updateInsert/";
 	var deleteShareTypeUrl = baseUrlApi + "/share-types/deleteShareType/";
+	var readMovieEintyByMovIdUrl = baseUrlApi + "/movie/entity/moviebyId?id=";
 
 
 
@@ -48,7 +49,7 @@
 
     function loadSection(section) {
 	
-	
+	console.log(section);
 	if (Object.keys(idNameMovieStatusMap).length === 0) {
 	 sendAjaxRequest(readMovieStatusUrl, "GET", getAppHeaer(), null,readMovieCallBack );
 	 }
@@ -61,7 +62,7 @@
 
 	 }
 	
-      const sections = ['dashboard', 'movies', 'actors', 'roles', 'users', 'investments', 'reports', 'announcements', 'payouts', 'settings'];
+      const sections = ['dashboard', 'movies', 'actors', 'roles', 'users', 'investments', 'reports', 'announcements', 'payouts', 'settings','offerPromotion'];
       sections.forEach(id => {
         document.getElementById(`${id}-section`).style.display = 'none';
       });
@@ -70,7 +71,6 @@
 	  var pageName = section +"-section.html";
 	  var currId = "#"+section +"-section";
 	  console.log(currId);
-      
       if($(currId).children().length === 0)
 	      {
 		  $(currId).load(pageName, function () {
@@ -85,8 +85,12 @@
 		  if(section == 'users')
 		     loadUserSection();
 		  if(section == 'actors')
-	         loadActorSection();			 
+	         loadActorSection();	
+          if(section == 'offerPromotion')
+	         loadOfferPromotionSection();				 
 		  });
+		  		 
+		  
            }
 	 
 	  // Clear existing highlights
@@ -109,8 +113,10 @@
   
     }
 
+function loadOfferPromotionSection()
+{
 
-
+}
 	
 const readMovieTypeCallBack = function (response) {
   if(response != null)
@@ -475,6 +481,12 @@ loadShareTypes(currentCastMovId);
 }
 
 function loadShareTypes(movieId) {
+
+totalShares  = currentMovieShare ;
+$("#totalShares").text(totalShares); 
+$("#pricePerShare").val(currentMoviePerShare);
+$("#editUnallocated").text(totalShares); 
+	
   $.ajax({
     url: readShareTypeByMovIdUrl +movieId,
     type: 'GET',
@@ -492,17 +504,13 @@ function loadShareTypes(movieId) {
 	 totalAllocatedShare = 0;
 	 totalPlatformCommission = 0;
 	 totalProfitCommission = 0;
-	 totalBudget = 0;
 	 isBudgetDone = false;
-	 totalShares = 0;
 	 sharePerAmount = 0;
       data.forEach(item => {
 	  
 	  if(!isBudgetDone)
 	  {
-	     totalBudget  = item.budget;
 		 isBudgetDone = true;
-		 totalShares = item.totalShare;
 		 sharePerAmount = item.perShareAmount
 		 }
   const commission = `${item.companyCommissionPercent}% / ${item.profitCommissionPercent}%`;
@@ -544,8 +552,7 @@ $("#soldShares").text(totalSoldShare);
 $("#remainingShares").text(totalRemaing);
 $("#earnedCompany").text(totalPlatformCommission);
 $("#earnedProfit").text(totalProfitCommission);  
-$("#totalShares").text(totalShares); 
-$('#pricePerShare').val(sharePerAmount);
+//$('#pricePerShare').val(sharePerAmount);
 
 unsoldShare = 0;
 unAllocated = 0;
@@ -635,7 +642,15 @@ function loadMovieSection()
             return `<input type="checkbox" class="rowCheckbox" value="${data}" onclick="enableRowSelected(this)">`;
           }	
         },
-        { data: 'title' },
+        {
+      data: 'title',
+      render: function (data, type, row) {
+        const status = row.activeStatus === 'true';
+        const color = status ? 'green' : 'red';
+        const dot = `<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${color};margin-right:8px;"></span>`;
+        return `${dot}${data}`;
+      }
+    },
         { data: 'language' 
 		   ,
 		render: function(data, type, row)  {
@@ -731,9 +746,9 @@ return `
           data: 'createdDate',
           render: function(data, type, row) {
            
-    const created = formatDate(row.createdDate);
-    const trailer = formatDate(row.trailerDate);
-    const release = formatDate(row.releaseDate);
+    const created =  row.createdDate == null ? "N/A" : formatDateTime(row.createdDate);
+    const trailer = row.trailerDate == null ? "N/A" :formatDateTime(row.trailerDate);
+    const release = row.releaseDate == null ? "N/A" :formatDateTime(row.releaseDate);
         return `
       <div class="date-column">
         <div><span class="date-icon">📅</span> <span class="date-label">Created:</span> <span class="date-value">${created}</span></div>
@@ -775,12 +790,13 @@ return `
   render: function (data, type, row) {
     const safeTitle = row.title ? row.title.replace(/'/g, "\\'") : '';
 const percent = row.fundingPercent || 0;
-    
+        const total = row.totalShares;
+
           return `
     <div class="action-column">
       <div class="action-link" onclick="viewMovie(${row.id})">View</div>
       <div class="action-link" onclick="manageCast(${row.id}, '${safeTitle}')">Casting</div>
-      <div class="action-link" onclick="activateDayBefore(${row.id}, '${row.title.replace(/'/g, "\\'")}')">ShareType</div>
+      <div class="action-link" onclick="activateDayBefore(${row.id}, '${row.title.replace(/'/g, "\\'")}',${total},${row.perShareAmount})">ShareType</div>
     </div>
   `;
           }
@@ -865,6 +881,7 @@ $('#languageFilter').on('change', function () {
 			 var remaining = data.budget - data.investedAmount;
 			 $("#pendingAmount").text(remaining);
 			 $("#perShareAmount").text(data.perShareAmount);
+             $("#moviePoster").attr("src", returnEmptyForNull(data.posterUrl));
 
 			 
 		  
@@ -874,13 +891,20 @@ $('#languageFilter').on('change', function () {
 		}
 	
 	}
+	function returnEmptyForNull(inputx)
+	{
+	  return  inputx == null ? "" :inputx;
 	
+	}
 currentMovieName = "";
-function activateDayBefore(movId,movName)
+currentMovieShare = 0;
+currentMoviePerShare = 0;
+function activateDayBefore(movId,movName,totalShareCount,perShare)
 {
 currentCastMovId = movId;
 currentMovieName = movName;
-     
+currentMovieShare = totalShareCount; 
+currentMoviePerShare = perShare;     
      openDropDownWithCallBack("#shareTypeModal","share-type-modal.html",openShareTypeWinCallBack);
 
 
@@ -1092,7 +1116,6 @@ function addCastEntry() {
 
 
 function editCast(castId) {
-  alert("Edit feature coming soon...");
 }
 
 function deleteCast(castId) {
@@ -1129,7 +1152,6 @@ var setMovieAddSelect = function ()
 	  	       populateLanguageSelect("mLanguageSelect", movieLanuguageList,"addlanguage");
 			   }
 			   
-			   	console.log("idNameMovieTypeMap " +idNameMovieTypeMap.length);
 
 		if (Object.keys(idNameMovieTypeMap).length > 0) { 
                  var arrayObj = convertMapToArray(idNameMovieTypeMap);
@@ -1146,14 +1168,7 @@ var setMovieAddSelect = function ()
  
 }
 
-function addMovieDropClick()
-{
-      openDropDownWithCallBack('#addMovieModal','add-movie-modal.html',setMovieAddSelect);
-	  
-	  
 
- 
-  }
   function closeMoviePanel() {
    $("#movieDetailPanel").fadeOut(200, function () {
     $(this).css("display", "none");
@@ -1458,268 +1473,11 @@ function hidePopupLoader() {
   }
   
   
-  function deleteMovies()
- {
-   var data={};
-   var ids=[];
-   data.ftype="deleteItems";
-   $("#movieTable").find("tr").each(function()
-   {
-       if($(this).hasClass("row_selected"))
-	   {
-	     var id=parseInt($(this).find("td:first").find("a").attr("value"));
-		 //(id);
-		 ids.push(id);
-		}
-	  
-   });
-   if(ids.length==0)
-   alert("please select one row");
-  else
-  {
-   data.ids=ids;
-   var inp=JSON.stringify(data);
-   console.log(inp);
-   /*$.post("",inp,
-   function(data,status){
-   if(status=="success")
-   {
-     
-	  $("#md").hide();
-	   $("#itemTable").dataTable().fnDestroy();
-	   $("#itemTable").html('');
-	   $("#itemTable").css("width","100%");
-	   getItemTable();
-	
-   } 
-   else
-   {
-   alert("network error");
-   }
  
- });*/
- }
-}	
-
-
-
-function saveMovie() {
-  const form = document.getElementById('movieForm');
-  form.classList.remove('was-validated');
-
-  // Reset field styles
-  form.querySelectorAll('input, select').forEach(field => {
-    field.classList.remove('is-invalid', 'is-valid');
-  });
-
-  let isValid = true;
-
-  // Required fields
-  const requiredFields = form.querySelectorAll('[required]');
-  requiredFields.forEach(field => {
-    if (!field.value.trim()) {
-      field.classList.add('is-invalid');
-      isValid = false;
-    }
-  });
-
-  // Budget and Per Share Amount validation
-  const budgetField = document.getElementById('budget');
-  const perShareField = document.getElementById('addperShareAmount');
-  const budgetError = document.getElementById('budgetError');
-  const perShareError = document.getElementById('perShareError');
-
-  const budgetVal = budgetField.value.trim();
-  const perShareVal = perShareField.value.trim();
-
-  const isBudgetInteger = /^\d+$/.test(budgetVal);
-  const isPerShareInteger = /^\d+$/.test(perShareVal);
-
-  const fileInput = document.getElementById("addposterFile");
-  const posterFile = fileInput.files[0];
-  console.log("file url"+ posterFile);
-
-  if (!isBudgetInteger) {
-    budgetField.classList.add('is-invalid');
-    budgetError.innerText = "❌ Budget must be a whole number.";
-    isValid = false;
-  }
-
-  if (!isPerShareInteger) {
-    perShareField.classList.add('is-invalid');
-    perShareError.innerText = "❌ Per Share must be a whole number.";
-    isValid = false;
-  }
-
-  if (isBudgetInteger && isPerShareInteger) {
-    const budgetInt = parseInt(budgetVal, 10);
-    const perShareInt = parseInt(perShareVal, 10);
-    if (perShareInt >= budgetInt) {
-      perShareField.classList.add('is-invalid');
-      perShareError.innerText = "❌ Per Share must be less than Budget.";
-      isValid = false;
-    } else {
-      budgetField.classList.add('is-valid');
-      perShareField.classList.add('is-valid');
-    }
-  }
-
-const shareTimeInput = document.getElementById("shareStartTime");
-const shareTimeValue = shareTimeInput.value.trim();
-
-/*if (!shareTimeValue) {
-  shareTimeInput.classList.add("is-invalid");
-  document.getElementById("shareTimeError").innerText = "⛔ Sharing start time is required.";
-  return;
-}*/
-
-// Convert to Date object for comparison
-const selectedDateTime = new Date(shareTimeValue);
-const currentDateTime = new Date();
-
-if (selectedDateTime <= currentDateTime) {
-  shareTimeInput.classList.add("is-invalid");
-  document.getElementById("shareTimeError").innerText = "⏳ Please select a future date and time.";
-  return;
-} else {
-  shareTimeInput.classList.remove("is-invalid");
-}
-
-
-
-  // Date validation (you already have)
-  const releaseField = document.getElementById('addreleaseDate');
-  const trailerField = document.getElementById('addtrailerDate');
-  const releaseDateVal = releaseField.value;
-  const trailerDateVal = trailerField.value;
-  
-
-  const releaseDateError = document.getElementById('releaseDateError');
-  releaseDateError.innerText = "Please select a release date.";
-
-  if (releaseDateVal && trailerDateVal) {
-    const release = new Date(releaseDateVal);
-    const trailer = new Date(trailerDateVal);
-	
-	
-
-    if (release <= trailer) {
-      releaseField.classList.add('is-invalid');
-      trailerField.classList.add('is-invalid');
-      releaseDateError.innerText = "❌ Release date must be after trailer date.";
-      isValid = false;
-    } else {
-      releaseField.classList.add('is-valid');
-      trailerField.classList.add('is-valid');
-    }
-  }
-  
-  if(typeof posterFile != 'undefined')
-  {
-  if (!posterFile || !posterFile.type.startsWith("image/")) {
-    fileInput.classList.add("is-invalid");
-    document.getElementById("posterError").innerText = "❌ Please select a valid image file.";
-    return;
-  } else {
-    fileInput.classList.remove("is-invalid");
-  }
-  
-  }
-  const trailerUrlInput = document.getElementById("addtrailerUrl");
-const trailerUrl = trailerUrlInput.value.trim();
-
-// Simple URL format validation
-const urlPattern = /^(https?:\/\/)[^\s$.?#].[^\s]*$/;
-
-if (trailerUrl && !urlPattern.test(trailerUrl)) {
-  trailerUrlInput.classList.add("is-invalid");
-  document.getElementById("trailerUrlError").innerText = "❌ Please enter a valid trailer URL (starting with http:// or https://)";
-  return;
-} else {
-  trailerUrlInput.classList.remove("is-invalid");
-}
 
 
 
 
-  if (isValid) {
-  
- // console.log(buildMovieObjectFromUI());
- // closeModelWindowById("addMovieModal");
-    movieData =   buildMovieObjectFromUI()
-  const formData = new FormData();
-formData.append("movie", new Blob([JSON.stringify(movieData)], { type: "application/json" }));
-formData.append("poster", document.getElementById('addposterFile').files[0]);
-
-fetch(addMovieUrl, {
-  method: "POST",
-  body: formData,
-  headers: getAppHeaer()
-}).then(response => {
-    if (!response.ok) {
-      // ✅ HTTP error (like 400, 401, 500)
-      throw new Error("Server returned error: " + response.status);
-    }
-    return response.json(); // Or response.text() if not JSON
-  })
-  .then(data => {
-    // ✅ Success callback
-    console.log("🎉 Movie saved successfully:", data);
-	if(data.status.trim() === "success")
-	{
-	console.log("succe");
-	    closeModelWindowById("addMovieModal");
-		    currentTable.ajax.reload();
- 
-	}
-	else
-    alert("✅"+data.message);
-    // Optional: refresh datatable, reset form, close modal, etc.
-  })
-  .catch(error => {
-    // ❌ Failure callback
-    console.error("⚠️ Failed to save movie:", error);
-    alert("❌ Failed to save movie. " + error.message);
-  });
-  
-   
-    // Proceed to submit
-  } else {
-    form.classList.add('was-validated');
-  }
-}
-
-function buildMovieObjectFromUI() {
-
-const posterInput = document.getElementById('addposterFile');
- posterUrlx  = "";
-const file = posterInput.files[0];
-
-if (file) {
-  const previewURL = URL.createObjectURL(file);
-  console.log("Preview URL:", previewURL);
-  posterUrlx =previewURL;
-  // Example: Set preview image
-}
-
-
-  const movie = {
-    title: document.getElementById('title').value.trim() || "",
-	shareStartTime: document.getElementById('shareStartTime').value.trim() || "",
-    description:document.getElementById('description').value.trim() || "", // If you add description input later
-    language: document.getElementById('mLanguageSelect').value || "",
-    budget: parseInt(document.getElementById('budget').value.trim()) || 0,
-    releaseDate: document.getElementById('addreleaseDate').value.trim() || "",
-    trailerDate: document.getElementById('addtrailerDate').value.trim() || "",
-    status: parseInt(document.getElementById('addstatusSelect').value) || 0,
-    perShareAmount: parseInt(document.getElementById('addperShareAmount').value.trim()) || 0,
-    movieTypeId: parseInt(document.getElementById('addmovieTypeSelect').value) || 0,
-    posterUrl: posterUrlx,
-    trailerUrl: document.getElementById('addtrailerUrl').value.trim() || ""
-  };
-
-  return movie;
-}
 
 function closeModelWindowById(modalId)
 {
@@ -1753,6 +1511,12 @@ function extractYouTubeVideoID(url) {
   const regExp = /(?:youtube\.com.*(?:\?v=|\/embed\/)|youtu\.be\/)([a-zA-Z0-9_-]+)/;
   const match = url.match(regExp);
   return match ? match[1] : null;
+}
+
+function toFullSqlTimestamp(value) {
+  if (!value) return "";
+  if (value.length === 16) value += ":00"; // Add seconds
+  return value.replace("T", " ") + ".000"; // Add space and milliseconds
 }
 
   </script>
@@ -1810,6 +1574,8 @@ function extractYouTubeVideoID(url) {
   </li>
       <li class="nav-item"><a class="nav-link" href="#" onclick="loadSection('users')" data-section="Users">👨‍💼 <span class="nav-text">Users</span></a></li>
 	  <li class="nav-item"><a class="nav-link" href="#" onclick="loadSection('announcements')" data-section="Announcements">📣 <span class="nav-text">Announcements</span></a></li>
+	 <li class="nav-item"><a class="nav-link" href="#" onclick="loadSection('offerPromotion')" data-section="offerPromotion">📣 <span class="nav-text">Offer & Promo</span></a></li>
+ 
 	  <li class="nav-item"><a class="nav-link" href="#" onclick="loadSection('reports')" data-section="Reports">📈  <span class="nav-text">Reports</span></a></li>
       <li class="nav-item"><a class="nav-link" href="#" onclick="loadSection('settings')" data-section="Settings">⚙️ <span class="nav-text">Settings</span></a></li>
     </ul>
@@ -1840,6 +1606,9 @@ function extractYouTubeVideoID(url) {
       <div id="announcements-section" style="display: none;"></div>
       <div id="payouts-section" style="display: none;"></div>
       <div id="settings-section" style="display: none;"></div>
+	  <div id="offerPromotion-section" style="display: none;"></div>
+
+	  
     </div>
   </div>
 
