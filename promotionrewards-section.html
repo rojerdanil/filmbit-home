@@ -1,0 +1,467 @@
+<div class="section-header">
+  <h4>🏆 Promotion Rewards <span id="rewardCount">(0)</span></h4>
+  <button class="add-btn" onclick="openPromotionRewardModal()">+ Add Reward</button>
+</div>
+
+<table id="promotionRewardTable"></table>
+
+<!-- Promotion Reward Modal -->
+<div id="promotionRewardModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closePromotionRewardModal()">&times;</span>
+    <h3 id="rewardModalTitle">Add Promotion Reward</h3>
+
+    <form id="promotionRewardForm">
+      <input type="hidden" id="promotionRewardId" />
+
+            <div style="display: flex; gap: 16px;">
+        <div class="form-group" style="flex: 1;">
+          <label for="Reward Name">Reward Name</label>
+          <input type="text" id="rewardName" class="form-control" step="0.01" />
+          <div class="error-message" id="error-rewardName"></div>
+        </div>
+
+       
+      </div>
+
+      <div style="display: flex; gap: 16px;">
+        <div class="form-group" style="flex: 1;">
+          <label for="promotionTypeId">Promotion Type</label>
+          <select id="promotionTypeId" class="form-control"></select>
+          <div class="error-message" id="error-promotionTypeId"></div>
+        </div>
+
+        <div class="form-group" style="flex: 1;">
+          <label for="rewardType">Reward Type</label>
+          <select id="rewardType" class="form-control" onchange="onRewardTypeChange()">
+            <option value="" disabled>-- Select --</option>
+            <option value="CASH">CASH</option>
+            <option value="SHARE" disabled>SHARE</option>
+            <option value="DISCOUNT" disabled>DISCOUNT</option>
+			 <option value="BONUS" disabled>BONUS</option>
+
+          </select>
+          <div class="error-message" id="error-rewardType"></div>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 16px;">
+        <div class="form-group" style="flex: 1;">
+          <label for="rewardValue">Reward Value</label>
+          <input type="number" id="rewardValue" class="form-control" step="0.01" />
+          <div class="error-message" id="error-rewardValue"></div>
+        </div>
+
+        <div class="form-group" style="flex: 1;">
+          <label for="rewardTarget">Reward Target</label>
+          <select id="rewardTarget" class="form-control">
+            
+          </select>
+          <div class="error-message" id="error-rewardTarget"></div>
+        </div>
+      </div>
+	  
+	  <div id="movieShareSection" style="display: flex; gap: 16px;">
+  <div class="form-group" style="flex: 1;">
+    <label for="movieId">Movie</label>
+    <select id="movieId" class="form-control" onchange= "onMovieTypeChange()"></select>
+    <div class="error-message" id="error-movieId"></div>
+  </div>
+
+  <div class="form-group" style="flex: 1;">
+    <label for="shareTypeId">Share Type</label>
+    <select id="shareTypeId" class="form-control"></select>
+    <div class="error-message" id="error-shareTypeId"></div>
+  </div>
+</div>
+
+      <div style="display: flex; gap: 16px;">
+        <div class="form-group" style="flex: 1;">
+          <label for="minInvestment">Min Investment</label>
+          <input type="number" id="minInvestment" class="form-control" step="0.01" />
+          <div class="error-message" id="error-minInvestment"></div>
+        </div>
+
+        <div class="form-group" style="flex: 1;">
+          <label for="milestoneCount">Milestone Count</label>
+          <input type="number" id="milestoneCount" class="form-control" />
+          <div class="error-message" id="error-milestoneCount"></div>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 16px;">
+        <div class="form-group" style="flex: 1;">
+          <label for="rewardLimit">Reward Limit</label>
+          <input type="number" id="rewardLimit" class="form-control" />
+          <div class="error-message" id="error-rewardLimit"></div>
+        </div>
+
+        <div class="form-group" style="flex: 1;">
+          <label for="rewardStatus">Status</label>
+          <select id="rewardStatus" class="form-control">
+            <option value="Active">Active</option>
+            <option value="Inactive">Inactive</option>
+            <option value="Expired">Expired</option>
+          </select>
+          <div class="error-message" id="error-rewardStatus"></div>
+        </div>
+      </div>
+
+      <div class="form-actions" style="margin-top: 15px;">
+        <button type="button" onclick="savePromotionReward()" class="btn btn-primary">Save</button>
+        <button type="button" onclick="closePromotionRewardModal()" class="btn btn-secondary">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<style>
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.add-btn {
+  padding: 6px 12px;
+  background-color: #ffcc00;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.modal {
+  display: none;
+  position: fixed;
+  top: 7%;
+  left: 35%;
+  width: 50%;
+  background-color: transparent;
+  padding: 20px;
+  z-index: 1000;
+}
+.modal-content {
+  position: relative;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+}
+.close {
+  position: absolute;
+  top: -10px;
+  right: 10px;
+  font-size: 22px;
+  cursor: pointer;
+}
+.modal input,
+.modal textarea,
+.modal select {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 6px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+.error-message {
+  color: red;
+  font-size: 12px;
+  margin-top: 4px;
+}
+.form-group {
+  margin-bottom: 16px;
+}
+.form-control {
+  width: 100%;
+  padding: 6px 10px;
+}
+</style>
+
+<script>
+
+var isEditReward = false;
+function openPromotionRewardModal() {
+  isEditReward = false;
+  document.getElementById("promotionRewardForm").reset();
+  document.getElementById("promotionRewardId").value = "";
+  document.getElementById("rewardModalTitle").textContent = "Add Promotion Reward";
+  document.getElementById("promotionRewardModal").style.display = "block";
+  clearRewardErrors();
+}
+
+function closePromotionRewardModal() {
+  document.getElementById("promotionRewardModal").style.display = "none";
+}
+
+function clearRewardErrors() {
+  const errors = document.querySelectorAll(".error-message");
+  errors.forEach(e => e.textContent = '');
+}
+var drawPromotionListBox = true;
+
+function loadPromotiontReward()
+{
+     drawDataTableProReward();
+
+	 if(drawPromotionListBox)
+	       sendAjaxRequest(readAllPromoTypeUrl, "GET", getAppHeaer(), null,drawSelectBoxPromation );
+
+     const rewardTargets = [
+  { code: 'REFERRER', label: 'Referrer' },
+  { code: 'REFERRED', label: 'Referred' },
+  { code: 'INFLUENCER', label: 'Influencer' },
+  { code: 'BOTH', label: 'Both' }
+];
+             populateSelectBox("rewardTarget",rewardTargets,"code","label");
+      $("#movieShareSection").hide();
+
+
+}
+var  drawSelectBoxPromation = function(response)
+{
+           var data = readFinalResult(response);
+		   if(data !=null)
+		   {
+
+             drawPromotionListBox =  false ;	         
+             populateSelectBox("promotionTypeId",data,"id","typeCode");
+			 
+			 }
+
+}
+
+function drawDataTableProReward() {
+  $('#promotionRewardTable').DataTable({
+    destroy: true,
+    processing: true,
+    serverSide: true,
+    lengthChange: false,
+    pageLength: 10,
+    ajax: {
+      url: dataTableRewardUrl,
+      type: 'GET',
+	      headers: getAppHeaer(),
+
+      data: function (d) {
+        return {
+          draw: d.draw,
+          start: d.start,
+          length: d.length,
+          searchText: d.search.value,
+          sortColumn: d.columns[d.order[0].column].data,
+          sortOrder: d.order[0].dir
+        };
+      },
+      dataFilter: function (response) {
+        const fullResponse = JSON.parse(response);
+        const obj = fullResponse.result;
+		total = obj.recordsTotal ?? 0
+       $("#rewardCount").text("(" +total + ")");
+
+      // Debug: make sure obj is valid
+      return JSON.stringify({
+        draw: obj.draw > 0 ? obj.draw : 1,
+        recordsTotal: obj.recordsTotal ?? 0,
+        recordsFiltered: obj.recordsFiltered ?? 0,
+        data: obj.data ?? []
+      });
+      }
+    },
+    columns: [
+      { data: 'id', title: 'ID' },
+      { data: 'promotionTypeId', title: 'Promotion Type ID' },
+      { data: 'rewardType', title: 'Reward Type' },
+      { data: 'rewardValue', title: 'Reward Value' },
+      { data: 'rewardTarget', title: 'Target' },
+      { data: 'minInvestment', title: 'Min Investment' },
+      { data: 'milestoneCount', title: 'Milestones' },
+      { data: 'rewardLimit', title: 'Limit' },
+      { data: 'status', title: 'Status' },
+      {
+        data: null,
+        title: 'Actions',
+        orderable: false,
+        render: function (data, type, row) {
+          return `
+            <button onclick="editPromotionRewardFromTable(${row.id})">✏️</button>
+            <button onclick="deletePromotionReward(${row.id})">🗑️</button>
+          `;
+        }
+      }
+    ]
+  });
+
+  // trigger search only on Enter
+  $('#promotionRewardTable_filter input')
+    .unbind()
+    .bind('keyup', function (e) {
+      if (e.key === 'Enter' || e.keyCode === 13) {
+        $('#promotionRewardTable').DataTable().search(this.value).draw();
+      }
+    });
+}
+
+function onRewardTypeChange() {
+  const type = document.getElementById("rewardType").value;
+  const movieShareDiv = document.getElementById("movieShareSection");
+
+  if (type === 'SHARE' || type === 'DISCOUNT') {
+   // movieShareDiv.style.display = 'block'; 
+   $("#movieShareSection").show();
+    //loadMovieDropdown(); // load movies into #movieId
+  } else {
+   // movieShareDiv.style.display = 'none';
+      $("#movieShareSection").hide();
+
+    document.getElementById("movieId").value = '';
+    document.getElementById("shareTypeId").value = '';
+  }
+}
+
+function loadMovieDropdown() {
+  
+}
+
+
+function onMovieTypeChange()
+{
+const movieId = $(this).val();
+  if (!movieId) return;
+
+
+}
+function savePromotionReward() {
+  let isValid = true;
+  const error = (id, msg) => {
+    $(`#error-${id}`).text(msg);
+    isValid = false;
+  };
+
+  // Clear all errors
+  $('.error-message').text('');
+
+  // Read values with jQuery
+  const rewardName = $('#rewardName').val().trim();
+  const promotionTypeId = $('#promotionTypeId').val();
+  const rewardType = $('#rewardType').val();
+  const rewardValue = $('#rewardValue').val();
+  const rewardTarget = $('#rewardTarget').val();
+  const rewardLimit = $('#rewardLimit').val();
+  const rewardStatus = $('#rewardStatus').val();
+
+  const movieId = $('#movieId').val();
+  const shareTypeId = $('#shareTypeId').val();
+
+  const minInvestment = $('#minInvestment').val();
+  const milestoneCount = $('#milestoneCount').val();
+
+  // Validate required fields
+  if (!rewardName) error("rewardName", "Reward Name is required.");
+  if (!promotionTypeId) error("promotionTypeId", "Promotion Type is required.");
+  if (!rewardType) error("rewardType", "Reward Type is required.");
+  if (!rewardValue || parseFloat(rewardValue) <= 0) error("rewardValue", "Reward Value must be greater than 0.");
+  if (!rewardTarget) error("rewardTarget", "Reward Target is required.");
+  if (!rewardLimit || parseInt(rewardLimit) <= 0) error("rewardLimit", "Reward Limit is required.");
+  if (!rewardStatus) error("rewardStatus", "Status is required.");
+
+  // Conditional: required if SHARE or DISCOUNT
+  if (rewardType === 'SHARE' || rewardType === 'DISCOUNT') {
+    if (!movieId) error("movieId", "Movie is required.");
+    if (!shareTypeId) error("shareTypeId", "Share Type is required.");
+  }
+
+  // Optional but must be ≥ 0
+  if (minInvestment !== "" && parseFloat(minInvestment) < 0) {
+    error("minInvestment", "Min Investment cannot be negative.");
+  }
+
+  if (!isValid) return;
+
+  // Prepare payload
+  const requestData = {
+    rewardName,
+    promotionTypeId,
+    rewardType,
+    rewardValue,
+    rewardTarget,
+    rewardLimit,
+    rewardStatus,
+    movieId: (rewardType === 'SHARE' || rewardType === 'DISCOUNT') ? movieId : 0,
+    shareTypeId: (rewardType === 'SHARE' || rewardType === 'DISCOUNT') ? shareTypeId : 0,
+    minInvestment: minInvestment || 0,
+    milestoneCount: milestoneCount || 0
+  };
+  
+  var urlx = insertRewardTypeUrl;
+  if(isEditReward)
+  {
+      var id = $('#promotionRewardId').val();
+	  urlx = updateRewardUrl  + id;
+  }
+  console.log("✅ Submitting promotion reward:", requestData);
+  // You can now send requestData via $.post or fetch here
+    sendAjaxRequest(urlx, "POST", getAppHeaer(), requestData,saveRewardCallBack );
+
+}
+
+var  saveRewardCallBack = function(response)
+{
+var data = readFinalResult(response);
+		   if(data !=null)
+		   {
+				 $("#promotionRewardModal").hide();
+              	 $('#promotionRewardTable').DataTable().ajax.reload(null, false);
+
+			 
+		   }
+
+}
+
+function editPromotionRewardFromTable(id)
+{
+  isEditReward = true;
+ 
+   sendAjaxRequest(readRewardByIdUrl+`${id}`, "GET", getAppHeaer(), null,readPromoRewardCallBack );
+
+
+}
+
+var readPromoRewardCallBack = function(response)
+{
+  var data = readFinalResult(response);
+		   if(data !=null)
+		   {
+   document.getElementById("promotionRewardForm").reset();
+  document.getElementById("promotionRewardId").value = "";
+  document.getElementById("rewardModalTitle").textContent = "Update Promotion Reward";
+   row = data;
+  $("#promotionRewardModal").show();
+    $('#promotionRewardId').val(row.id || '');
+    $('#rewardName').val(row.name || '');
+    $('#promotionTypeId').val(row.promotionTypeId || '');
+    $('#rewardType').val(row.rewardType || '');
+    $('#rewardValue').val(row.rewardValue || '');
+    $('#rewardTarget').val(row.rewardTarget || '');
+    $('#rewardLimit').val(row.rewardLimit || '');
+    $('#rewardStatus').val(row.status || '');
+
+    $('#minInvestment').val(row.minInvestment != null ? row.minInvestment : 0);
+    $('#milestoneCount').val(row.milestoneCount != null ? row.milestoneCount : 0);
+			 
+		   }
+
+
+}
+
+function deletePromotionReward(id)
+
+{
+const confirmDelete = confirm("Are you sure you want to delete this cast record?");
+if (confirmDelete) {
+   	 sendAjaxRequest(deleteRewardByIdUrl+id, "GET", getAppHeaer(), null,saveRewardCallBack );
+}
+
+
+
+}
+
+</script>

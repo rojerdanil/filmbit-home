@@ -1,0 +1,388 @@
+ <!-- Toggle Buttons -->
+   <h4>🏆 Offers <span id="rewardCount">(0)</span></h4>
+
+  <div class="tab-toggle">
+    <button class="tab-btn active" onclick="showSection('category')">📂 Offer Type Category</button>
+    <button class="tab-btn" onclick="showSection('type')">🏷️ Offer Types</button>
+  </div>
+  <!-- Section 1: Offer Type Category -->
+  <div id="offerTypeCategorySection" class="section-container">
+    <div class="section-header">
+      <h4>📂 Offer Type Categories</h4>
+      <button class="add-btn" onclick="openOfferTypeCategoryModal()">+ Add Category</button>
+    </div>
+    <table id="offerTypeCategoryTable">
+      <thead>
+        <tr><th>ID</th><th>Name</th><th>Actions</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>FLAT</td><td>Edit | Delete</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Section 2: Offer Type -->
+  <div id="offerTypeSection" class="section-container" style="display: none;">
+    <div class="section-header">
+      <h4>🏷️ Offer Types</h4>
+      <button class="add-btn" onclick="openOfferTypeModal()">+ Add Offer Type</button>
+    </div>
+    <table id="offerTypeTable">
+      <thead>
+        <tr><th>ID</th><th>Offer Name</th><th>Type</th><th>Actions</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>101</td><td>₹100 OFF</td><td>FLAT</td><td>Edit | Delete</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Offer Type Category Modal -->
+<!-- Offer Type Category Modal -->
+<div id="offerTypeCategoryModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeOfferTypeCategoryModal()">&times;</span>
+    <h3>Add Offer Type Category</h3>
+    <form id="offerTypeCategoryForm" onsubmit="return validateOfferTypeCategoryForm()">
+      <div class="form-group">
+        <label for="categoryName">Category Name</label>
+        <input type="text" id="categoryName" class="form-control" oninput="validateField('categoryName')" />
+        <div class="error-message" id="error-categoryName"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="categoryDescription">Description</label>
+        <textarea id="categoryDescription" class="form-control" rows="3" oninput="validateField('categoryDescription')"></textarea>
+        <div class="error-message" id="error-categoryDescription"></div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="button" class="btn btn-secondary" onclick="closeOfferTypeCategoryModal()">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+  <!-- Offer Type Modal -->
+ <!-- Offer Type Modal -->
+<div id="offerTypeModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeOfferTypeModal()">&times;</span>
+    <h3>Add Offer Type</h3>
+    <form id="offerTypeForm" onsubmit="return validateOfferTypeForm()">
+      
+      <div class="form-group">
+        <label for="offerName">Offer Name</label>
+        <input type="text" id="offerName" class="form-control" oninput="validateField('offerName')" />
+        <div class="error-message" id="error-offerName"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="offerTypeSelect">Offer Type Category</label>
+        <select id="offerTypeSelect" class="form-control" onchange="validateField('offerTypeSelect')">
+          <option value="">-- Select Category --</option>
+          <option value="1">FLAT</option>
+          <option value="2">BONUS</option>
+        </select>
+        <div class="error-message" id="error-offerTypeSelect"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="targetAudience">Target Audience</label>
+        <input type="text" id="targetAudience" class="form-control" oninput="validateField('targetAudience')" />
+        <div class="error-message" id="error-targetAudience"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="statusSelect">Status</label>
+        <select id="statusSelect" class="form-control" onchange="validateField('statusSelect')">
+          <option value="">-- Select Status --</option>
+          <option value="Active" selected>Active</option>
+          <option value="Inactive">Inactive</option>
+        </select>
+        <div class="error-message" id="error-statusSelect"></div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="button" class="btn btn-secondary" onclick="closeOfferTypeModal()">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+  
+    <style>
+	input.valid, textarea.valid, select.valid {
+  border-color: green;
+  background-image: url('data:image/svg+xml;utf8,<svg width="16" height="16" fill="green" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M13.485 1.929l-8.486 8.485-3.536-3.536-1.414 1.414 4.95 4.95 9.9-9.9z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 16px;
+}
+
+input.invalid, textarea.invalid, select.invalid {
+  border-color: red;
+}
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f9f9f9;
+      padding: 20px;
+    }
+
+    .tab-toggle {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .tab-btn {
+      padding: 8px 16px;
+      background-color: #eee;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .tab-btn.active {
+      background-color: #ffcc00;
+      color: black;
+    }
+
+    .section-container {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 16px;
+      background: #fff;
+      margin-bottom: 20px;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      padding: 10px 0;
+      border-bottom: 2px solid #ddd;
+    }
+
+    .section-header h4 {
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .add-btn {
+      padding: 6px 12px;
+      background-color: #ffcc00;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .add-btn:hover {
+      background-color: #f2b900;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    table th, table td {
+      padding: 10px;
+      border: 1px solid #ddd;
+      font-size: 14px;
+    }
+
+    table th {
+      background-color: #f9f9f9;
+      font-weight: 600;
+      color: #333;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 10%;
+      left: 35%;
+      width: 40%;
+      background-color: transparent;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      position: relative;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    }
+
+    .close {
+      position: absolute;
+      top: -10px;
+      right: 10px;
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 6px 10px;
+      font-size: 14px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 15px;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-primary {
+      background-color: #ffcc00;
+      color: black;
+    }
+
+    .btn-primary:hover {
+      background-color: #f2b900;
+    }
+
+    .btn-secondary {
+      background-color: #eee;
+      color: #333;
+    }
+
+    .btn-secondary:hover {
+      background-color: #ddd;
+    }
+	/* Green check icon for valid field */
+input.valid, textarea.valid {
+  border-color: green;
+  background-image: url('data:image/svg+xml;utf8,<svg width="16" height="16" fill="green" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M13.485 1.929l-8.486 8.485-3.536-3.536-1.414 1.414 4.95 4.95 9.9-9.9z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 16px;
+}
+
+/* Red border for invalid field */
+input.invalid, textarea.invalid {
+  border-color: red;
+}
+
+  </style>
+  
+  <script>
+    function showSection(section) {
+      // Toggle section
+      document.getElementById("offerTypeCategorySection").style.display = section === 'category' ? 'block' : 'none';
+      document.getElementById("offerTypeSection").style.display = section === 'type' ? 'block' : 'none';
+
+      // Toggle buttons
+      const buttons = document.querySelectorAll(".tab-btn");
+      buttons.forEach(btn => btn.classList.remove("active"));
+      if (section === 'category') buttons[0].classList.add("active");
+      else buttons[1].classList.add("active");
+    }
+
+    function openOfferTypeModal() {
+      document.getElementById("offerTypeModal").style.display = "block";
+    }
+
+    function closeOfferTypeModal() {
+      document.getElementById("offerTypeModal").style.display = "none";
+    }
+
+    function openOfferTypeCategoryModal() {
+      document.getElementById("offerTypeCategoryModal").style.display = "block";
+    }
+
+    function closeOfferTypeCategoryModal() {
+      document.getElementById("offerTypeCategoryModal").style.display = "none";
+    }
+	
+	function validateField(fieldId) {
+  const value = document.getElementById(fieldId).value.trim();
+  const input = document.getElementById(fieldId);
+  const errorDiv = document.getElementById("error-" + fieldId);
+
+  if (!value) {
+    input.classList.remove("valid");
+    input.classList.add("invalid");
+    errorDiv.textContent = "This field is required";
+    return false;
+  } else {
+    input.classList.remove("invalid");
+    input.classList.add("valid");
+    errorDiv.textContent = "";
+    return true;
+  }
+}
+
+function validateOfferTypeCategoryForm() {
+  const isNameValid = validateField('categoryName');
+  const isDescValid = validateField('categoryDescription');
+
+  if (isNameValid && isDescValid) {
+    // Do actual saving logic here (AJAX or form submit)
+    alert("✅ Offer Type Category Validated and Ready to Save!");
+    closeOfferTypeCategoryModal();
+    return false; // prevent actual form submit for demo
+  }
+  return false;
+}
+function validateField(fieldId) {
+  const field = document.getElementById(fieldId);
+  const value = field.value.trim();
+  const errorDiv = document.getElementById("error-" + fieldId);
+
+  if (!value) {
+    field.classList.remove("valid");
+    field.classList.add("invalid");
+    errorDiv.textContent = "This field is required";
+    return false;
+  } else {
+    field.classList.remove("invalid");
+    field.classList.add("valid");
+    errorDiv.textContent = "";
+    return true;
+  }
+}
+
+function validateOfferTypeForm() {
+  const isNameValid = validateField('offerName');
+  const isTypeValid = validateField('offerTypeSelect');
+  const isAudienceValid = validateField('targetAudience');
+  const isStatusValid = validateField('statusSelect');
+
+  if (isNameValid && isTypeValid && isAudienceValid && isStatusValid) {
+    // Perform save logic here (AJAX or form handling)
+    alert("✅ Offer Type Validated and Ready to Save!");
+    closeOfferTypeModal();
+    return false; // Prevent actual form submission for now
+  }
+  return false;
+}
+
+  </script>

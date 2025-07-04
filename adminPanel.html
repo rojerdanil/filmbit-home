@@ -34,9 +34,16 @@
 	var addUpdateShareTypeUrl = baseUrlApi + "/share-types/updateInsert/";
 	var deleteShareTypeUrl = baseUrlApi + "/share-types/deleteShareType/";
 	var readMovieEintyByMovIdUrl = baseUrlApi + "/movie/entity/moviebyId?id=";
-
-
-
+    var dataTablePromotionTypeUrl = baseUrlApi  + "/promotion-types/page";
+	var readPromoByIdUrl =  baseUrlApi  + "/promotion-types/promotionType/";
+    var upateInsertPromoTypeUrl =  baseUrlApi  + "/promotion-types/insertUpdate";
+    var deletePromoByIdUrl   = baseUrlApi + "/promotion-types/deleteBromoType/";
+	var readAllPromoTypeUrl = baseUrlApi  + "/promotion-types/findAll";
+	var dataTableRewardUrl =  baseUrlApi  + "/reward-types/page";
+    var insertRewardTypeUrl = baseUrlApi  + "/reward-types/insert";
+    var readRewardByIdUrl = baseUrlApi  + "/reward-types/rewards/";
+	var updateRewardUrl = baseUrlApi  + "/reward-types/update/";
+    var deleteRewardByIdUrl =  baseUrlApi +"/reward-types/delete/";
 	
 	
     let currentTable;
@@ -62,7 +69,9 @@
 
 	 }
 	
-      const sections = ['dashboard', 'movies', 'actors', 'roles', 'users', 'investments', 'reports', 'announcements', 'payouts', 'settings','offerPromotion'];
+      const sections = ['dashboard', 'movies', 'actors', 'roles', 'users', 
+	  'investments', 'reports', 'announcements', 'payouts', 'settings',
+	  'offerPromotion','promotiontypes','promotionrewards','offers','promocodes'];
       sections.forEach(id => {
         document.getElementById(`${id}-section`).style.display = 'none';
       });
@@ -71,9 +80,12 @@
 	  var pageName = section +"-section.html";
 	  var currId = "#"+section +"-section";
 	  console.log(currId);
+	  	  console.log(pageName);
+
       if($(currId).children().length === 0)
 	      {
 		  $(currId).load(pageName, function () {
+		  
 		  if(section == 'dashboard')
 		      loadDashBoardDetails();
 		  if(section == 'movies')
@@ -87,8 +99,15 @@
 		  if(section == 'actors')
 	         loadActorSection();	
           if(section == 'offerPromotion')
-	         loadOfferPromotionSection();				 
+	         loadOfferPromotionSection();
+          if(section == 'promotiontypes')
+		     loadPromotiontypes();
+          if(section == 'promotionrewards')
+		     loadPromotiontReward();
+
+			 
 		  });
+		  
 		  		 
 		  
            }
@@ -1519,6 +1538,48 @@ function toFullSqlTimestamp(value) {
   return value.replace("T", " ") + ".000"; // Add space and milliseconds
 }
 
+function populateSelectBox( selectId,list, valueField, textField) {
+  const $select = $('#' + selectId);
+  $select.empty(); // Clear existing options
+
+  // Add the first disabled option
+  $select.append($('<option>', {
+    value: '',
+    text: '-- Select --',
+    disabled: true,
+    selected: true
+  }));
+
+  // Append options from object list
+  list.forEach(item => {
+    $select.append($('<option>', {
+      value: item[valueField],
+      text: item[textField]
+    }));
+  });
+}
+function readFinalResult(response)
+{
+
+if(response != null)
+  { 
+  if(response.status == "success")
+	{
+	   if(response.message == "success")
+	   {
+             return response.result;
+	   }
+	   else 
+	       alert(" error ",	response.message); 
+
+     }
+   }	
+
+  return null;
+
+}
+
+
   </script>
   <style>
  
@@ -1574,7 +1635,23 @@ function toFullSqlTimestamp(value) {
   </li>
       <li class="nav-item"><a class="nav-link" href="#" onclick="loadSection('users')" data-section="Users">👨‍💼 <span class="nav-text">Users</span></a></li>
 	  <li class="nav-item"><a class="nav-link" href="#" onclick="loadSection('announcements')" data-section="Announcements">📣 <span class="nav-text">Announcements</span></a></li>
-	 <li class="nav-item"><a class="nav-link" href="#" onclick="loadSection('offerPromotion')" data-section="offerPromotion">📣 <span class="nav-text">Offer & Promo</span></a></li>
+     
+      
+	  <li class="nav-item">
+    <a class="nav-link" href="#offerPromotion" data-bs-toggle="collapse">
+      📣<span class="nav-text">Offer & Promo</span>
+    </a>
+    <ul class="collapse list-unstyled ps-3" id="offerPromotion">
+      <li><a class="nav-link" href="#" onclick="loadSection('promotiontypes')" data-section="promotiontypes">🎁<span class="nav-text"> Promo Types</span></a></li>
+      <li><a class="nav-link" href="#" onclick="loadSection('promotionrewards')" data-section="promotionrewards">🏆 <span class="nav-text">Promo Rewards</span></a></li>
+      <li><a class="nav-link" href="#" onclick="loadSection('offers')" data-section="offers">🎟️ <span class="nav-text">Offers</span></a></li>
+	  <li><a class="nav-link" href="#" onclick="loadSection('promocodes')" data-section="promocodes">🎫 <span class="nav-text">  Promo Codes</span></a></li>
+
+    </ul>
+  </li>
+	  
+	  
+ 
  
 	  <li class="nav-item"><a class="nav-link" href="#" onclick="loadSection('reports')" data-section="Reports">📈  <span class="nav-text">Reports</span></a></li>
       <li class="nav-item"><a class="nav-link" href="#" onclick="loadSection('settings')" data-section="Settings">⚙️ <span class="nav-text">Settings</span></a></li>
@@ -1584,19 +1661,14 @@ function toFullSqlTimestamp(value) {
   <!-- Main Content -->
   
   <div class="main-content">
-    <div class="header">
-      <h5 class="m-0">🎬 FilmBit Admin</h5>
-    </div>
+    
 
     <div class="content-area">
 	
-	
-	
       <!-- Sections -->
-     <div id="dashboard-section"></div>
-   
+   <div id="dashboard-section"></div>
+   <div id = "movies-section"> </div>
 
-<div id = "movies-section"> </div>
 
       <div id="actors-section" style="display: none;"></div>
       <div id="roles-section" style="display: none;"></div>
@@ -1607,6 +1679,10 @@ function toFullSqlTimestamp(value) {
       <div id="payouts-section" style="display: none;"></div>
       <div id="settings-section" style="display: none;"></div>
 	  <div id="offerPromotion-section" style="display: none;"></div>
+      <div id="promotiontypes-section" style="display: none;"></div>
+      <div id="promotionrewards-section" style="display: none;"></div>
+      <div id="offers-section" style="display: none;"></div>
+      <div id="promocodes-section" style="display: none;"></div>
 
 	  
     </div>
