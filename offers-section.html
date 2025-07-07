@@ -1,9 +1,12 @@
  <!-- Toggle Buttons -->
-   <h4>🏆 Offers <span id="rewardCount">(0)</span></h4>
+   <h4>🏆 Offers <span id="offers">(0)</span></h4>
 
   <div class="tab-toggle">
     <button class="tab-btn active" onclick="showSection('category')">📂 Offer Type Category</button>
     <button class="tab-btn" onclick="showSection('type')">🏷️ Offer Types</button>
+	    <button class="tab-btn" onclick="showSection('offerMovie')">🏷️ Movie Offer</button>
+
+	
   </div>
   <!-- Section 1: Offer Type Category -->
   <div id="offerTypeCategorySection" class="section-container">
@@ -12,12 +15,7 @@
       <button class="add-btn" onclick="openOfferTypeCategoryModal()">+ Add Category</button>
     </div>
     <table id="offerTypeCategoryTable">
-      <thead>
-        <tr><th>ID</th><th>Name</th><th>Actions</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>1</td><td>FLAT</td><td>Edit | Delete</td></tr>
-      </tbody>
+      
     </table>
   </div>
 
@@ -28,14 +26,55 @@
       <button class="add-btn" onclick="openOfferTypeModal()">+ Add Offer Type</button>
     </div>
     <table id="offerTypeTable">
-      <thead>
-        <tr><th>ID</th><th>Offer Name</th><th>Type</th><th>Actions</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>101</td><td>₹100 OFF</td><td>FLAT</td><td>Edit | Delete</td></tr>
-      </tbody>
+     
     </table>
   </div>
+  
+  
+  
+  
+   <div id="offerMovieSection" >
+
+  <!-- 🔹 Filter Section: Language & Movie -->
+<div class="filter-bar" style="display: flex; flex-wrap: wrap; gap: 2rem; align-items: center; margin-bottom: 1rem;">
+
+  <div style="display: flex; flex-direction: column;">
+    <label for="languageSelect" style="font-weight: bold;">🌐 Language:</label>
+    <select id="languageSelect" class="form-control" style="padding: 6px 12px; border-radius: 6px; min-width: 200px;" onchange = "onLanguageChange()">
+     
+    </select>
+  </div>
+  
+
+
+
+  <div style="display: flex; flex-direction: column;">
+    <label for="movieSelect" style="font-weight: bold;">🎬 Movie:</label>
+    <select id="movieSelect" class="form-control" style="padding: 6px 12px; border-radius: 6px; min-width: 220px;" onchange = "onMovieChange()">
+      
+    </select>
+  </div>
+  </div>
+
+
+
+  <div id="dynamicOfferContent" class="section-container">
+
+  <!-- 🔹 Movie Information -->
+ <div class="card">
+
+</div>
+
+
+  <!-- 🔹 Share Type Sections -->
+  <div id="shareTypeOfferContainer">
+
+   
+  
+  </div> <!-- /#shareTypeOfferContainer -->
+</div>
+</div> <!-- /#offerMovieSection -->
+
 
   <!-- Offer Type Category Modal -->
 <!-- Offer Type Category Modal -->
@@ -43,7 +82,7 @@
   <div class="modal-content">
     <span class="close" onclick="closeOfferTypeCategoryModal()">&times;</span>
     <h3>Add Offer Type Category</h3>
-    <form id="offerTypeCategoryForm" onsubmit="return validateOfferTypeCategoryForm()">
+    <form id="offerTypeCategoryForm" >
       <div class="form-group">
         <label for="categoryName">Category Name</label>
         <input type="text" id="categoryName" class="form-control" oninput="validateField('categoryName')" />
@@ -57,7 +96,7 @@
       </div>
 
       <div class="form-actions">
-        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="submit" class="btn btn-primary" onclick="validateOfferTypeCategoryForm()">Save</button>
         <button type="button" class="btn btn-secondary" onclick="closeOfferTypeCategoryModal()">Cancel</button>
       </div>
     </form>
@@ -70,7 +109,7 @@
   <div class="modal-content">
     <span class="close" onclick="closeOfferTypeModal()">&times;</span>
     <h3>Add Offer Type</h3>
-    <form id="offerTypeForm" onsubmit="return validateOfferTypeForm()">
+    <form id="offerTypeForm" >
       
       <div class="form-group">
         <label for="offerName">Offer Name</label>
@@ -105,8 +144,103 @@
       </div>
 
       <div class="form-actions">
-        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="submit" class="btn btn-primary" onclick=" validateOfferForm()">Save</button>
         <button type="button" class="btn btn-secondary" onclick="closeOfferTypeModal()">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<div id="offerShareTypeMovieModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeOfferShareTypeMovieModal()">&times;</span>
+    <h3>Add Offer-Share-Movie Mapping <div style="font-size: 13px; background-color: #fff3cd; color: #856404; padding: 4px 8px; border-radius: 5px;">
+    🕒 <span id="movshareStart"></span>
+  </div>
+  </h3>
+
+    <form id="offerShareTypeMovieForm">
+      <input type="hidden" id="offerShareTypeMovieId" />
+
+      <!-- Offer -->
+      <div class="form-group">
+        <label for="offerId">Offer</label>
+        <select id="offerId" class="form-control" onchange="validateField('offerId')"></select>
+        <div class="error-message" id="error-offerId"></div>
+      </div>
+
+      <!-- Share Type -->
+      <div class="form-group">
+	  	<input type="hidden" id="shareTypeIdInput" name="shareTypeHidden" />
+        <label for="shareTypeId">Share Type</label>
+        
+	    <input type="text" id="shareTypeId" class="form-control" oninput="validateField('shareTypeId')" disabled/>
+
+		<div class="error-message" id="error-shareTypeId"></div>
+      </div>
+
+      <!-- Movie -->
+      <div class="form-group">
+	  	<input type="hidden" id="movieIdInput" name="movieIdHidden" />
+        <label for="movieId">Movie</label>
+         <input type="text" id="movieId" class="form-control" oninput="validateField('movieId')"  disabled/>
+
+		<div class="error-message" id="error-movieId"></div>
+      </div>
+
+      <!-- Valid Dates -->
+      <div class="form-group">
+        <label for="validFrom">Valid From</label>
+        <input type="datetime-local" id="validFrom" class="form-control" oninput="validateField('validFrom')" />
+        <div class="error-message" id="error-validFrom"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="validTo">Valid To</label>
+        <input type="datetime-local" id="validTo" class="form-control" oninput="validateField('validTo')" />
+        <div class="error-message" id="error-validTo"></div>
+      </div>
+
+      <!-- Max Users -->
+      <div class="form-group">
+        <label for="maxUsers">Max Users</label>
+        <input type="number" id="maxUsers" class="form-control" />
+      </div>
+
+      <!-- Discount -->
+      <div class="form-group">
+        <label for="discountAmount">Discount Amount</label>
+        <input type="number" step="0.01" id="discountAmount" class="form-control" />
+      </div>
+
+      <!-- Wallet Credit -->
+      <div class="form-group">
+        <label for="walletCreditAmount">Wallet Credit Amount</label>
+        <input type="number" step="0.01" id="walletCreditAmount" class="form-control" />
+      </div>
+
+      <!-- Checkboxes -->
+      <div class="form-group">
+        <label><input type="checkbox" id="noProfitCommission" /> No Profit Commission</label>
+      </div>
+      <div class="form-group">
+        <label><input type="checkbox" id="promoCodeRequired" /> Promo Code Required</label>
+      </div>
+
+      <!-- Status -->
+      <div class="form-group">
+        <label for="status">Status</label>
+        <select id="status" class="form-control" onchange="validateField('status')">
+          <option value="active">Active</option>
+          <option value="unactive">Unactive</option>
+        </select>
+        <div class="error-message" id="error-status"></div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-primary" onclick="saveOfferShareTypeMovie()">Save</button>
+        <button type="button" class="btn btn-secondary" onclick="closeOfferShareTypeMovieModal()">Cancel</button>
       </div>
     </form>
   </div>
@@ -291,22 +425,465 @@ input.invalid, textarea.invalid {
   border-color: red;
 }
 
+.section-container {
+  padding: 20px;
+  background: #fffbe6;
+  border-radius: 12px;
+}
+
+.filter-bar {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+  align-items: center;
+}
+
+.card {
+  background: #fff8d6;
+  border: 1px solid #f2d024;
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+}
+
+.share-section {
+  background: #fffdf3;
+  padding: 15px;
+  margin-bottom: 30px;
+  border: 1px solid #fcd34d;
+  border-radius: 8px;
+}
+
+.share-header {
+  font-weight: bold;
+  margin-bottom: 10px;
+  font-size: 1.1em;
+}
+
+.offer-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 10px;
+}
+
+.offer-table th,
+.offer-table td {
+  border: 1px solid #facc15;
+  padding: 8px;
+  text-align: center;
+}
+
+.add-offer-btn {
+  background: #ffd700;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.card p {
+  margin: 6px 0;
+}
+/* Yellow checkbox design */
+.custom-checkbox {
+  appearance: none;
+  width: 15px;
+  height: 15px;
+  border: 2px solid #ffc107;
+  border-radius: 4px;
+  background-color: #fffbe6;
+  position: relative;
+  cursor: default;
+  box-shadow: 0 0 3px rgba(255, 193, 7, 0.5);
+  transition: all 0.2s ease;
+  vertical-align: middle;
+  padding: 0;
+}
+
+.custom-checkbox:checked {
+  background-color: #ffe600;
+  border-color: #ffca2c;
+  box-shadow: 0 0 6px rgba(255, 193, 7, 0.8);
+}
+
+.custom-checkbox:checked::after {
+  content: '✔';
+  color: #212529;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -48%);
+  font-size: 10px;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.status-badge {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
+  display: inline-block;
+  min-width: 70px;
+  text-align: center;
+  box-shadow: 0 0 4px rgba(0,0,0,0.1);
+}
+
+.status-badge.active {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.status-badge.inactive {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+.movie-status {
+  font-weight: bold;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 13px;
+}
+
+.movie-status.active {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+  box-shadow: 0 0 5px rgba(72, 180, 97, 0.4);
+}
+
+
   </style>
   
   <script>
+  isEditOfferType = false;
+  isOffersScrSelectBox = false;
+  	 isOfferEdit = false;
+var isUpdateMovShareOffer = false;
+var movShareOfferId = 0;	 
+	 
+
+   function openOfferMovieModal(movId,movName,shareId,ShareName,startDate,endDate)
+   {
+   isUpdateMovShareOffer = false;
+   $("#offerShareTypeMovieModal").show();
+   $("#movieId").val(movName);
+   $("#shareTypeId").val(ShareName);
+   $("#movieIdInput").val(movId);
+   $("#shareTypeIdInput").val(shareId);
+   $('#movshareStart').text(startDate +" → " +endDate);
+   
+
+
+   
+
+   }
+  function loadOfferSection()
+  {
+     drawDataTableForOfferType();
+  
+  }
+  
+  function drawDataTableForOfferType()
+  {
+   $('#offerTypeCategoryTable').DataTable({
+   destroy: true,
+    processing: true,
+    serverSide: true,
+    lengthChange: false,
+    pageLength: 10,
+  ajax: {
+    url: dataTableOfferTypeUrl,
+    type: 'POST',
+    headers: getAppHeaer(),
+	data: function (d) {
+        return {
+          draw: d.draw,
+          start: d.start,
+          length: d.length,
+          searchText: d.search.value,
+          sortColumn: d.columns[d.order[0].column].data,
+          sortOrder: d.order[0].dir
+        };
+      },
+	  dataFilter: function (response) {
+        const fullResponse = JSON.parse(response);
+        const obj = fullResponse.result;
+		total = obj.recordsTotal ?? 0
+       $("#rewardCount").text("(" +total + ")");
+	   if(!isOffersScrSelectBox)
+	   {
+	     populateSelectBox("offerTypeSelect",obj.data,"id","name");
+        }
+	   
+
+      // Debug: make sure obj is valid
+      return JSON.stringify({
+        draw: obj.draw > 0 ? obj.draw : 1,
+        recordsTotal: obj.recordsTotal ?? 0,
+        recordsFiltered: obj.recordsFiltered ?? 0,
+        data: obj.data ?? []
+      });
+      }
+
+  },
+  columns: [
+    { data: 'id', title: 'ID' },
+    { data: 'name', title: 'Offer Name' },
+    { data: 'description', title: 'Description' },
+    {
+      data: 'createdAt',
+      title: 'Created At',
+      render: function (data) {
+        return new Date(data).toLocaleString();
+      }
+    },
+    {
+      data: null,
+      title: 'Actions',
+      orderable: false,
+      render: function (row) {
+        return `
+          <button onclick="editOfferType(${row.id})">Edit</button>
+          <button onclick="deleteOfferType(${row.id})">Delete</button>
+        `;
+      }
+    }
+  ]
+});
+
+  $('#offerTypeCategoryTable_filter input')
+    .unbind()
+    .bind('keyup', function (e) {
+      if (e.key === 'Enter' || e.keyCode === 13) {
+        $('#offerTypeCategoryTable').DataTable().search(this.value).draw();
+      }
+    });
+  
+  }
+  
     function showSection(section) {
       // Toggle section
       document.getElementById("offerTypeCategorySection").style.display = section === 'category' ? 'block' : 'none';
       document.getElementById("offerTypeSection").style.display = section === 'type' ? 'block' : 'none';
+	  document.getElementById("offerMovieSection").style.display = section === 'offerMovie' ? 'block' : 'none';
+
 
       // Toggle buttons
       const buttons = document.querySelectorAll(".tab-btn");
       buttons.forEach(btn => btn.classList.remove("active"));
-      if (section === 'category') buttons[0].classList.add("active");
-      else buttons[1].classList.add("active");
+      if (section === 'category') 
+	  buttons[0].classList.add("active");
+	  else if (section === 'type')
+	  buttons[1].classList.add("active");
+      else 
+	  buttons[2].classList.add("active");
+	  
+	  if(section === "type")
+	    loadOfferType();
+      if(section === "offerMovie")
+	    loadOfferMovie();	  
     }
+	
+	function onMovieChange() {
+  var selectedMovieId = $('#movieSelect').val();
+
+  
+	sendAjaxRequest(readMovieOfferBymovIdUrl+selectedMovieId, "GET", getAppHeaer(), null,onMovieSelectCallBack );
+
+  // You can now use the selectedLanguageId to load movies dynamically, etc.
+}
+
+var  onMovieSelectCallBack = function onMovieSelectCallBackFun(response)
+{
+console.log("comming onmvieSelct");
+var data = readFinalResult(response);
+
+   if(data != null)
+   {
+         console.log("offerMovie Rebi");
+        renderOfferMovieSection(data);
+   
+   }
+
+
+}
+
+
+
+	
+	function onLanguageChange() {
+  var selectedLanguageId = $('#languageSelect').val();
+  var selectedLanguageName = $('#languageSelect option:selected').text();
+	sendAjaxRequest(readMovieBylangIdUrl+selectedLanguageId, "GET", getAppHeaer(), null,readMovieByLanCallBack );
+
+  // You can now use the selectedLanguageId to load movies dynamically, etc.
+}
+
+var  readMovieByLanCallBack =	function readMovieByLanSection(response)
+{
+var data = readFinalResult(response);
+
+   if(data != null)
+   {
+   	     populateSelectBox("movieSelect",data,"id","title");
+         
+         const $movieSelect = $('#movieSelect');
+
+        // Only proceed if there's at least one real option
+        if ($movieSelect.find('option').length > 1) {
+          $movieSelect.prop('selectedIndex', 1).trigger('change');
+         }
+   
+   }
+
+}
+
+
+
+
+
+
+
+	
+	function loadOfferMovie()
+	{
+	   // sendAjaxRequest(readAllOfferUrl, "GET", getAppHeaer(), null,readAllOfferCallBack );
+        
+	  sendAjaxRequest(readMovLanguageUrl, "GET", getAppHeaer(), null,readAllOfferCallBack );
+	
+	}
+var  readAllOfferCallBack =	function readAllOfferSection(response)
+{
+var data = readFinalResult(response);
+
+   if(data != null)
+   {
+   	     populateSelectBox("languageSelect",data,"id","name");
+		 
+         sendAjaxRequest(readAllOfferUrl, "GET", getAppHeaer(), null,loadOfferSelectBox )
+		 
+		 
+		 const $languageSelect = $('#languageSelect');
+
+        // Only proceed if there's at least one real option
+        if ($languageSelect.find('option').length > 1) {
+          $languageSelect.prop('selectedIndex', 1).trigger('change');
+         } 
+ 
+   
+   }
+
+}
+
+var   loadOfferSelectBox = function readAllForOfferSelect(response)
+{ 
+
+ if(response.result != null)
+   {
+   	     populateSelectBox("offerId",response.result,"id","offerName");
+		 
+		 
+		 
+         
+         
+   
+   }
+}	
+	
+	function loadOfferType()
+	{
+	  
+	   $('#offerTypeTable').DataTable({
+   destroy: true,
+    processing: true,
+    serverSide: true,
+    lengthChange: false,
+    pageLength: 10,
+  ajax: {
+    url: dataTableOfferUrl,
+    type: 'POST',
+    headers: getAppHeaer(),
+	data: function (d) {
+        return {
+          draw: d.draw,
+          start: d.start,
+          length: d.length,
+          searchText: d.search.value,
+          sortColumn: d.columns[d.order[0].column].data,
+          sortOrder: d.order[0].dir
+        };
+      },
+	  dataFilter: function (response) {
+        const fullResponse = JSON.parse(response);
+        const obj = fullResponse.result;
+		total = obj.recordsTotal ?? 0
+       $("#rewardCount").text("(" +total + ")");
+	   
+
+      // Debug: make sure obj is valid
+      return JSON.stringify({
+        draw: obj.draw > 0 ? obj.draw : 1,
+        recordsTotal: obj.recordsTotal ?? 0,
+        recordsFiltered: obj.recordsFiltered ?? 0,
+        data: obj.data ?? []
+      });
+      }
+
+  },
+  columns:  [
+      { data: 'offerName', title: 'Offer Name' },
+      {
+        data: 'offerType',
+        title: 'Offer Type',
+        render: function (data) {
+          // Map numeric type to readable label
+          if (data === 1) return 'FLAT';
+          if (data === 2) return 'BONUS';
+          return 'UNKNOWN';
+        }
+      },
+      { data: 'targetAudience', title: 'Target Audience' },
+      { data: 'status', title: 'Status' },
+      {
+        data: 'createdAt',
+        title: 'Created At',
+        render: function (data) {
+          return new Date(data).toLocaleString();
+        }
+      },
+      {
+        data: null,
+        title: 'Actions',
+        orderable: false,
+        render: function (row) {
+          return `
+            <button onclick="editOffer(${row.id})">Edit</button>
+            <button onclick="deleteOffer(${row.id})">Delete</button>
+          `;
+        }
+      }
+    ]
+});
+
+  $('#offerTypeTable_filter input')
+    .unbind()
+    .bind('keyup', function (e) {
+      if (e.key === 'Enter' || e.keyCode === 13) {
+        $('#offerTypeCategoryTable').DataTable().search(this.value).draw();
+      }
+    });
+  
+	  
+	  
+	}
+
+
 
     function openOfferTypeModal() {
+	  isOfferEdit = false;
       document.getElementById("offerTypeModal").style.display = "block";
     }
 
@@ -315,6 +892,7 @@ input.invalid, textarea.invalid {
     }
 
     function openOfferTypeCategoryModal() {
+	  isEditOfferType = false;
       document.getElementById("offerTypeCategoryModal").style.display = "block";
     }
 
@@ -339,6 +917,30 @@ input.invalid, textarea.invalid {
     return true;
   }
 }
+function editOfferType(id)
+{
+     isEditOfferType = true;
+    sendAjaxRequest(readOfferTypeByIdUrl+id, "GET", getAppHeaer(), null,readEditOfferTypeCallBack );
+
+
+}
+var currentOfferTypeId = 0;
+var readEditOfferTypeCallBack = function(response)
+{
+var data = readFinalResult(response);
+		   if(data !=null)
+		   {
+                  $("#offerTypeCategoryModal").show();
+				    currentOfferTypeId = data.id;
+                    $("#categoryName").val(data.name);
+					$("#categoryDescription").val(data.description);
+			 
+		   }
+		   
+
+
+}
+
 
 function validateOfferTypeCategoryForm() {
   const isNameValid = validateField('categoryName');
@@ -346,12 +948,49 @@ function validateOfferTypeCategoryForm() {
 
   if (isNameValid && isDescValid) {
     // Do actual saving logic here (AJAX or form submit)
-    alert("✅ Offer Type Category Validated and Ready to Save!");
-    closeOfferTypeCategoryModal();
-    return false; // prevent actual form submit for demo
+	
+	var urlx = insertOfferTypeUrl;
+  if(isEditOfferType)
+  {
+	 urlx = updateOfferTypeByIdUrl  + currentOfferTypeId;
   }
-  return false;
+  
+  const requestData = {
+  name : $("#categoryName").val().trim(),
+  description : $("#categoryDescription").val().trim()
+ };
+   
+  // You can now send requestData via $.post or fetch here
+    sendAjaxRequest(urlx, "POST", getAppHeaer(), requestData,saveOffertypeCallBack );
+	
+	
+     // prevent actual form submit for demo
+  }
 }
+var  saveOffertypeCallBack = function(response)
+{
+var data = readFinalResult(response);
+		   if(data !=null)
+		   {
+                  closeOfferTypeCategoryModal();
+              	 $('#offerTypeCategoryTable').DataTable().ajax.reload(null, false);
+
+			 
+		   }
+
+}
+function deleteOfferType(id)
+{
+
+const confirmDelete = confirm("Are you sure you want to delete this cast record?");
+if (confirmDelete) {
+   	 sendAjaxRequest(deleteOfferTypeByIdUrl+id, "GET", getAppHeaer(), null,saveOffertypeCallBack );
+}
+
+
+
+}
+
 function validateField(fieldId) {
   const field = document.getElementById(fieldId);
   const value = field.value.trim();
@@ -369,8 +1008,8 @@ function validateField(fieldId) {
     return true;
   }
 }
-
-function validateOfferTypeForm() {
+var currentOfferId = 0;
+function validateOfferForm() {
   const isNameValid = validateField('offerName');
   const isTypeValid = validateField('offerTypeSelect');
   const isAudienceValid = validateField('targetAudience');
@@ -378,11 +1017,347 @@ function validateOfferTypeForm() {
 
   if (isNameValid && isTypeValid && isAudienceValid && isStatusValid) {
     // Perform save logic here (AJAX or form handling)
-    alert("✅ Offer Type Validated and Ready to Save!");
     closeOfferTypeModal();
-    return false; // Prevent actual form submission for now
+    // Prevent actual form submission for now
+	
+	
+	var urlx = insertOfferUrl;
+  if(isOfferEdit)
+  {
+	 urlx = updateOfferByIdUrl  + currentOfferId;
   }
-  return false;
+  
+  const requestData = {
+  offerName : $("#offerName").val().trim(),
+  offerType : $("#offerTypeSelect").val().trim(),
+  targetAudience : $("#targetAudience").val().trim(),
+  status  : $("#statusSelect").val().trim()
+ };
+   
+  // You can now send requestData via $.post or fetch here
+   sendAjaxRequest(urlx, "POST", getAppHeaer(), requestData,saveOfferCallBack );
+  }
+  
+}
+
+var  saveOfferCallBack  = function saveOfferMethord(response)
+{
+var data = readFinalResult(response);
+		   if(data !=null)
+		   {
+                  closeOfferTypeCategoryModal();
+              	 $('#offerTypeTable').DataTable().ajax.reload(null, false);
+
+			 
+		   }
+}
+
+function editOffer(id)
+{
+isOfferEdit = true;
+   currentOfferId  = id;
+    sendAjaxRequest(readOfferByIdUrl+id, "GET", getAppHeaer(), null,saveOfferCallBack );
+
+
+
+}
+
+function displayEditOfferCallBack(response)
+{
+var data = readFinalResult(response);
+		   if(data !=null)
+		   {
+  
+			  
+  
+  $("#offerTypeModal").show();
+  
+  $("#offerName").val(data.offerName);
+  $("#offerTypeSelect").val(data.offerType);
+  $("#targetAudience").val(data.targetAudience);
+  $("#statusSelect").val(data.status);
+  
+  
+		   }
+
+
+}
+function deleteOffer(id)
+{
+
+const confirmDelete = confirm("Are you sure you want to delete this offer record?");
+if (confirmDelete) {
+   	 sendAjaxRequest(deleteOfferByIdUrl+id, "GET", getAppHeaer(), null,saveOfferCallBack );
+}
+
+}
+
+function saveOfferShareTypeMovie() {
+  // Validate required fields
+  const isValid =
+    validateField('offerId') &
+    validateField('shareTypeId') &
+    validateField('movieId') &
+    validateField('validFrom') &
+    validateField('validTo') &
+    validateField('status');
+
+  if (!isValid) return;
+  
+  
+const validFromDate = new Date($('#validFrom').val());
+const validToDate = new Date($('#validTo').val());
+const validToInput = document.getElementById('validTo');
+const errorDiv = document.getElementById('error-validTo');
+
+if (validToDate < validFromDate) {
+  validToInput.classList.remove("valid");
+  validToInput.classList.add("invalid");
+  errorDiv.textContent = "'Valid To' cannot be earlier than 'Valid From'";
+  return;
+} else {
+  validToInput.classList.remove("invalid");
+  validToInput.classList.add("valid");
+  errorDiv.textContent = "";
+}
+
+
+alert("isUpdateMovShareOffer " +isUpdateMovShareOffer);
+
+var urlx = insertMovieShareOfferUrl;
+if(isUpdateMovShareOffer)
+    urlx = updateMovieShareOfferUrl + movShareOfferId;
+
+
+
+  // Collect data
+  const data = {
+    offerId: parseInt($('#offerId').val(),10) ,
+    shareTypeId: parseInt($('#shareTypeIdInput').val(),10) ,
+    movieId: parseInt($('#movieIdInput').val(),10) ,
+    validFrom: toSqlTimestampWithMillis($('#validFrom').val()) ,
+    validTo: toSqlTimestampWithMillis($('#validTo').val()),
+    maxUsers: parseInt($('#maxUsers').val() || '0',10),
+    discountAmount: parseInt($('#discountAmount').val() || '0',10) ,
+    walletCreditAmount: parseInt($('#walletCreditAmount').val() || '0',10) ,
+    noProfitCommission: $('#noProfitCommission').is(':checked') || false,
+    promoCodeRequired: $('#promoCodeRequired').is(':checked') || false,
+    status: $('#status').val()
+  };
+	    sendAjaxRequest(urlx, "POST", getAppHeaer(), data,saveMovieShareOffer );
+
+
+
+  // Optional: Handle Edit Mode
+
+}
+var saveMovieShareOffer = function saveMovieShareOfferFun(response)
+{
+var data = readFinalResult(response);
+		   if(data !=null)
+		   {
+              $('#movieSelect').trigger('change');
+              $("#offerShareTypeMovieModal").hide();
+
+  
+		   }
+
+
+
+
+}
+
+function closeOfferShareTypeMovieModal() {
+  $('#offerShareTypeMovieModal').hide();
+}
+function renderOfferMovieSection(data) {
+  const movie = data;
+  const shareTypes = data.shareTypes;
+
+  // Clear container
+  $('#dynamicOfferContent').empty();
+
+  // 🔹 Movie Info Card
+  const $movieCard = $(`
+    <div class="card">
+      <h3>🎞️ Movie: ${movie.movieTitle}</h3>
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between;">
+        <div style="width: 48%; margin-bottom: 10px;">
+          <p><b>Language:</b> ${movie.language}</p>
+          <p><b>Budget:</b> ₹${movie.budget}</p>
+		  <p><b>Invested:</b> ₹${movie.totalInvestedAmount}</p>
+          <p><b>Type:</b> ${movie.movieType}</p>
+<p>
+  <b>Status:</b>
+  <span class="movie-status ${movie.status.toLowerCase()}">
+    ${movie.status.charAt(0).toUpperCase() + movie.status.slice(1)}
+  </span>
+</p>
+
+
+        </div>
+        <div style="width: 48%; margin-bottom: 10px;">
+		<p><b>Start Date:</b> ${movie.startDate ? movie.startDate : 'N/A'}</p>
+
+          <p><b>Trailer Date:</b> ${movie.trailerDate}</p>
+		  <p><b>Release Date:</b> ${movie.releaseDate ? movie.releaseDate : 'N/A'}</p>
+
+        </div>
+      </div>
+    </div>
+  `);
+
+  $('#dynamicOfferContent').append($movieCard);
+
+  // 🔹 Share Types Container
+  const $shareContainer = $('<div id="shareTypeOfferContainer"></div>');
+
+  shareTypes.forEach(st => {
+    const $shareSection = $('<div class="share-section"></div>');
+    const $header = $(`
+<div class="share-header" style="display: flex; justify-content: space-between; align-items: center;">
+  <div>
+    🔶 Share Type: ${st.shareTypeName} (₹${st.pricePerShare}/share, ${st.totalShares} total)
+  </div>
+  <div style="font-size: 13px; background-color: #fff3cd; color: #856404; padding: 4px 8px; border-radius: 5px;">
+    🕒 ${st.shareStartDate} → ${st.shareEndDate}
+  </div>
+</div>    `);
+
+    // Offer Table
+    const $table = $(`
+      <table class="offer-table">
+        <thead>
+          <tr>
+            <th>Offer Title</th>
+            <th>Offer Type</th>
+            <th>D/W/NP/P </th>
+            <th>Start</th>
+            <th>End</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    `);
+
+    const $tbody = $table.find('tbody');
+    if (st.offers && st.offers.length > 0) {
+      st.offers.forEach(offer => {
+        const $row = $(`
+          <tr>
+            <td>${offer.offerName}</td>
+            <td>${offer.offerTypeName}</td>
+<td>
+   ${offer.discountAmount ?? 0}% / ₹${offer.walletCreditAmount ?? 0}
+   /    <input type="checkbox" class="custom-checkbox" disabled ${offer.noProfitCommission ? 'checked' : ''}>
+   /   <input type="checkbox" class="custom-checkbox" disabled ${offer.promoCodeRequired ? 'checked' : ''}>
+</td>            <td>${offer.validFrom}</td>
+            <td>${offer.validTo}</td>
+<td>
+  <span class="status-badge ${offer.offerStatus === 'active' ? 'active' : 'inactive'}">
+    ${offer.offerStatus.charAt(0).toUpperCase() + offer.offerStatus.slice(1)}
+  </span>
+</td>           
+
+
+ <td>
+<button onclick="editMovShareOfferMethod(
+          '${movie.movieId}',
+    '${movie.movieTitle}',
+    '${st.shareTypeId}',
+    '${st.shareTypeName}',
+
+          ${offer.movShareOfferId},
+		  '${st.shareStartDate}',
+		  '${st.shareEndDate}')">✏️</button>
+			  <button  onclick="deleteMovShareOffer(${offer.movShareOfferId})">🗑️</button>
+            </td>
+          </tr>
+        `);
+        $tbody.append($row);
+      });
+    } else {
+      $tbody.append(`<tr><td colspan="7">No offers yet.</td></tr>`);
+    }
+
+    const $addBtn = $(`
+  <button class="add-offer-btn" onclick="openOfferMovieModal(
+    '${movie.movieId}',
+    '${movie.movieTitle}',
+    '${st.shareTypeId}',
+    '${st.shareTypeName}',
+	'${st.shareStartDate}', 
+	'${st.shareEndDate}'
+  )">
+    + Add Offer for ${st.shareTypeName}
+  </button>
+`);
+    // Append everything
+    $shareSection.append($header, $table, $addBtn);
+    $shareContainer.append($shareSection);
+  });
+
+  $('#dynamicOfferContent').append($shareContainer);
+}
+function editMovShareOfferMethod(movId,movName,shareId,ShareName,movShareOffId , startDate,endDate)
+{
+    isUpdateMovShareOffer = true;
+	movShareOfferId = movShareOffId;
+
+   isUpdateMovShareOffer  = true;
+   $("#movieId").val(movName);
+   $("#shareTypeId").val(ShareName);
+   $("#movieIdInput").val(movId);
+   $("#shareTypeIdInput").val(shareId);
+   $('#movshareStart').text(startDate +" → " +endDate);
+     	    sendAjaxRequest(readMovieShareOfferByOfferIdUrl+movShareOffId, "GET",getAppHeaer(), null,movShareOfferCallBack );
+
+
+}
+
+var movShareOfferCallBack = function movShareOfferCallBackFn(response)
+{
+          
+           var data = readFinalResult(response);
+		   console.log(data);
+		   if(data !=null)
+		   {
+		   
+    $('#offerId').val(data.offerId);    
+   $('#validFrom').val(formatDateTimeFromTimeStamp(data.validFrom)); 
+    $('#validTo').val(formatDateTimeFromTimeStamp(data.validTo));
+
+    $('#maxUsers').val(data.maxUsers);
+    $('#discountAmount').val(data.discountAmount) 
+    $('#walletCreditAmount').val(data.walletCreditAmount == null ? 0 : data.walletCreditAmount) 
+    $('#noProfitCommission').prop('checked', data.noProfitCommission);
+    $('#promoCodeRequired').prop('checked', data.promoCodeRequired);
+    $('#status').val(data.status);
+
+  // $('#promoCodeRequired').is(':checked') || false,
+ //  
+ 
+			    $("#offerShareTypeMovieModal").show();
+
+
+ 
+  
+  
+		   }
+
+
+}
+
+function deleteMovShareOffer(id)
+{
+
+const confirmDelete = confirm("Are you sure you want to delete this offer record?");
+if (confirmDelete) {
+   	 sendAjaxRequest(deleteMovieShareOfferUrl+id, "GET", getAppHeaer(), null,saveMovieShareOffer );
+}
+
 }
 
   </script>

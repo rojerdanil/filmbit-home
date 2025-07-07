@@ -255,7 +255,7 @@ function drawDataTableProReward() {
         const fullResponse = JSON.parse(response);
         const obj = fullResponse.result;
 		total = obj.recordsTotal ?? 0
-       $("#rewardCount").text("(" +total + ")");
+       $("#promoCount").text("(" +total + ")");
 
       // Debug: make sure obj is valid
       return JSON.stringify({
@@ -455,6 +455,7 @@ var readPromoRewardCallBack = function(response)
 function deletePromotionReward(id)
 
 {
+alert("comming");
 const confirmDelete = confirm("Are you sure you want to delete this cast record?");
 if (confirmDelete) {
    	 sendAjaxRequest(deleteRewardByIdUrl+id, "GET", getAppHeaer(), null,saveRewardCallBack );
