@@ -1,0 +1,88 @@
+  <h4 style="color: #FFD700;">📤 Payout Management (42 pending)</h4>
+
+  <!-- Filters -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="d-flex gap-2">
+      <input type="text" class="form-control form-control-sm" placeholder="Search by user/movie">
+      <select class="form-select form-select-sm" style="width: auto;">
+        <option selected>Status</option>
+        <option>Pending</option>
+        <option>Completed</option>
+      </select>
+    </div>
+    <div class="d-flex gap-2">
+      <button class="btn btn-warning btn-sm">Export CSV</button>
+      <button class="btn btn-dark btn-sm">Bulk Payout</button>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="table-responsive">
+    <table class="table table-bordered table-sm align-middle" style="background-color: #fdfde7;">
+      <thead class="table-warning text-dark">
+        <tr>
+          <th><input type="checkbox" id="selectAll"></th>
+          <th>#</th>
+           <th>👤 User Name</th>
+      <th>🎬 Movie Title</th>
+      <th>💰 Invested</th>
+      <th>📤 Return ₹</th>
+      <th>🔄 Status</th>
+      <th>⚙️ Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="bg-light">
+          <td><input type="checkbox" class="row-check"></td>
+          <td>1</td>
+          <td>John Kumar</td>
+          <td>Star Warriors</td>
+          <td>₹5,000</td>
+          <td>₹6,750</td>
+          <td><span class="badge bg-warning text-dark">Pending</span></td>
+          <td><button class="btn btn-sm btn-outline-success">Pay Now</button></td>
+        </tr>
+        <tr>
+          <td><input type="checkbox" class="row-check"></td>
+          <td>2</td>
+          <td>Priya M.</td>
+          <td>Earth Chronicles</td>
+          <td>₹2,000</td>
+          <td>₹2,500</td>
+          <td><span class="badge bg-success">Completed</span></td>
+          <td><button class="btn btn-sm btn-outline-primary">View</button></td>
+        </tr>
+        <!-- Add more dummy rows as needed -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Bulk options -->
+  <div class="d-flex justify-content-between align-items-center mt-3">
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" id="sendNotifications" checked>
+      <label class="form-check-label" for="sendNotifications">
+        Send SMS/Email Notification
+      </label>
+    </div>
+    <div>
+      <label class="me-2">Payout Method:</label>
+      <select class="form-select form-select-sm d-inline-block" style="width: auto;">
+        <option>Razorpay</option>
+        <option>Paytm</option>
+        <option>Bank</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <nav class="mt-4">
+    <ul class="pagination pagination-sm justify-content-center">
+      <li class="page-item disabled"><a class="page-link">Prev</a></li>
+      <li class="page-item active"><a class="page-link">1</a></li>
+      <li class="page-item"><a class="page-link">2</a></li>
+      <li class="page-item"><a class="page-link">3</a></li>
+      <li class="page-item"><a class="page-link">Next</a></li>
+    </ul>
+  </nav>
+

@@ -33,7 +33,7 @@
   
   
   
-   <div id="offerMovieSection" >
+   <div id="offerMovieSection" style="display: none;" >
 
   <!-- 🔹 Filter Section: Language & Movie -->
 <div class="filter-bar" style="display: flex; flex-wrap: wrap; gap: 2rem; align-items: center; margin-bottom: 1rem;">
@@ -82,7 +82,7 @@
   <div class="modal-content">
     <span class="close" onclick="closeOfferTypeCategoryModal()">&times;</span>
     <h3>Add Offer Type Category</h3>
-    <form id="offerTypeCategoryForm" >
+    <div id="offerTypeCategoryForm" >
       <div class="form-group">
         <label for="categoryName">Category Name</label>
         <input type="text" id="categoryName" class="form-control" oninput="validateField('categoryName')" />
@@ -99,7 +99,7 @@
         <button type="submit" class="btn btn-primary" onclick="validateOfferTypeCategoryForm()">Save</button>
         <button type="button" class="btn btn-secondary" onclick="closeOfferTypeCategoryModal()">Cancel</button>
       </div>
-    </form>
+    </div>
   </div>
 </div>
 
@@ -109,7 +109,7 @@
   <div class="modal-content">
     <span class="close" onclick="closeOfferTypeModal()">&times;</span>
     <h3>Add Offer Type</h3>
-    <form id="offerTypeForm" >
+    <div id="offerTypeForm" >
       
       <div class="form-group">
         <label for="offerName">Offer Name</label>
@@ -129,8 +129,22 @@
 
       <div class="form-group">
         <label for="targetAudience">Target Audience</label>
-        <input type="text" id="targetAudience" class="form-control" oninput="validateField('targetAudience')" />
-        <div class="error-message" id="error-targetAudience"></div>
+       <select id="targetAudience" name="targetAudience" class="form-control" onchange="validateField('targetAudience')"  style="min-width: 250px; padding: 6px 12px; border-radius: 6px;">
+  <option value="">-- Please Select --</option>
+  <option value="ALL_USERS">All Users</option>
+  <option value="NEW_USERS">New Users</option>
+  <option value="RETURNING_USERS">Returning Users</option>
+  <option value="PREMIUM_SUBSCRIBERS">Premium Subscribers</option>
+  <option value="FIRST_TIME_INVESTORS">First-Time Investors</option>
+  <option value="HIGH_INVESTORS">High Investors</option>
+  <option value="LANGUAGE_SPECIFIC">Language-Specific</option>
+  <option value="LOCATION_BASED">Location-Based</option>
+  <option value="REFERRAL_USERS">Referral Users</option>
+  <option value="PROMO_CODE_USERS">Promo Code Users</option>
+  <option value="LIMITED_GROUP">Limited Group</option>
+</select>
+
+	  <div class="error-message" id="error-targetAudience"></div>
       </div>
 
       <div class="form-group">
@@ -147,7 +161,7 @@
         <button type="submit" class="btn btn-primary" onclick=" validateOfferForm()">Save</button>
         <button type="button" class="btn btn-secondary" onclick="closeOfferTypeModal()">Cancel</button>
       </div>
-    </form>
+    </div>
   </div>
 </div>
 
@@ -160,7 +174,7 @@
   </div>
   </h3>
 
-    <form id="offerShareTypeMovieForm">
+    <div id="offerShareTypeMovieForm">
       <input type="hidden" id="offerShareTypeMovieId" />
 
       <!-- Offer -->
@@ -222,7 +236,9 @@
 
       <!-- Checkboxes -->
       <div class="form-group">
-        <label><input type="checkbox" id="noProfitCommission" /> No Profit Commission</label>
+	    <label><input type="checkbox" id="noPlatFormCommission" /> No Platform Commission</label>
+
+        <label style="margin-right:5%;"><input type="checkbox" id="noProfitCommission" /> No Profit Commission</label>
       </div>
       <div class="form-group">
         <label><input type="checkbox" id="promoCodeRequired" /> Promo Code Required</label>
@@ -242,7 +258,7 @@
         <button type="button" class="btn btn-primary" onclick="saveOfferShareTypeMovie()">Save</button>
         <button type="button" class="btn btn-secondary" onclick="closeOfferShareTypeMovieModal()">Cancel</button>
       </div>
-    </form>
+    </div>
   </div>
 </div>
 
@@ -715,6 +731,8 @@ var data = readFinalResult(response);
 
 	
 	function onLanguageChange() {
+	$('#dynamicOfferContent').empty();
+
   var selectedLanguageId = $('#languageSelect').val();
   var selectedLanguageName = $('#languageSelect option:selected').text();
 	sendAjaxRequest(readMovieBylangIdUrl+selectedLanguageId, "GET", getAppHeaer(), null,readMovieByLanCallBack );
@@ -769,9 +787,13 @@ var data = readFinalResult(response);
 		 const $languageSelect = $('#languageSelect');
 
         // Only proceed if there's at least one real option
+		console.log("1 am ");
+				     $('#dynamicOfferContent').empty();
+
         if ($languageSelect.find('option').length > 1) {
           $languageSelect.prop('selectedIndex', 1).trigger('change');
          } 
+		
  
    
    }
@@ -1020,7 +1042,6 @@ function validateOfferForm() {
     closeOfferTypeModal();
     // Prevent actual form submission for now
 	
-	
 	var urlx = insertOfferUrl;
   if(isOfferEdit)
   {
@@ -1037,7 +1058,11 @@ function validateOfferForm() {
   // You can now send requestData via $.post or fetch here
    sendAjaxRequest(urlx, "POST", getAppHeaer(), requestData,saveOfferCallBack );
   }
-  
+  else
+{  
+	alert("comming insert");
+
+ } 
 }
 
 var  saveOfferCallBack  = function saveOfferMethord(response)
@@ -1056,7 +1081,7 @@ function editOffer(id)
 {
 isOfferEdit = true;
    currentOfferId  = id;
-    sendAjaxRequest(readOfferByIdUrl+id, "GET", getAppHeaer(), null,saveOfferCallBack );
+    sendAjaxRequest(readOfferByIdUrl+id, "GET", getAppHeaer(), null,displayEditOfferCallBack );
 
 
 
@@ -1122,7 +1147,6 @@ if (validToDate < validFromDate) {
 }
 
 
-alert("isUpdateMovShareOffer " +isUpdateMovShareOffer);
 
 var urlx = insertMovieShareOfferUrl;
 if(isUpdateMovShareOffer)
@@ -1141,6 +1165,7 @@ if(isUpdateMovShareOffer)
     discountAmount: parseInt($('#discountAmount').val() || '0',10) ,
     walletCreditAmount: parseInt($('#walletCreditAmount').val() || '0',10) ,
     noProfitCommission: $('#noProfitCommission').is(':checked') || false,
+	noPlatFormCommission: $('#noPlatFormCommission').is(':checked') || false,
     promoCodeRequired: $('#promoCodeRequired').is(':checked') || false,
     status: $('#status').val()
   };
@@ -1171,6 +1196,7 @@ function closeOfferShareTypeMovieModal() {
   $('#offerShareTypeMovieModal').hide();
 }
 function renderOfferMovieSection(data) {
+
   const movie = data;
   const shareTypes = data.shareTypes;
 
@@ -1231,7 +1257,7 @@ function renderOfferMovieSection(data) {
           <tr>
             <th>Offer Title</th>
             <th>Offer Type</th>
-            <th>D/W/NP/P </th>
+            <th>D/W/NPFC/NPC/P </th>
             <th>Start</th>
             <th>End</th>
             <th>Status</th>
@@ -1251,6 +1277,7 @@ function renderOfferMovieSection(data) {
             <td>${offer.offerTypeName}</td>
 <td>
    ${offer.discountAmount ?? 0}% / ₹${offer.walletCreditAmount ?? 0}
+   /<input type="checkbox" class="custom-checkbox" disabled ${offer.noPlatFormCommission ? 'checked' : ''}>
    /    <input type="checkbox" class="custom-checkbox" disabled ${offer.noProfitCommission ? 'checked' : ''}>
    /   <input type="checkbox" class="custom-checkbox" disabled ${offer.promoCodeRequired ? 'checked' : ''}>
 </td>            <td>${offer.validFrom}</td>

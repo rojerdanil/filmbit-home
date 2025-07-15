@@ -16,9 +16,9 @@
   <link rel="stylesheet" href="./css/jquery.dataTables.min.css">
   <link rel="stylesheet" href="./css/adminPanel.css">
 
-<script>
+<script>  
 
-    var baseUrlApi = 'http://localhost:8080';
+    var baseUrlApi = 'http://localhost:8090';
 	var readMovieUrl = baseUrlApi + "/movie/datatable";
     var readMovieStatusUrl = baseUrlApi + "/movie-status/allstatus";
     var readMovieTypeUrl = baseUrlApi + "/movie-types/alltypes";
@@ -62,6 +62,29 @@
     var readMovieShareOfferByOfferIdUrl = baseUrlApi   + "/offer-mappings/readShareOffer/";
     var updateMovieShareOfferUrl = baseUrlApi   + "/offer-mappings/update/";
     var deleteMovieShareOfferUrl = baseUrlApi   + "/offer-mappings/delete/";
+    var dataTablePromoCodeUrl = baseUrlApi + "/promo-codes/page"
+	var readRewardByTypeIdUrl =  baseUrlApi +"/reward-types/rewardsbytype/";
+    var inserrPromotionCodesUrl = baseUrlApi + "/promo-codes/create"
+    var dataTablePromoRewardMapUrl =  baseUrlApi +  "/promotion-rewards-map/page/"
+	var deleteRewardMapUrl = baseUrlApi   + "/promotion-rewards-map/delete/";
+    var insertPromoCodeUrl = baseUrlApi   + "/promo-codes/createPromoCode";
+	var updatePromoCodeUrl = baseUrlApi   + "/promo-codes/updatePromoCode";
+    var deletePromoUrl =  baseUrlApi +  "/promo-codes/delete/"
+    var dataTableUserInvestUrl =  baseUrlApi +  "/movieInvest/dataTableUserInvestment"
+	var readInvestShareBymovIdUrl =  baseUrlApi +  "/movieInvest/readInvestbymovie/"
+    var saveInvestStatusChangeUrl = baseUrlApi +  "/movieInvest/udpateStatus"
+	var dataTableUserPayoutUrl =  baseUrlApi +  "/payout/dataTableUserPayout"
+    var readInvestShareByShareIdUrl =  baseUrlApi +  "/movieInvest/readInvestbymoviebyshareId/"
+    var readPayoutByuserIdAndMovIdUrl = baseUrlApi +  "/payout/readPayoutByUserIdAndMovieId/"
+    var repayAlLreturnforMovieUrl = baseUrlApi +  "/payout/repayAlLreturnforMovie"
+	var repayAlLreturnforShareUrl = baseUrlApi +  "/payout/repayAlLreturnforShare"
+    var repayAllInvestedforShareUrl = baseUrlApi +  "/movieInvest/repayAllInvestedforShare"
+
+	 
+	 
+	 
+
+
 	
     let currentTable;
 	let idNameMovieStatusMap = {};
@@ -91,6 +114,7 @@
 	  'offerPromotion','promotiontypes','promotionrewards','offers','promocodes'];
       sections.forEach(id => {
         document.getElementById(`${id}-section`).style.display = 'none';
+		document.getElementById(`${id}-section`).innerHTML = "";
       });
       document.getElementById(`${section}-section`).style.display = 'block';
 	  
@@ -123,7 +147,13 @@
 		     loadPromotiontReward();
           if(section == 'offers')
 		     loadOfferSection();
-
+         if(section == 'promocodes')
+		     loadPromoCodeType();
+		  if(section == 'investments')
+	          loadInvestSection();
+		  if(section == 'payouts')
+	          loadPayoutSection();	  
+			  
 			 
 		  });
 		  
@@ -683,7 +713,7 @@ function loadMovieSection()
         {
       data: 'title',
       render: function (data, type, row) {
-        const status = row.activeStatus === 'true';
+        const status = row.activeStatus === 'active';
         const color = status ? 'green' : 'red';
         const dot = `<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${color};margin-right:8px;"></span>`;
         return `${dot}${data}`;
@@ -1530,6 +1560,10 @@ function closeModelWindowById(modalId)
 	
 }
 function formatDateTime(dateString) {
+   var txt = formatNA(dateString);
+   if(txt == "N/A")
+      return txt;
+
   const date = new Date(dateString);
 
   const pad = n => (n < 10 ? '0' + n : n);
@@ -1608,6 +1642,26 @@ function populateSelectBox( selectId,list, valueField, textField) {
     }));
   });
 }
+function populateSelectBoxFirstOptAll( selectId,list, valueField, textField) {
+  const $select = $('#' + selectId);
+  $select.empty(); // Clear existing options
+
+  // Add the first disabled option
+  $select.append($('<option>', {
+    value: '',
+    text: '-- All --'
+  }));
+
+  // Append options from object list
+  list.forEach(item => {
+    $select.append($('<option>', {
+      value: item[valueField],
+      text: item[textField]
+    }));
+  });
+}
+
+
 function readFinalResult(response)
 {
 
@@ -1631,9 +1685,323 @@ if(response != null)
 
 }
 
+function closeModalAndReloadDataTable(response,modalId,tableId)
+{
+if(response.status == "success")
+	{
+	
+	   if(response.message == "success")
+	   {
+	      $(modalId).hide();
+	     $(tableId).DataTable().ajax.reload(null, false);
+
+	   }
+	 } 
+	 else
+	 {
+	   if(response.status === "failure")
+		    alert("❌ Failed to save movie. " + response.message);
+	 
+	 }
+ 
+
+}
+
+function clearAllFormInsideDiv(divId)
+{
+
+$(divId).find('input[type="text"], input[type="number"], input[type="checkbox"], select').each(function() {
+    $(this).val('').prop('checked', false); // Clear text and number inputs, uncheck checkboxes
+  });
+
+}
+function isSelectBoxNoOption(inpid)
+{
+if ($( inpid +' option').length === 0) {
+     return true;
+} else {
+      return false;
+}
+
+}
+
+function formatRupee(amount) {
+    if (isNaN(amount)) return "₹ 0";
+    
+    return '₹ ' + Number(amount)
+        .toLocaleString('en-IN', {
+            maximumFractionDigits: 2,
+            minimumFractionDigits: 0
+        });
+}
+
+
+function formatShares(count) {
+    if (isNaN(count)) return "0 shares";
+    return Number(count).toLocaleString('en-IN') + ' shares';
+}
+
+function formatPhoneOnly(number) {
+    const clean = number.toString().replace(/\D/g, '');
+    return `📞 ${clean}`;
+}
+
+function toTitleCase(name) {
+  return name
+    .toLowerCase()
+    .split(' ')
+    .filter(word => word.trim() !== '')
+    .map(word => word[0].toUpperCase() + word.slice(1))
+    .join(' ');
+
+}
+
+function calculateSharePrice(totalAmount, numberOfShares) {
+    // Validate if inputs are valid numbers and greater than zero
+    if (isNaN(totalAmount) || isNaN(numberOfShares) || totalAmount <= 0 || numberOfShares <= 0) {
+        return "₹ 0";
+    }
+
+    // Calculate price per share
+    const pricePerShare = totalAmount / numberOfShares;
+    
+    // Return the result
+    return `₹ ${pricePerShare}`;  // Return formatted price per share (2 decimal places)
+}
+
+
+function renderStatus(status) {
+    // Convert to lowercase to handle case insensitivity
+    status = status.toLowerCase();
+
+    let color = '';
+    let displayText = '';
+
+    // Determine color based on status
+    switch (status) {
+        case 'active':
+            color = 'green';
+            displayText = 'Active';
+            break;
+        case 'inactive':
+            color = 'gray';
+            displayText = 'Inactive';
+            break;
+        case 'expired':
+            color = 'red';
+            displayText = 'Expired';
+            break;
+        case 'paid':
+            color = 'blue';
+            displayText = 'Paid';
+            break;
+        case 'pending':
+            color = 'orange';
+            displayText = 'Pending';
+            break;
+        case 'cancel':
+            color = 'purple';
+            displayText = 'Cancel';
+            break;
+        default:
+            color = 'black';  // Default color
+            displayText = 'Unknown';
+            break;
+    }
+
+    // Return the span with dynamic color and text
+    return `<span style="color: ${color};">${displayText}</span>`;
+}
+
+
+function renderPayoutStatus(status, totalAmount = 0, paidAmount = 0) {
+    if (status == null || paidAmount == null || paidAmount == 0)
+	status = "pending";
+    
 
 
 
+
+    status = status.toLowerCase();
+
+    let color = '';
+    let displayText = '';
+    let backgroundColor = '';
+    let textColor = 'white';  // Default text color
+
+    // Check for partial payment
+    let partialPayment = false;
+    if (totalAmount > 0 && paidAmount < totalAmount && status != "pending") {
+        partialPayment = true;
+		status = 'partial'
+    }
+	
+    // Determine color and text based on status
+    switch (status) {
+        case 'pending':
+            backgroundColor = '#ff9800';
+            displayText = 'Pending';
+            break;
+        case 'paid':
+            backgroundColor = '#4caf50';
+            displayText = 'Paid';
+            break;
+        case 'failed':
+            backgroundColor = '#f44336';
+            displayText = 'Failed';
+            break;
+        case 'cancelled':
+            backgroundColor = '#9c27b0';
+            displayText = 'Cancelled';
+            break;
+        case 'processing':
+            backgroundColor = '#2196f3';
+            displayText = 'Processing';
+            break;
+        case 'completed':
+            backgroundColor = '#673ab7';
+            displayText = 'Completed';
+            break;
+        case 'refunded':
+            backgroundColor = '#e91e63';
+            displayText = 'Refunded';
+            break;
+		case 'partial':
+             backgroundColor = '#ffeb3b';  // Yellow color for partial payment
+             textColor = 'black';  // Black text for better contrast
+            // displayText = `Partial(${paidAmount} / ${totalAmount})`;
+			displayText = `Partial`;
+             break;	
+        default:
+            backgroundColor = '#dcdcdc';
+            textColor = 'black';
+            displayText = 'Unknown';
+            break;
+    }
+
+    // If partial payment, modify the text and background color
+  
+
+    // Return a span with rounded pill style
+    return `<span style="
+        display: inline-block;
+        color: ${textColor};
+        background-color: ${backgroundColor};
+        padding: 3px 7px;
+        border-radius: 999px;
+        font-weight: 500;
+        font-size: 0.85rem;
+        text-transform: capitalize;
+        min-width: 75px;
+        text-align: center;
+    ">${displayText}</span>`;
+}
+
+
+function checkValidNumber(input) {
+    // Check if the input is a valid number
+    if (typeof input === 'number' && !isNaN(input)) {
+        return input;  // Return the number if valid
+    } else if (input === null || input === '') {
+        return 0;  // Return null if input is empty or null
+    } else {
+        return 0;  // Return 0 for invalid numbers or strings
+    }
+}
+
+function renderPayoutStatusOld(status) {
+    if (status == null) status = "pending";
+
+    status = status.toLowerCase();
+
+    let color = '';
+    let displayText = '';
+    let backgroundColor = '';
+    let textColor = 'white';  // Default text color
+
+    switch (status) {
+        case 'pending':
+            backgroundColor = '#ff9800';
+            displayText = 'Pending';
+            break;
+        case 'paid':
+            backgroundColor = '#4caf50';
+            displayText = 'Paid';
+            break;
+        case 'failed':
+            backgroundColor = '#f44336';
+            displayText = 'Failed';
+            break;
+        case 'cancelled':
+            backgroundColor = '#9c27b0';
+            displayText = 'Cancelled';
+            break;
+        case 'processing':
+            backgroundColor = '#2196f3';
+            displayText = 'Processing';
+            break;
+        case 'completed':
+            backgroundColor = '#673ab7';
+            displayText = 'Completed';
+            break;
+        case 'refunded':
+            backgroundColor = '#e91e63';
+            displayText = 'Refunded';
+            break;
+	    case 'partial':
+             backgroundColor = '#ffeb3b';  // Yellow color for partial payment
+             textColor = 'black';  // Black text for better contrast
+             displayText = 'Partial';  // Display partial paid text
+             break;
+			
+        default:
+            backgroundColor = '#dcdcdc';
+            textColor = 'black';
+            displayText = 'Unknown';
+            break;
+    }
+
+    // Return a span with rounded pill style
+    return `<span style="
+        display: inline-block;
+        color: ${textColor};
+        background-color: ${backgroundColor};
+        padding: 1px -7px;
+        border-radius: 999px;
+        font-weight: 500;
+        font-size: 0.85rem;
+        text-transform: capitalize;
+        min-width: 73px;
+        text-align: center;
+    ">${displayText}</span>`;
+}
+
+function formatNA(value) {
+    if (value === null || value === undefined || value === '') {
+        return 'N/A';
+    }
+    return value;
+}
+
+
+function getPayOutStatus()
+{
+const paymentStatuses = [
+    { id: 'PENDING', name: 'PENDING' },
+    { id: 'PAID', name: 'PAID' },
+    { id: 'FAILED', name: 'FAILED' },
+    { id: 'CANCELLED', name: 'CANCELLED' },
+    { id: 'PROCESSING', name: 'PROCESSING' },
+    { id: 'COMPLETED', name: 'COMPLETED' },
+    { id: 'REFUNDED', name: 'REFUNDED' },
+    { id: 'AWAITING_CONFIRMATION', name: 'AWAITING_CONFIRMATION' },
+    { id: 'UNDER_REVIEW', name: 'UNDER_REVIEW' },
+    { id: 'ON_HOLD', name: 'ON_HOLD' },
+    { id: 'IN_PROGRESS', name: 'IN_PROGRESS' }
+];
+
+return paymentStatuses;
+}
 
 
 

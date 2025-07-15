@@ -116,7 +116,22 @@
 	
 	    .content-area {
       padding: 20px;
+	 background-color : #fffde7;
+	 padding-top:5%;
+
     }
+	#movies-section
+	{
+		background-color : rgb(249, 249, 249);
+		padding :2%;
+    }		
+	.divPart
+    {
+     background-color :#fff;
+	 padding : 1%;
+
+	}		
+	
 
     .card {
       min-height: 100px;
@@ -155,7 +170,7 @@ table.dataTable {
 
 /* Header */
 table.dataTable thead {
-  background-color: #fff3cd;
+  background-color: #f2f2f2;
   color: #333;
   font-weight: 600;
   border-bottom: 2px solid #FFD700;
@@ -206,9 +221,10 @@ table.dataTable .btn-outline-danger:hover {
   margin: 0 2px;
 }
 .dataTables_wrapper .dataTables_paginate .paginate_button.current {
-  background-color: #FFD700;
+  background-color:#fffde7;
   color: #000;
-  border: 1px solid #e0e0e0;
+  border: 1px solid #ccc;
+
 }
 
 /* Search box alignment */
@@ -338,22 +354,13 @@ div.dataTables_filter {
 
 #movieTable {
   width: 100%;
-  border: 2px solid #ccc2a4;
-  border-radius: 8px;
+ 
   background-color: #fff;
-  border-collapse: collapse;
 }
 
 
-#movieTable thead th {
-  border: 2px solid #ccc2a4;
-  padding: 10px;
-  text-align: left;
-}
 
-#movieTable tbody tr  td {
-  border: 1px solid #ccc2a4;
-}
+
 
 
 /*annonceMent*/
@@ -442,10 +449,11 @@ div.dataTables_filter {
 
 /* 🎯 Modal Content */
 .modal-content {
-  background-color: #fff9cc; /* FilmBit soft yellow */
+  background-color: #fffde7;
+; /* FilmBit soft yellow */
   width: 90%;
   max-width: 800px;
-  padding: 25px;
+  padding: 2%;
   border-radius: 12px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
   position: relative;

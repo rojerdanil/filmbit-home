@@ -59,6 +59,7 @@
   <div class="investment-table">
     <h3>📋 User </h3>
     <table id="userTable">
+    
     </table>
   </div>
 </div>
@@ -75,20 +76,6 @@
     <!-- Add your form or data table for production here -->
   </div>
  <script>
- function toggleDetails(btn) {
-    const mainRow = btn.closest('tr');
-    const nextRow1 = mainRow.nextElementSibling;
-    const nextRow2 = nextRow1.nextElementSibling;
-
-    const isVisible = nextRow1.style.display === 'table-row';
-
-    nextRow1.style.display = isVisible ? 'none' : 'table-row';
-    nextRow2.style.display = isVisible ? 'none' : 'table-row';
-
-    btn.textContent = isVisible ? '➕ Expand' : '➖ Collapse';
-  }
- 
- 
     function switchTab(tabId) {
       document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
       document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
@@ -551,22 +538,5 @@ h3 {
         .user-name {
             color: #28a745; /* Green for User Name */
         }
-		
-		
-		.expand-btn {
-      cursor: pointer;
-      color: #007bff;
-    }
-
-    .details-row {
-      display: none;
-      background-color: #f9f9f9;
-    }
-
-    .details-cell {
-      padding: 10px;
-      border-top: none;
-      color: #444;
-    }
   </style>
 

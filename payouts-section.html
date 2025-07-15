@@ -1,88 +1,1314 @@
-  <h4 style="color: #FFD700;">📤 Payout Management (42 pending)</h4>
 
-  <!-- Filters -->
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <div class="d-flex gap-2">
-      <input type="text" class="form-control form-control-sm" placeholder="Search by user/movie">
-      <select class="form-select form-select-sm" style="width: auto;">
-        <option selected>Status</option>
-        <option>Pending</option>
-        <option>Completed</option>
-      </select>
+
+
+ <div class="tab-toggle" style="margin-top:2%">
+    <div class="tab-btn active" data-target="#userSection" onclick="switchTab('userSection')">🎬 User</div>
+    <div class="tab-btn " data-target="#movieSection" onclick="switchTab('movieSection')">🎬 Movie</div>
+    <div class="tab-btn" data-target="#productionSection" onclick="switchTab('productionSection')">🏭 Production</div>
+  </div>
+  
+  <!--modal window---->
+  
+ <!-- Modal -->
+<div id="investmentModal" class="modal">
+  <div class="modal-content" style="padding: 0;max-width:1199px;">
+
+    <!-- Header (Movie and User Info) -->
+    <div class="movie-user-box divPart" style="margin: 10px 20px;">
+      <div style="width:100%;">
+        🎬 <span class="movie-name" id="movieNameModal" style="margin-right: 2%;"></span>
+        👤 <span class="user-name" id="userName"></span>
+        <span class="close" onclick="closeInvestmentModal()" style="float: right; cursor: pointer;">&times;</span>
+      </div>
     </div>
-    <div class="d-flex gap-2">
-      <button class="btn btn-warning btn-sm">Export CSV</button>
-      <button class="btn btn-dark btn-sm">Bulk Payout</button>
+
+    <!-- Flex Container for Left Menu and Right Content -->
+    <div style="display: flex; min-height: 400px;background-color:#fffde7" >
+
+      <!-- Left Navigation -->
+      <div  style="width: 200px;background-color: #f9f9f9; border-right: 1px solid #ccc; padding: 10px;">
+        <ul style="list-style: none; padding-left: 0; font-size: 14px;">
+          <li class="section-tab active-tab" onclick="showSection('shareTypeSpace',this)"><span  class="tab-button">📊 ShareType</span></li>
+          <li class="section-tab" onclick="showSection('repaySection',this)"><span  class="tab-button">💸 Repay</span></li>
+        </ul>
+      </div>
+
+      <!-- Right Dynamic Content -->
+      <div style="flex: 1; padding: 5px; overflow-y: auto; margin-left:1%;" class = "divPart">
+        <!-- ShareType Table -->
+        <div id="shareTypeSpace" class=" tab-section">
+          <table id="investmentTable" border="1" style="width:100%; border-collapse: collapse;">
+
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <!-- Repay Section -->
+       <div id="repaySection" class="tab-section" style="display: none;">
+  <!-- Repay Section Title -->
+  <input type="hidden" id="repayInvestMovieId" name="repayMovieId" value="">
+  <input type="hidden" id="repayUserId" name="repayUserId" value="">
+  <input type="hidden" id="repayShareId" name="repayUserId" value="">
+
+
+
+
+<div id = "repayShareReturn">   
+
+<h4>📈 Repay Return Amount (By Share Type)</h4>
+<p style="color: #666;">Repay only the return/profit amount for a selected share type.</p>
+
+ <div class="repay-info" style="margin-bottom: 15px;">
+  
+    <label for="repaySharerMovie" style="font-weight: bold;">Movie:</label>
+    <input type="text" id="repaySharerMovie" class="form-input" placeholder="Movie Title" disabled> 
+  </div>
+  
+  <div class="repay-info" style="margin-bottom: 15px;">
+
+    <label for="repaySharerUser" style="font-weight: bold;">User:</label>
+    <input type="text" id="repaySharerUser" class="form-input" placeholder="User Name" disabled>
+</div>
+
+  
+  <div class="repay-info" style="margin-bottom: 15px;">
+
+  <input type="hidden" id="repaySharerId" name="repayUserId" value="">
+    <label for="repayShareName" style="font-weight: bold;">Share Name:</label>
+    <input type="text" id="repayShareName" class="form-input" placeholder="User Name" disabled>
+</div>
+
+  <div class="repay-amount" style="margin-bottom: 15px;">
+    <label for="repayShareAmount" style="font-weight: bold;">Amount to Repay:</label>
+    <input type="number" id="repayShareAmount" class="form-input" placeholder="Enter Repayment Amount" disabled>
+ </div>
+ 
+ <div class="repay-method" style="margin-bottom: 15px;">
+    <label for="repayShareMethod" style="font-weight: bold;">Repayment Method:</label>
+    <select id="repayShareMethod" class="form-input" required>
+   <!--   <option value="upi">UPI</option>
+      <option value="bank">Bank Transfer</option> -->
+      <option value="wallet" selected>Wallet</option>
+    </select>
+  </div>
+ 
+  <div class="repay-status" style="margin-bottom: 15px;">
+    <label for="repayShareStatus" style="font-weight: bold;">Status:</label>
+    <select id="repayShareStatus" class="form-input" required>
+    <!--    <option value="pending">Pending</option>-->
+      <option value="paid" selected>Paid</option>
+    <!--   <option value="failed">Failed</option>-->
+    </select>
+  </div>
+  
+  <div class="repay-buttons" style="margin-top: 20px;">
+    <button type="button" class="flimbitButton" style="background-color: #28a745; color: white;" onclick="submitRepayShare()">Submit Repayment</button>
+    <button type="button" class="flimbitButton" style="background-color: #dc3545; color: white;" onclick="closeInvestmentModal()">Cancel</button>
+  </div>
+
+ </div> 
+<div id = "repayShareAmt">     
+ <h4>💰 Repay Invested Amount (By Share Type)</h4>
+<p style="color: #666;">Repay only the invested amount for a selected share type.</p>
+
+
+ <div class="repay-info" style="margin-bottom: 15px;">
+
+    <label for="repayInvestMovie" style="font-weight: bold;">Movie:</label>
+    <input type="text" id="repayInvestMovie" class="form-input" placeholder="Movie Title" disabled> 
+  </div>
+  
+  <div class="repay-info" style="margin-bottom: 15px;">
+
+    <label for="repayInvestUser" style="font-weight: bold;">User:</label>
+    <input type="text" id="repayInvestUser" class="form-input" placeholder="User Name" disabled>
+</div>
+
+  
+  <div class="repay-info" style="margin-bottom: 15px;">
+
+    <label for="repayInvestName" style="font-weight: bold;">Share Name:</label>
+    <input type="text" id="repayInvestName" class="form-input" placeholder="User Name" disabled>
+</div>
+
+  <div class="repay-amount" style="margin-bottom: 15px;">
+    <label for="repayInvestAmount" style="font-weight: bold;">Amount to Repay:</label>
+    <input type="number" id="repayInvestAmount" class="form-input" placeholder="Enter Repayment Amount" disabled>
+ </div>
+ 
+ 
+ <div class="repay-method" style="margin-bottom: 15px;">
+    <label for="repayMethod" style="font-weight: bold;">Repayment Method:</label>
+    <select id="repayInvestMethod" class="form-input" required>
+   <!--   <option value="upi">UPI</option>
+      <option value="bank">Bank Transfer</option> -->
+      <option value="wallet" selected>Wallet</option>
+    </select>
+  </div>
+ 
+ 
+ 
+ 
+  <div class="repay-status" style="margin-bottom: 15px;">
+    <label for="repayInvestStatus" style="font-weight: bold;">Status:</label>
+    <select id="repayInvestStatus" class="form-input" required>
+    <!--    <option value="pending">Pending</option>-->
+      <option value="paid" selected>Paid</option>
+    <!--   <option value="failed">Failed</option>-->
+    </select>
+  </div>
+  
+  <div class="repay-buttons" style="margin-top: 20px;">
+    <button type="button" class="flimbitButton" style="background-color: #28a745; color: white;" onclick="submitInvestedAmount()">Submit Repayment</button>
+    <button type="button" class="flimbitButton" style="background-color: #dc3545; color: white;" onclick="closeInvestmentModal()">Cancel</button>
+  </div>
+
+
+
+
+ </div>  
+
+
+  <div id = "repayAll">
+	<h4>🔁 Repay All Returns to User</h4>
+<p style="color: #666;">Distribute all calculated return amounts to the user across all share types.</p>
+
+  <!-- Repayment Details -->
+  <div class="repay-info" style="margin-bottom: 15px;">
+  <input type="hidden" id="repayMovieId" name="repayMovieId" value="">
+
+    <label for="repayMovie" style="font-weight: bold;">Movie:</label>
+    <input type="text" id="repayMovie" class="form-input" placeholder="Movie Title" disabled>
+    
+   
+  </div>
+<div class="repay-info" style="margin-bottom: 15px;">
+
+
+    <label for="repayUser" style="font-weight: bold;">User:</label>
+    <input type="text" id="repayUser" class="form-input" placeholder="User Name" disabled>
+</div>
+
+
+  <!-- Amount to Repay -->
+  <div class="repay-amount" style="margin-bottom: 15px;">
+    <label for="repayAmount" style="font-weight: bold;">Amount to Repay:</label>
+    <input type="number" id="repayAmount" class="form-input" placeholder="Enter Repayment Amount" disabled>
+    <span style = "margin-left:2%;font-weight: bold;">Amount here :</span> <span id ="repayTxt" style="color:#dc3545;margin-left:2%;font-weight: bold;"> </span>
+ </div>
+
+  <!-- Repayment Method -->
+  <div class="repay-method" style="margin-bottom: 15px;">
+    <label for="repayMethod" style="font-weight: bold;">Repayment Method:</label>
+    <select id="repayMethod" class="form-input" required>
+   <!--   <option value="upi">UPI</option>
+      <option value="bank">Bank Transfer</option> -->
+      <option value="wallet" selected>Wallet</option>
+    </select>
+  </div>
+
+  <!-- Repayment Status -->
+  <div class="repay-status" style="margin-bottom: 15px;">
+    <label for="repayStatus" style="font-weight: bold;">Status:</label>
+    <select id="repayStatus" class="form-input" required>
+    <!--    <option value="pending">Pending</option>-->
+      <option value="paid" selected>Paid</option>
+    <!--   <option value="failed">Failed</option>-->
+    </select>
+  </div>
+
+  <!-- Submit and Cancel Buttons -->
+  <div class="repay-buttons" style="margin-top: 20px;">
+    <button type="button" class="flimbitButton" style="background-color: #28a745; color: white;" onclick="submitRepayment()">Submit Repayment</button>
+    <button type="button" class="flimbitButton" style="background-color: #dc3545; color: white;" onclick="closeInvestmentModal()">Cancel</button>
+  </div>
+</div>
+
+</div>
+
+
+        <!-- Audit Section -->
+        <div id="auditSection" class="tab-section" style="display: none;">
+          <p>Audit trail or logs go here...</p>
+        </div>
+      </div>
+
+    </div> <!-- end of flex container -->
+  </div>
+</div>
+
+  
+  <!---ModalWindow-->
+  
+
+<div id="userSection" class="tab-content active" style = "background-color:white;">
+    <!-- Add your form or data table for movies here -->
+	
+	<div class="user-investment-section">
+	
+	<!-- Investment Summary Section -->
+  <div class="investment-summary" style = "display:none;">
+    <h3>📊 Investment Summary</h3>
+    <div class="summary-stats">
+      <p><strong>💰 Total Invested:</strong> ₹3,50,000</p>
+      <p><strong>🎬 Movies Invested:</strong> 6</p>
+      <p><strong>🔁 Total Returns:</strong> ₹75,000</p>
+      <p><strong>👤 User:</strong> Raj Kumar</p>
+    </div>
+  </div>
+	
+  <!-- Filter Section -->
+  <div class="filter-section">
+    <h3>🔍 Filter Users:</h3>
+    <div class="filter-fields">
+            <select id="languageSelect" class="form-control" onchange="onLanguageChangeInv()">
+        <option value="" disabled selected>Select Language</option>
+        <!-- Language options will be populated dynamically -->
+      </select>
+      
+      <select id="movieSelect" class="form-control">
+        <option value="" disabled selected>Select Movie</option>
+        <!-- Movie options will be populated dynamically -->
+      </select>
+      <select id="statusSelect" class="form-control">
+        <option value="" disabled selected>Select Status</option>
+        <option value="active">Active</option>
+        <option value="inactive">Inactive</option>
+      </select>
+      <input type="text" id="searchText" class="form-control" placeholder="Search..." />
+      <button class="btn" onclick="reloadTable()" style = "    height: 37px;">🔎</button>
     </div>
   </div>
 
-  <!-- Table -->
-  <div class="table-responsive">
-    <table class="table table-bordered table-sm align-middle" style="background-color: #fdfde7;">
-      <thead class="table-warning text-dark">
-        <tr>
-          <th><input type="checkbox" id="selectAll"></th>
-          <th>#</th>
-           <th>👤 User Name</th>
-      <th>🎬 Movie Title</th>
-      <th>💰 Invested</th>
-      <th>📤 Return ₹</th>
-      <th>🔄 Status</th>
-      <th>⚙️ Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr class="bg-light">
-          <td><input type="checkbox" class="row-check"></td>
-          <td>1</td>
-          <td>John Kumar</td>
-          <td>Star Warriors</td>
-          <td>₹5,000</td>
-          <td>₹6,750</td>
-          <td><span class="badge bg-warning text-dark">Pending</span></td>
-          <td><button class="btn btn-sm btn-outline-success">Pay Now</button></td>
-        </tr>
-        <tr>
-          <td><input type="checkbox" class="row-check"></td>
-          <td>2</td>
-          <td>Priya M.</td>
-          <td>Earth Chronicles</td>
-          <td>₹2,000</td>
-          <td>₹2,500</td>
-          <td><span class="badge bg-success">Completed</span></td>
-          <td><button class="btn btn-sm btn-outline-primary">View</button></td>
-        </tr>
-        <!-- Add more dummy rows as needed -->
-      </tbody>
+  
+  <!-- Investment Table Section -->
+  <div class="investment-table">
+    <h3>📋 User Investments</h3>
+    <table id="userPayoutTable">
+    
     </table>
   </div>
-
-  <!-- Bulk options -->
-  <div class="d-flex justify-content-between align-items-center mt-3">
-    <div class="form-check">
-      <input class="form-check-input" type="checkbox" id="sendNotifications" checked>
-      <label class="form-check-label" for="sendNotifications">
-        Send SMS/Email Notification
-      </label>
-    </div>
-    <div>
-      <label class="me-2">Payout Method:</label>
-      <select class="form-select form-select-sm d-inline-block" style="width: auto;">
-        <option>Razorpay</option>
-        <option>Paytm</option>
-        <option>Bank</option>
-      </select>
-    </div>
+</div>
+  
   </div>
 
-  <!-- Pagination -->
-  <nav class="mt-4">
-    <ul class="pagination pagination-sm justify-content-center">
-      <li class="page-item disabled"><a class="page-link">Prev</a></li>
-      <li class="page-item active"><a class="page-link">1</a></li>
-      <li class="page-item"><a class="page-link">2</a></li>
-      <li class="page-item"><a class="page-link">3</a></li>
-      <li class="page-item"><a class="page-link">Next</a></li>
-    </ul>
-  </nav>
+  <div id="movieSection" class="tab-content">
+    <p>Show movie title, release date, language, etc.</p>
+    <!-- Add your form or data table for movies here -->
+  </div>
+
+  <div id="productionSection" class="tab-content">
+    <p>Show producer, budget, cast, shooting schedule, etc.</p>
+    <!-- Add your form or data table for production here -->
+  </div>
+ <script>
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      event.target.classList.add('active');
+	  
+    }
+	
+    function loadPayoutSection()
+	{
+	drawUserPayoutDataTable();	
+	populateSelectBoxFirstOptAll("statusSelect",getPayOutStatus(),"id","name");
+	sendAjaxRequest(readMovLanguageUrl, "GET", getAppHeaer(), null,readAllLanguageFun );
+    $('#statusSelect').prepend('<option value="" disabled selected>Payment Status</option>');
+
+
+	}
+	
+	function payNow(movId,useId,targetId,isCallRepay,shareName,payamt,shareTypeId)
+	{
+	
+	  if(isCallRepay)
+	  {
+	    showSection('repaySection', document.querySelector("li[onclick*='repaySection']"));
+		
+		
+	     $("#repayShareId").val(shareTypeId);
+
+		if(targetId == 'repayShareReturn')
+		{
+		
+		$("#repayShareName").val(shareName);
+		$("#repayShareAmount").val(payamt);
+	    $("#repaySharerId").val(shareTypeId);
+
+		
+		
+
+		}
+		if(targetId == 'repayShareAmt')
+		{
+		$("#repayInvestName").val(shareName);
+		$("#repayInvestAmount").val(payamt);
+      
+		}
+       }
+	  const sections = ['repayAll', 'repayShareAmt', 'repayShareReturn'];
+
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.style.display = (id === targetId) ? 'block' : 'none';
+    }
+  });
+	
+	}
+
+var readAllLanguageFun =  function readLanguageCallBack(response)
+{
+
+ var data = readFinalResult(response);
+
+   if(data != null)
+   {
+         populateSelectBoxFirstOptAll("languageSelect",data,"id","name");
+		  const $languageSelect = $('#languageSelect');
+       // if ($languageSelect.find('option').length > 1) {
+         // $languageSelect.prop('selectedIndex', 1).trigger('change');
+         //} 
+            $('#languageSelect').prepend('<option value="" disabled selected>Language</option>');
+			
+
+   }
+
+}
+
+function onLanguageChangeInv() {
+  var selectedLanguageId = $('#languageSelect').val();
+
+
+    if (selectedLanguageId === "" || selectedLanguageId == null) {
+    console.log("Default option selected. Ignoring change.");
+    return; // Exit early, block logic
+  }
+
+
+
+  var selectedLanguageName = $('#languageSelect option:selected').text();
+	sendAjaxRequest(readMovieBylangIdUrl+selectedLanguageId, "GET", getAppHeaer(), null,readMovieByLanCallBack );
+
+  // You can now use the selectedLanguageId to load movies dynamically, etc.
+}
+
+
+var  readMovieByLanCallBack =	function readMovieByLanSection(response)
+{
+var data = readFinalResult(response);
+
+   if(data != null)
+   {
+   	     populateSelectBoxFirstOptAll	("movieSelect",data,"id","title");
+         
+        
+   
+   }
+
+}
+
+
+
+
+
+	
+	function drawUserPayoutDataTable()
+	{
+	
+
+	  
+$('#userPayoutTable').DataTable({
+   destroy: true,
+    processing: true,
+    serverSide: true,
+    lengthChange: false,
+    pageLength: 10,
+	dom: 'lrtip', 
+  ajax: {
+    url: dataTableUserPayoutUrl,
+    type: 'GET',
+    headers: getAppHeaer(),
+	data: function (d) {
+	
+	
+        return {
+          draw: d.draw,
+          start: d.start,
+          length: d.length,
+          searchText: $("#searchText").val(),
+          sortColumn: d.columns[d.order[0].column].data,
+          sortOrder: d.order[0].dir,
+		  language : $("#languageSelect").val() ,
+		  movie : $("#movieSelect").val() ,
+		  status: $("#statusSelect").val() 
+        };
+      },
+	  dataFilter: function (response) {
+        const fullResponse = JSON.parse(response);
+        const obj = fullResponse.result;
+		total = obj.recordsTotal ?? 0
+       $("#rewardCount").text("(" +total + ")");
+	   
+
+      // Debug: make sure obj is valid
+      return JSON.stringify({
+        draw: obj.draw > 0 ? obj.draw : 1,
+        recordsTotal: obj.recordsTotal ?? 0,
+        recordsFiltered: obj.recordsFiltered ?? 0,
+        data: obj.data ?? []
+      });
+      }
+
+  },
+  columns:  [
+        { data: 'firstName', title: 'Name',
+		 render: function (data, type, row) {
+		 
+		 
+          return toTitleCase(row.firstName + " " +row.lastName);
+        }
+
+
+
+		},
+	  { data: 'phoneNumber', title: 'Phone' ,
+	  render: function (data)
+	  {
+	    return formatPhoneOnly(data);
+	  }
+
+	  },
+      { data: 'movieName', title: 'Title' },
+	  { data: 'totalShares', title: 'TI : TR' ,
+	  render: function (data,type, row)
+	  {
+	    var shareData = formatRupee(row.investAmount) + " : " +  formatRupee(row.returnAmount);
+	    return shareData;
+	  }
+	  
+	  },
+      { data: 'paidCreated', title: 'Paid Date' ,
+	  render: function (data)
+	  {
+	    return formatDateTime(data);
+	  }
+	  
+	  },
+	  { data: 'paidUpdate', title: 'Updated',
+	  render: function (data)
+	  {
+	    return formatDateTime(data);
+	  }
+	  }
+	  ,
+	  { data: 'payAmount', title: 'Amt',
+	  render: function (data)
+	  {
+	    return formatRupee(data);
+	  }
+	  },
+	  	   { data: 'payMethord', title: 'Methord',
+		   render: function (data)
+	  {
+	    return formatNA(data);
+	  }
+		   
+		   },
+	   { data: 'payStatus', 
+	   title: 'Status',
+	  render: function (data,type, row)
+	  {
+	    return renderPayoutStatus(data,row.returnAmount,row.payAmount);
+	  } 
+	   
+	   
+	   
+	   },
+	     { data: 'totalShareType', 
+		  title: 'shareType' , 
+		 render: function (data, type, row) {
+		        var userName = row.firstName + " " +row.lastName;
+				
+                				
+		       return `<button  class= "flimbitButton" onclick="viewShare(${row.movieId},${row.userId}
+			   ,'${row.movieName}' ,'${userName}',${row.returnAmount},${row.payAmount}
+			   )"> ${data} View</button>`;
+
+        }
+		  
+		  }
+
+	  
+    ]
+});
+
+  $('#userPayoutTable_filter input')
+    .unbind()
+    .bind('keyup', function (e) {
+      if (e.key === 'Enter' || e.keyCode === 13) {
+        $('#userPayoutTable').DataTable().search(this.value).draw();
+      }
+    });
+  
+	  
+	  
+	}
+
+function reloadTable() {
+
+	     $("#userPayoutTable").DataTable().ajax.reload(null, false);
+}
+
+function viewShare(movId,userId,movName,userName,returnAmt , paidAmt)
+{
+
+
+				var remain = checkValidNumber(returnAmt) - checkValidNumber(paidAmt);
+                
+				var txt = remain + " = "  +checkValidNumber(returnAmt) + " - " + checkValidNumber(paidAmt);
+				
+				
+				$("#repayMovieId").val(movId);
+		    	 $("#repayUserId").val(userId);  
+				 
+				 $("#repaySharerUser").val(userName);
+		    	 $("#repaySharerMovie").val(movName); 
+				 
+			
+
+			$("#repayTxt").text(txt);
+				
+				
+
+  			 $("#investmentModal").show();
+			 $("#repayMovie").val(movName);
+			 $("#repayUser").val(userName);
+             $("#repayAmount").val(remain);
+
+			 
+			 
+			 $("#userName").text(toTitleCase(userName));
+			 $("#movieNameModal").text(toTitleCase(movName));
+			 
+			 
+
+    
+	sendAjaxRequest(readPayoutByuserIdAndMovIdUrl+userId+"/"+movId , "GET", getAppHeaer(), null,readInvestForModalWinCall );
+
+}
+
+ 
+
+var readInvestForModalWinCall = function readInvestForModalWinCall(response)
+{
+var data = readFinalResult(response);
+		   if(data !=null)
+		   {
+             
+			 drawSharTypeInvestPayout(data);
+      
+
+		   }
+
+
+
+
+}
+
+
+function drawSharTypeInvestPayout(data) {
+  const table = document.getElementById('investmentTable');
+  if (!table) return;
+
+  // Clear previous content (thead + tbody)
+  table.innerHTML = '';
+
+  // Create THEAD
+  const thead = document.createElement('thead');
+  thead.innerHTML = `
+    <tr>
+      <th>Type</th>
+      <th>Price</th>
+      <th>Shares</th>
+      <th>Amount</th>
+      <th>Return</th>
+	  <th>Paid</th>
+	  <th>Remain</th>
+	  <th>Methord</th>
+      <th>Paid Date</th>
+      <th>Update Date</th>
+      <th>Status</th>
+    </tr>
+  `;
+  table.appendChild(thead);
+
+  // Create TBODY
+  const tbody = document.createElement('tbody');
+  data.forEach(inv => {
+    const row = document.createElement('tr');
+	remainAmt = checkValidNumber(inv.returnAmount) - checkValidNumber(inv.payAmount)
+    row.innerHTML = `
+      <td>${inv.shareTypeName || 'N/A'}</td>
+      <td>${formatRupee(inv.perShareAmount)}</td>
+      <td>${formatShares(inv.totalShares)}</td>
+      <td>${formatRupee(inv.investAmount)}
+	  	  ${inv.investAmount > 0 ?  `<span style="color: #007bff; cursor: pointer; margin-left: 8px;" 
+		   onclick="payNow(${inv.movieId}, ${inv.userId},'repayShareAmt',true,
+		   '${inv.shareTypeName}',${inv.investAmount},${inv.shareTypeId})">Pay</span>` : ''}
+	  </td> 
+      <td>${formatRupee(inv.returnAmount)}</td>
+	  <td>${formatRupee(inv.payAmount)}
+	  </td>
+	  <td>
+	   ${formatRupee(remainAmt)}
+       ${remainAmt > 0 ? `<span style="color: #007bff; cursor: pointer; margin-left: 8px;" 
+	   onclick="payNow(${inv.movieId}, ${inv.userId},'repayShareReturn',true
+	   ,'${inv.shareTypeName}',${remainAmt},${inv.shareTypeId})">Pay</span>` : ''}
+
+	  </td>
+	  <td>${formatNA(inv.payMethod)}</td>
+      <td>${formatDateTime(inv.paidCreated)}</td>
+      <td>${formatDateTime(inv.paidUpdate)}</td>
+      <td>${renderPayoutStatus(inv.payStatus, inv.returnAmount, inv.payAmount)}</td>
+    `;
+    tbody.appendChild(row);
+  });
+  table.appendChild(tbody);
+
+  // Show modal
+  document.getElementById('investmentModal').style.display = 'block';
+}
+
+
+
+function editInvestment(id,status) {
+//alert("comming");
+   document.getElementById('editId').value = id;
+   document.getElementById('editStatus').value = status;
+   document.getElementById('editReason').value = '';
+
+  document.getElementById('editFormSection').style.display = 'block';
+}
+
+function backToTable() {
+  document.getElementById('editFormSection').style.display = 'none';
+}
+
+function showError(fieldId, message) {
+  document.getElementById(`error-${fieldId}`).textContent = message;
+
+}
+function saveStatus() {
+  const id = parseInt(document.getElementById('editId').value);
+  const newStatus = document.getElementById('editStatus').value;
+  const reason = document.getElementById('editReason').value;
+  hasError = false;
+
+  if (!reason.trim()) {
+    showError("editReason", "Reason is required.");
+    hasError = true;
+  }
+
+  (!hasError)
+  {
+    var payload = {
+	    id  : Number(id),
+		status :newStatus,
+		description : reason
+	
+	}
+	
+	 console.log(payload);
+	 
+     	sendAjaxRequest(saveInvestStatusChangeUrl, "POST", getAppHeaer(), payload,saveInvestStatusCall );
+
+  
+  }
+
+  
+ 
+}
+
+var  saveInvestStatusCall = function saveInvestStatusCall(response)
+{
+   var data = readFinalResult(response);
+		   if(data !=null)
+		   {
+
+           backToTable();
+	       sendAjaxRequest(readInvestShareBymovIdUrl+data.movieId+"/"+data.userId, "GET", getAppHeaer(), null,readInvestForModalWinCall );
+
+    }
+}
+
+
+function closeInvestmentModal() {
+  document.getElementById('investmentModal').style.display = 'none';
+}
+
+function showSection(sectionId,clickedLi) {
+  const sections = document.querySelectorAll('.tab-section');
+  sections.forEach(sec => sec.style.display = 'none');
+  document.getElementById(sectionId).style.display = 'block';
+  document.querySelectorAll('.section-tab').forEach(li => li.classList.remove('active-tab'));
+
+  // Add 'active-tab' to the clicked tab
+  clickedLi.classList.add('active-tab');
+  if(sectionId == 'repaySection')
+  payNow($("#repayMovieId").val(),$("#repayUserId").val(),'repayAll',false,'',0,0);
+  
+  
+}
+
+function submitRepayment() {
+    // Get values from the form fields
+    const repayMovie = document.getElementById('repayMovieId').value;
+    const repayUser = document.getElementById('repayUserId').value;
+    const repayAmount = document.getElementById('repayAmount').value;
+    const repayMethod = document.getElementById('repayMethod').value;
+    const repayStatus = document.getElementById('repayStatus').value;
+
+    // Create an object with the repayment data
+    const repaymentData = {
+        movieId: Number(repayMovie),
+        userId: Number(repayUser),
+        amount: Number(repayAmount),
+        method: repayMethod,
+        status: repayStatus,
+    };
+
+    // Check if the necessary fields are provided
+    if (!repayMovie || !repayUser || !repayAmount || !repayMethod || !repayStatus) {
+        alert('Please fill in all the fields');
+        return;
+    }
+
+    // Log the repayment object to the console (in real use case, this would be an API call)
+    console.log('Repayment Data:', repaymentData);
+
+
+    	sendAjaxRequest(repayAlLreturnforMovieUrl, "POST", getAppHeaer(), repaymentData,submitRepayAllCallback );
+
+
+    // For now, close the modal after submission
+    //closeInvestmentModal();
+}
+var submitRepayAllCallback = function submitRepayAllCallbackFn(response)
+{
+  var data = readFinalResult(response);
+		   if(data !=null)
+		   {
+		      alert(data.message);
+              closeInvestmentModal();
+              reloadTable();
+           }
+
+}
+
+function submitRepayShare() {
+    // Get values from the form fields
+    const repayMovie = document.getElementById('repayMovieId').value;
+    const repayUser = document.getElementById('repayUserId').value;
+	const repayShareId = document.getElementById('repayShareId').value;
+	
+    const repayAmount = document.getElementById('repayShareAmount').value;
+    const repayMethod = document.getElementById('repayShareMethod').value;
+    const repayStatus = document.getElementById('repayShareStatus').value;
+
+    // Create an object with the repayment data
+    const repaymentData = {
+        movieId: Number(repayMovie),
+        userId: Number(repayUser),
+        amount: Number(repayAmount),
+        method: repayMethod,
+        status: repayStatus,
+		shareTypeId : Number(repayShareId)
+    };
+
+    // Check if the necessary fields are provided
+    if (!repayMovie || !repayUser || !repayAmount || !repayMethod || !repayStatus) {
+        alert('Please fill in all the fields');
+        return;
+    }
+
+    // Log the repayment object to the console (in real use case, this would be an API call)
+    console.log('Repayment Data:', repaymentData);
+
+
+    sendAjaxRequest(repayAlLreturnforShareUrl, "POST", getAppHeaer(), repaymentData,submitRepayAllCallback );
+
+
+    // For now, close the modal after submission
+    //closeInvestmentModal();
+}
+
+function submitInvestedAmount() {
+    // Get values from the form fields
+    const repayMovie = document.getElementById('repayMovieId').value;
+    const repayUser = document.getElementById('repayUserId').value;
+	const repayShareId = document.getElementById('repayShareId').value;
+	
+    const repayAmount = document.getElementById('repayInvestAmount').value;
+    const repayMethod = document.getElementById('repayInvestMethod').value;
+    const repayStatus = document.getElementById('repayInvestStatus').value;
+
+    // Create an object with the repayment data
+    const repaymentData = {
+        movieId: Number(repayMovie),
+        userId: Number(repayUser),
+        amount: Number(repayAmount),
+        method: repayMethod,
+        status: repayStatus,
+		shareTypeId : Number(repayShareId)
+    };
+
+    // Check if the necessary fields are provided
+    if (!repayMovie || !repayUser || !repayAmount || !repayMethod || !repayStatus) {
+        alert('Please fill in all the fields');
+        return;
+    }
+
+    // Log the repayment object to the console (in real use case, this would be an API call)
+    console.log('Repayment Data:', repaymentData);
+
+
+     sendAjaxRequest(repayAllInvestedforShareUrl, "POST", getAppHeaer(), repaymentData,submitRepayAllCallback );
+
+
+    // For now, close the modal after submission
+    //closeInvestmentModal();
+}
+
+
+  </script>
+
+ <style>
+ 
+/* Modal Backdrop */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0,0,0,0.6);
+  overflow: auto;
+  font-family: Arial, sans-serif;
+}
+
+/* Modal Content Box */
+.modal-content {
+  background-color: #fffde7;
+  margin: 5% auto;
+  padding: 30px;
+  width: 90%;
+  max-width: 1000px;
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Close Button */
+.close {
+  float: right;
+  font-size: 26px;
+  font-weight: bold;
+  color: #444;
+  cursor: pointer;
+}
+.close:hover {
+  color: red;
+}
+
+/* Table Styling */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+th, td {
+  padding: 12px;
+  border: 1px solid #ccc;
+  text-align: center;
+}
+th {
+  background-color: #f2f2f2;
+  color: #333;
+}
+
+/* Buttons */
+button {
+  padding: 3px 16px;
+  margin: 5px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+button:hover {
+  background-color: #0056b3;
+}
+
+/* Edit Section Form */
+#editForm label {
+  display: block;
+  margin: 12px 0 5px;
+}
+#editForm select,
+#editForm textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 4px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+textarea {
+  resize: vertical;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+
+
+.close {
+  position: absolute;
+  top: 20px;
+  right: 25px;
+  font-size: 26px;
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+  z-index: 1000;
+}
+.close:hover {
+  color: red;
+}
+.modal-content {
+  position: relative; /* Important for .close positioning */
+}
+
+ .flimbitButton
+ {
+   background-color :#fddb23;
+ 
+ 
+ }
+ 
+ 
+.tab-toggle {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #FFD700;
+    }
+
+    .tab-btn {
+      padding: 10px 15px;
+      cursor: pointer;
+      font-weight: bold;
+      color: #555;
+      border-bottom: 3px solid transparent;
+    }
+
+    .tab-btn.active {
+      color: #FFD700;
+    }
+
+    .tab-content {
+      display: none;
+      padding: 20px;
+      border: 1px solid #eee;
+      border-radius: 5px;
+      background-color: #fffde7;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+
+/* General Section Styling */
+.user-investment-section {
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+}
+
+.filter-section {
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.filter-fields {
+  display: flex;
+  gap: 15px;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+}
+
+.filter-fields select,
+.filter-fields input {
+  padding: 5px 10px; /* Reduced padding */
+  height: 38px; /* Set height to reduce size */
+  width: 200px;
+  font-size: 14px; /* Adjust font size */
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.filter-fields button {
+  padding: 10px;
+  background-color: #ffcc00;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+.filter-fields button:hover {
+  background-color: #ff9900;
+}
+
+.investment-summary {
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.investment-summary h3 {
+  margin-bottom: 15px;
+}
+
+.summary-stats {
+  display: flex;
+  gap: 15px;
+  justify-content: space-between;
+  font-size: 16px;
+}
+
+.summary-stats p {
+  margin: 0;
+  font-weight: bold;
+}
+
+.investment-table {
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.investment-table h3 {
+  margin-bottom: 15px;
+}
+
+.investment-list {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.investment-list th, .investment-list td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+
+.investment-list th {
+  background-color: #f1f1f1;
+  font-weight: bold;
+}
+
+.investment-list td button {
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.investment-list td button:hover {
+  background-color: #0056b3;
+}
+
+
+.filter-fields select,
+.filter-fields input {
+  padding: 8px;
+  width: 200px;
+}
+
+.filter-fields button {
+  padding: 10px;
+  background-color: #fffde7;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  margin-top : 0%;
+}
+
+.filter-fields button:hover {
+  background-color: #FFD700;
+}
+
+table.dataTable>thead>tr>th,table.dataTable>thead>tr>td {
+    padding: 10px;
+    /* border-bottom: 1px solid rgba(0, 0, 0, 0.3); */
+}
+
+
+.investment-summary {
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.investment-summary h3 {
+  margin-bottom: 15px;
+}
+
+.summary-stats {
+  display: flex;
+  gap: 15px;
+  justify-content: space-between;
+  font-size: 16px;
+}
+
+.summary-stats p {
+  margin: 0;
+  font-weight: bold;
+}
+
+.investment-table {
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.investment-table h3 {
+  margin-bottom: 15px;
+}
+
+.investment-list {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.investment-list th, .investment-list td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+
+.investment-list th {
+  background-color: #f1f1f1;
+  font-weight: bold;
+}
+
+.investment-list td button {
+  padding: 3px 16px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.investment-list td button:hover {
+  background-color: #0056b3;
+}
+h3 {
+  font-size: 18px; /* Adjust the font size as needed */
+  font-weight: bold;
+  color: #333; /* Optional: Change the color */
+  margin-bottom: 10px; /* Optional: Adjust margin for spacing */
+}
+
+.error-message {
+    color: red;
+    font-size: 12px;
+    margin-top: 4px;
+  }
+
+  /* Dynamic Movie and User Box */
+        .movie-user-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        /* Movie and User Information */
+        .movie-user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .movie-name, .user-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .movie-name {
+            color: #007bff; /* Blue for Movie Name */
+        }
+
+        .user-name {
+            color: #28a745; /* Green for User Name */
+        }
+		
+		.section-tab {
+  color: #666666;              /* Text color */
+  border-left: 4px solid #fddb23; /* Yellow border on left */
+  padding: 8px 12px;
+  margin-bottom: 6px;
+  background-color: #fff;      /* Optional: clean white background */
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.section-tab:hover {
+  background-color: #fffde7;   /* Light hover effect */
+    cursor: pointer; /* 👈 Hand cursor on hover */
+
+}
+
+.section-tab.active-tab {
+  background-color: #fffde7; /* Highlight active tab */
+  color: #000; /* Optional: make text black for contrast */
+}
+
+button {
+    padding: 3px 16px;
+    margin: 5px;
+    background-color: white;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+
+  </style>
 

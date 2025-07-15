@@ -1,5 +1,5 @@
   <h4>🎬 Movies Management </h4>
-<div class="d-flex align-items-center gap-3 flex-wrap">
+<div class="d-flex align-items-center gap-3 flex-wrap divPart">
   <select id="languageFilter" class="form-select form-select-sm w-auto">
     <option value="">🌐 All Languages</option>
     <option value="Tamil">Tamil</option>
@@ -13,19 +13,26 @@
 <span class="movie-label-highlight">
    Total Filtered: <span id="movieCountFilter">(0)</span>
 </span>
+<span style = "margin-left:20%">
+   <button class="btn" onclick="addMovieDropClick();" id="btnAddMovie">+ Add</button>
+    <button class="btn" onclick="updateSelectedMovie()">✏️ Update</button>
+    <button class="btn" onclick="deleteMovies()">🗑️ Delete</button>
+	
+</span>
 </div>
 
 <div class="table-toolbar d-flex justify-content-between align-items-center mb-2">
   <div></div> <!-- Left empty because search box will float left via DataTables -->
   <div>
   
-      <button class="btn btn-sm btn-warning" onclick="addMovieDropClick();" id="btnAddMovie">+ Add</button>
-    <button class="btn btn-sm btn-outline-primary" onclick="updateSelectedMovie()">✏️ Update</button>
-    <button class="btn btn-sm btn-outline-danger" onclick="deleteMovies()">🗑️ Delete</button>
-	
+      
  
   </div>
 </div>
+
+
+
+<div class = "divPart">
 
 	  <table id="movieTable" class="display  table-hover" style="width: 100%;">
 
@@ -34,21 +41,23 @@
     <thead class="table-light">
  <tr>
 <th><input type="checkbox" class="select-all"></th>
-    <th>🎬 Title</th>
-    <th>📝 Description</th>
-    <th>💸 Budget</th>
-    <th> 📊 Per Share</th>
-    <th>📅 Live</th>
-    <th>📌 Status</th>
-    <th>🏷️ Date</th>
-    <th>🚀 Trailer</th>
-    <th>🎞️ Action</th>
+    <th>Title</th>
+    <th>Description</th>
+    <th>Budget</th>
+    <th>P/S</th>
+    <th>Live</th>
+    <th>Status</th>
+    <th>Date</th>
+    <th>Trailer</th>
+    <th>Action</th>
 	   
 
   </tr>
     </thead>
 	
   </table>
+  
+  </div>
 <script>
 var updateMovieId  = 0;
 var isUpdateMovie = false;

@@ -1,0 +1,868 @@
+<div class="section-container promo-code-section">
+  <h3>🎁 Promo Code Management</h3>
+<div style="text-align: right; margin-bottom: 10px;">
+  
+  <button class="btn-yellow" onclick="openPromoCodeModal('new')">+ Add Promo Code</button>
+</div>
+
+  <table id="promoTable">
+  </table>
+</div>
+
+<!-- 🔸 Modal Window -->
+<div id="promoCodeModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closePromoCodeModal()">&times;</span>
+    <h3>➕ Add/Edit Promo Code</h3>
+ <div class="form-grid" id = "promoNewDiv">
+        <div>
+          <label>Promo Code</label>
+          <input type="text" id="promoCodeUser" class="form-control"  >
+		      <div class="error-message" id="error-promoCodeUser"></div>
+
+        </div>
+
+        <div>
+          <label>Promo Type</label>
+         <select id="promoTypeSelectUser" class="form-control">
+		   <option value="" disabled selected>Please Select</option>
+
+         <option value="Influencer">Influencer</option>
+         <option value="Event">Event</option>
+         </select>
+		  <div class="error-message" id="error-promoTypeSelectUser"></div>
+
+        </div>
+		
+		 <div>
+          <label>Status</label>
+          <select id="promoTypeStatusSelectUser" class="form-control">
+		  		   <option value="" disabled selected>Please Select</option>
+
+  <option value="Active">Active</option>
+  <option value="Inactive">Inactive</option>
+</select>
+		  <div class="error-message" id="error-promoTypeStatusSelectUser"></div>
+
+        </div>	
+      <div style="margin-top: 1.5rem;">
+		
+		   <button type="button" class="btn-yellow" onclick = "savePromoCodeNew()">💾 Save</button  >
+		          <button type="button" class="btn-yellow" onclick="closePromoCodeModal()"> Close</button>
+
+</div>  
+  </div>
+  
+  </div>
+</div>
+
+
+
+    <!-- 🔸  Reward Section (Initially Hidden) -->
+
+<div id="rewardModal" class="modal" style="display:none;">
+  <div class="modal-content" style = "max-width:90%;">
+    <span class="close" onclick="closeRewardModal()">&times;</span>
+
+    <!-- 🔸 View Rewards Section -->
+    <div id="viewRewardSection">
+      <h3>🎁 Rewards for Promo Code: <span id="modalPromoCode"></span></h3>
+  <div style="text-align: right; margin-bottom: 10px;">
+        <button class="btn-yellow" onclick="openAddAwardSection('new')">+ Add Reward</button>
+    </div>
+      <table id="promotionRewardsTable" class="display" style="width:100%">
+
+      </table>
+    </div>
+
+    <!-- 🔸 Edit Reward Section (Initially Hidden) -->
+    <div id="editRewardSection" style="display:none;">
+      <h3>Edit Reward</h3>
+        
+    <div id="promoCodeForm" class="promo-form">
+	
+      <input type="hidden" id="promoId">
+
+      <div class="form-grid">
+        <div>
+          <label>Promo Code</label>
+          <input type="text" id="promoCode" class="form-control" disabled >
+		      <div class="error-message" id="error-promoCode"></div>
+
+        </div>
+
+        <div>
+          <label>Promo Type</label>
+          <select id="promoTypeSelect" class="form-control" onchange= "getPromoTypeById()">
+            
+          </select>
+		  <div class="error-message" id="error-promoTypeSelect"></div>
+
+        </div>
+        <div>
+          <label>Uses Left</label>
+          <input type="number" id="usesLeft" class="form-control" disabled>
+        </div>
+
+        <div>
+          <label>Expiry Days</label>
+          <input type="number" id="expiryDays" class="form-control" disabled>
+        </div>
+        <div>
+          <label>Reward Name</label>
+          <select id="rewardNameSelect" class="form-control" onchange = "getRewardSelectBox()">           
+          </select>
+		  		  <div class="error-message" id="error-rewardNameSelect"></div>
+
+        </div>
+		
+		 <div>
+          <label>Reward Type</label>
+          <input type = "text" id="rewardType" class="form-control" disabled>
+           
+        </div>
+
+        <div>
+          <label>Reward Value</label>
+          <input type="number" id="rewardValue" class="form-control" disabled>
+        </div>
+
+        <div>
+          <label>minInvestment</label>
+          <input type="number" id="minInvestment" class="form-control" disabled>
+        </div>
+        <div>
+          <label>milestoneCount</label>
+          <input type="number" id="milestoneCount" class="form-control" disabled>
+        </div>
+
+       <div>
+          <label>rewardLimit</label>
+          <input type="number" id="rewardLimit" class="form-control" disabled>
+        </div>
+
+        <div>
+          <label>Target Audience</label>
+          <input type="text" id="targetAudience" class="form-control" disabled>
+           
+        </div>
+
+        <div>
+          <label>Status</label>
+          <select id="promoStatus" class="form-control">
+            <option>Active</option>
+            <option>Inactive</option>
+          </select>
+		 <div class="error-message" id="error-promoStatus"></div>
+
+        </div>
+		
+		<div>
+          <label>activationDate</label>
+          <input type="datetime-local" id="activationDate" class="form-control">
+           <div class="error-message" id="error-activationDate"></div>
+
+        </div>
+      </div>
+
+      <div style="margin-top: 1.5rem;">
+        <button type="button" class="btn-yellow" onclick = "savePromoCode()">💾 Save</button  >
+		          <button type="button" onclick="backToView()">🔙 Back</button>
+
+      </div>
+    </div>
+   
+
+
+    
+
+   </div>
+
+
+     
+  </div>
+</div>
+
+
+
+
+
+
+<style>
+.section-container.promo-code-section {
+  padding: 2rem;
+  background: #fffef3;
+  border-radius: 12px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.btn-yellow {
+  background: #ffd700;
+  color: #000;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 1rem;
+}
+
+.promo-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.promo-table th, .promo-table td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: center;
+}
+
+.promo-table th {
+  background-color: #fbe17d;
+  color: #333;
+}
+
+.status.active {
+  color: green;
+  font-weight: bold;
+}
+
+.status.inactive {
+  color: red;
+  font-weight: bold;
+}
+
+/* 🔸 Modal */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+  background: #fff;
+  margin: 5% auto;
+  padding: 2rem;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 700px;
+  position: relative;
+}
+
+.modal .close {
+  position: absolute;
+  top: 10px; right: 20px;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.promo-form .form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+}
+
+.form-control {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  width: 100%;
+}
+
+.btn-secondary {
+  background: #eee;
+  color: #000;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  margin-left: 10px;
+}
+.error-message {
+    color: red;
+    font-size: 12px;
+    margin-top: 4px;
+  }
+
+</style>
+
+<script>
+var promoCodeUsagType ;
+function openPromoCodeModal(inp) {  
+clearAllFormInsideDiv("#promoNewDiv");
+ promatoinId = 0;
+  $('#promoCodeModal').show();
+}
+
+function closePromoCodeModal() {
+  $('#promoCodeModal').hide();
+}
+
+function drawDataTablePromoCodes() {
+
+  $('#promoTable').DataTable({
+    destroy: true,
+    processing: true,
+    serverSide: true,
+    lengthChange: false,
+    pageLength: 10,
+    ajax: {
+      url: dataTablePromoCodeUrl,
+      type: 'GET',
+	      headers: getAppHeaer(),
+
+      data: function (d) {
+        return {
+          draw: d.draw,
+          start: d.start,
+          length: d.length,
+          searchText: d.search.value,
+          sortColumn: d.columns[d.order[0].column].data,
+          sortOrder: d.order[0].dir
+        };
+      },
+      dataFilter: function (response) {
+        const fullResponse = JSON.parse(response);
+        const obj = fullResponse.result;
+		total = obj.recordsTotal ?? 0
+       $("#promoCount").text("(" +total + ")");
+
+      // Debug: make sure obj is valid
+      return JSON.stringify({
+        draw: obj.draw > 0 ? obj.draw : 1,
+        recordsTotal: obj.recordsTotal ?? 0,
+        recordsFiltered: obj.recordsFiltered ?? 0,
+        data: obj.data ?? []
+      });
+      }
+    },
+    columns: [
+      { data: 'promoCode', title: 'Promo Code' },
+      { data: 'userType', title: 'userType' },
+      { data: 'createdAt', title: 'created date' 
+	  ,
+	   render: function (data, type, row) {
+          return formatDateTime(row.createdAt);
+        }
+	  
+	  },
+      { data: 'status', title: 'Status' },
+	  
+	  {
+    data: null,
+    title: 'Rewards',
+    render: function (data, type, row) {
+      return `<button onclick="viewRewards(${row.id},'${row.promoCode}')">🎁 View Rewards</button>`;
+    },
+    orderable: false,
+    searchable: false
+  },
+      {
+        data: null,
+        title: 'Actions',
+        render: function (data, type, row) {
+          return `
+            <button onclick="editPromoCode(${row.id},'${row.promoCode}','${row.userType}','${row.status}',)">✏️</button>
+            <button onclick="deletePromoCode(${row.id})">🗑️</button>
+          `;
+        },
+        orderable: false,
+        searchable: false
+      }
+    ]
+  });
+
+  // trigger search only on Enter
+  $('#promoTable_filter input')
+    .unbind()
+    .bind('keyup', function (e) {
+      if (e.key === 'Enter' || e.keyCode === 13) {
+        $('#promoTable').DataTable().search(this.value).draw();
+      }
+    });
+}
+
+
+function loadPromoCodeType()
+	{
+	  
+	  drawDataTablePromoCodes();
+
+	  
+	}
+var readAllPromotionType =  function readAllPromotionTypeCallBack(response)
+{
+
+var data = readFinalResult(response);
+		   if(data !=null)
+		   {
+			 populateSelectBox("promoTypeSelect",data,"id","typeCode");
+			 
+			 if(promoCodeUsagType  === "exist")
+			 {
+			 $("#promoTypeSelect").val(editPromoTypeId);
+             $("#promoTypeSelect").trigger('change');
+			 }
+
+
+		   }
+
+
+
+}
+function getPromoTypeById()
+{
+      $("#rewardNameSelect").val("");
+	  
+	        $("#rewardType").val("");
+
+      $("#rewardValue").val("");
+
+      $("#minInvestment").val("");
+
+      $("#milestoneCount").val("");
+          $("#rewardLimit").val("");
+      $("#targetAudience").val("");
+
+ 
+     typeId = $("#promoTypeSelect").val();
+	 sendAjaxRequest(readPromoByIdUrl+typeId, "GET", getAppHeaer(), null,readPromoTypeByIdfun );
+      sendAjaxRequest(readRewardByTypeIdUrl+typeId, "GET", getAppHeaer(), null,readRewardByTypeIdFun );
+
+	 
+
+}
+
+function getRewardSelectBox()
+{
+  rewardId = $("#rewardNameSelect").val();
+  sendAjaxRequest(readRewardByIdUrl+rewardId, "GET", getAppHeaer(), null,readRewardByIdFunCal );
+
+}
+
+var readRewardByIdFunCal = function readRewardByIdFunCalBack(response)
+{
+var data = readFinalResult(response);
+		   if(data !=null)
+		   {
+				$("#rewardType").val(data.rewardType);
+				$("#rewardValue").val(data.rewardValue);
+               	$("#targetAudience").val(data.rewardTarget);
+                $("#minInvestment").val(data.minInvestment);
+				$("#milestoneCount").val(data.milestoneCount);
+               	$("#rewardLimit").val(data.rewardLimit);
+
+
+              
+			 
+		   }
+
+
+
+}
+
+var readRewardByTypeIdFun = function readRewardByTypeIdFunCall(response)
+{
+      $("#rewardNameSelect").empty();
+
+var data = readFinalResult(response);
+		   if(data !=null)
+		   {
+		   
+		   			 populateSelectBox("rewardNameSelect",data,"id","name");
+			
+
+              if(promoCodeUsagType  == "exist")
+			 {
+			
+		     $("#rewardNameSelect").val(editPromoRewardId);
+             $("#rewardNameSelect").trigger('change');
+			 
+			 }
+
+              
+			 
+		   }
+
+
+}
+
+
+var readPromoTypeByIdfun = function readPromoTypeByIdCallBack(response)
+{
+ $("#usesLeft").val("0");  
+ $("#expiryDays").val("0");
+			 
+var data = readFinalResult(response);
+		   if(data !=null)
+		   {
+              $("#usesLeft").val(data.userCount);  
+			  $("#expiryDays").val(data.expiryDays);
+			 
+		   }
+
+
+}
+
+function clearErrors() {
+  const errors = document.querySelectorAll(".error-message");
+  errors.forEach(e => e.textContent = '');
+}
+function savePromoCode()
+{
+  clearErrors();
+
+  hasError = false;
+  promoCode = $("#promoCode").val().trim();
+  if (!promoCode) {
+    showError("promoCode", "Promo Code is required.");
+    hasError = true;
+  }
+    promoTypeSelectVal = $("#promoTypeSelect").val();
+  if (!promoTypeSelectVal) {
+    showError("promoTypeSelect", "PromoType  is required.");
+    hasError = true;
+  }
+  
+    rewardNameSelectVal = $("#rewardNameSelect").val();
+  if (!rewardNameSelectVal) {
+    showError("rewardNameSelect", "Reward Name is required.");
+    hasError = true;
+  }
+  
+   const activationDateValue = document.getElementById("activationDate").value;
+  if ( activationDateValue) {
+     
+	     const activationDate = new Date(activationDateValue);
+		  const currentDate = new Date();
+		  currentDate.setMinutes(currentDate.getMinutes() + 5);
+          if (activationDate <= currentDate) {
+		  
+		      showError("activationDate", "Act Date should be greater than current date 5 min.");
+                  hasError = true;
+
+		  }
+
+		 
+
+    }
+  
+  statusVal =  $("#promoStatus").val();
+  
+   if (!statusVal) {
+    showError("promoStatus", "Status is required.");
+    hasError = true;
+  }
+  
+ if(!hasError)
+  {
+    const payload = {
+    promoCode : promoCode,
+    promoType:$('#promoTypeSelect option:selected').text(),
+    usesLeft:Number($("#usesLeft").val()),
+    expiryDays: Number($("#expiryDays").val()),
+    status: $("#promoStatus").val(),
+	promoTypeId : Number(promoTypeSelectVal),
+	promoCodeUsage : promoCodeUsagType,
+	 rewardId      : Number(rewardNameSelectVal),
+	 activationDate : activationDateValue  == null ? null : toSqlTimestampWithMillis(activationDateValue) 
+  };  
+
+  sendAjaxRequest(inserrPromotionCodesUrl, "POST", getAppHeaer(), payload,savePrmomoCodeCallVar );
+  
+
+  }  
+  }
+  
+    var savePrmomoCodeCallVar = function savePrmomoCodeCallBack(response)
+  {
+  if(response.status == "success")
+	{
+	   if(response.message == "success")
+	   {
+	   
+	     $('#promotionRewardsTable').DataTable().ajax.reload(null, false);
+		 backToView();
+
+	   }
+	 } 
+	 else
+	 {
+	   if(response.status === "failure")
+		    alert("❌ Failed to save movie. " + response.message);
+	 
+	 }
+ 
+
+}
+
+function editPromotionType(id)
+{
+ alert("cliked");
+
+
+}
+
+  
+  
+function showError(fieldId, message) {
+  document.getElementById(`error-${fieldId}`).textContent = message;
+
+}
+var currentPromoCode;
+
+
+function viewRewards(promoCodeId,promocode) {
+currentPromoCode = promocode;
+  $('#modalPromoCode').text(promocode);
+  
+  $('#rewardTable tbody').empty();
+  $('#editRewardSection').hide();
+  $('#viewRewardSection').show();
+      $('#rewardModal').show();
+
+dataTableRewardModal(promoCodeId);
+}
+
+
+function dataTableRewardModal(promoCodeId)
+{
+$('#promotionRewardsTable').DataTable({
+    destroy: true,
+    processing: true,
+    serverSide: true,
+    lengthChange: false,
+    pageLength: 10,
+    ajax: {
+      url: dataTablePromoRewardMapUrl + promoCodeId,
+      type: 'GET',
+	      headers: getAppHeaer(),
+
+      data: function (d) {
+        return {
+          draw: d.draw,
+          start: d.start,
+          length: d.length,
+          searchText: d.search.value,
+          sortColumn: d.columns[d.order[0].column].data,
+          sortOrder: d.order[0].dir
+        };
+      },
+      dataFilter: function (response) {
+        const fullResponse = JSON.parse(response);
+        const obj = fullResponse.result;
+		total = obj.recordsTotal ?? 0
+       $("#promoCount").text("(" +total + ")");
+
+      // Debug: make sure obj is valid
+      return JSON.stringify({
+        draw: obj.draw > 0 ? obj.draw : 1,
+        recordsTotal: obj.recordsTotal ?? 0,
+        recordsFiltered: obj.recordsFiltered ?? 0,
+        data: obj.data ?? []
+      });
+      }
+    },
+    columns:  [
+      { data: 'promoCode', title: 'Promo Code' },
+      { data: 'promotionType', title: 'Type' },
+	  {
+    data: 'rewardValue',
+    title: 'Reward',
+    render: function (data, type, row) {
+        return row.rewardValue + " " + row.rewardType;
+    }
+},
+      { data: 'usesLeft', title: 'uses_left' },
+	  { data: 'rewardTarget', title: 'Target' },
+      { data: 'minInvestment', title: 'MI/MC/RL',
+        render: function (data, type, row) {
+		
+        return `${row.minInvestment}/${row.milestoneCount}/${row.rewardLimit}`;
+		}
+
+	  },
+       { data: 'activationDate', 
+	   title: 'Act Date' ,
+	   render: function (data, type, row) {
+          return formatDateTime(row.activationDate);
+        }
+	   }, 	 
+	   { data: 'expiryDays', title: 'EDays' },
+
+      { data: 'rewardStatus', title: 'Status' },
+     
+      {
+        data: null,
+        title: 'Actions',
+        render: function (data, type, row) {
+          return `
+		   <button onclick="deleteReward(${row.rewardMappingId})">🗑️</button>
+            <button onclick="editReward(${row.rewardMappingId},
+			${row.promotionTypeId}
+			,${row.rewardId}
+			,'${row.promoCode}'
+			,'${row.rewardStatus}'
+			)">✏️</button>
+          `;
+        },
+        orderable: false,
+        searchable: false
+      }
+    ]
+  });
+
+  // trigger search only on Enter
+  $('#promotionRewardsTable_filter input')
+    .unbind()
+    .bind('keyup', function (e) {
+      if (e.key === 'Enter' || e.keyCode === 13) {
+        $('#promotionRewardsTable').DataTable().search(this.value).draw();
+      }
+    });
+
+  
+
+}
+
+function closeRewardModal() {
+  $('#rewardModal').hide();
+}
+
+function openAddAwardSection(inp)
+{
+  promoCodeUsagType = inp;
+  clearAllFormInsideDiv("#promoCodeForm");
+  $('#promoCode').val(currentPromoCode);
+  $('#viewRewardSection').hide();
+  $('#editRewardSection').show();
+  sendAjaxRequest(readAllPromoTypeUrl, "GET", getAppHeaer(), null,readAllPromotionType );
+  //sendAjaxRequest(readRewardByTypeIdUrl+typeId, "GET", getAppHeaer(), null,readRewardByTypeIdFun );
+
+   
+}
+
+
+var editPromoTypeId = 0;
+var editPromoRewardId = 0;
+function editReward(rewardMapId,promTypeId,rewardTypeId,promoCode,status) {
+   promoCodeUsagType = "exist";
+
+  $('#viewRewardSection').hide();
+  $('#editRewardSection').show();
+
+  //$('#promoId').val(id);
+ // $('#rewardValue').val(Number(rewardValue));
+  //$('#usesLeft').val(Number(usesLeft));
+  //$('#expiryDays').val(expiryDate);
+  $('#promoStatus').val(status);
+  $('#promoCode').val(promoCode);
+
+  
+  editPromoTypeId = promTypeId ;
+  editPromoRewardId = rewardTypeId;
+   sendAjaxRequest(readAllPromoTypeUrl, "GET", getAppHeaer(), null,readAllPromotionType );
+   //sendAjaxRequest(readRewardByTypeIdUrl+promTypeId, "GET", getAppHeaer(), null,readRewardByTypeIdFun );
+
+   
+
+}
+
+function backToView() {
+  $('#editRewardSection').hide();
+  $('#viewRewardSection').show();
+}
+
+
+function deleteReward(id)
+{
+const confirmDelete = confirm("Are you sure you want to delete this cast record?");
+if (confirmDelete) {
+   	 sendAjaxRequest(deleteRewardMapUrl+id, "GET", getAppHeaer(), null,savePrmomoCodeCallVar );
+}
+
+}
+
+function savePromoCodeNew()
+{
+   hasError = promotionCodeValidate();
+  if(!hasError)
+  {
+  const payload = {
+    id : 0,
+    promoCode : promoCode,
+    promoType:promoTypeSelectUser,
+	status  : promoTypeStatusSelectUser
+   
+  };
+
+   console.log(payload);  
+
+  if(promatoinId == 0)
+  sendAjaxRequest(insertPromoCodeUrl, "POST", getAppHeaer(), payload,savePrmomoCodeNewCallBackVar );
+  else
+   {
+     payload.id = promatoinId;
+	 sendAjaxRequest(updatePromoCodeUrl, "POST", getAppHeaer(), payload,savePrmomoCodeNewCallBackVar );
+
+     
+   }
+  
+  
+  }
+ }
+ function  promotionCodeValidate()
+ {
+  hasError = false;
+  promoCode = $("#promoCodeUser").val().trim();
+  if (!promoCode) {
+    showError("promoCodeUser", "Promo Code is required.");
+    hasError = true;
+  }
+  promoTypeSelectUser = $("#promoTypeSelectUser").val();
+  if (!promoTypeSelectUser) {
+    showError("promoTypeSelectUser", "Promo Type is required.");
+    hasError = true;
+  }
+  promoTypeStatusSelectUser = $("#promoTypeStatusSelectUser").val();
+  if (!promoCode) {
+    showError("promoTypeStatusSelectUser", "Promo status is required.");
+    hasError = true;
+  }
+ 
+  return hasError;
+ }
+ var promatoinId = 0;
+ function editPromoCode(id,promocode,type,status)
+{
+   promatoinId = id;
+
+   $("#promoCodeModal").show();
+   $("#promoCodeUser").val(promocode);
+   $("#promoCodeUser").prop("disabled", true);
+   $("#promoTypeSelectUser").val(type);
+   $("#promoTypeStatusSelectUser").val(status);
+
+
+   
+}
+function deletePromoCode(id)
+{
+const confirmDelete = confirm("Are you sure you want to delete this cast record?");
+if (confirmDelete) {
+   	 sendAjaxRequest(deletePromoUrl+id, "GET", getAppHeaer(), null,savePrmomoCodeNewCallBackVar );
+}
+}
+
+ var savePrmomoCodeNewCallBackVar = function savePrmomoCodeNewCallBack(response)
+  {
+  closeModalAndReloadDataTable(response,"#promoCodeModal","#promoTable");
+
+}
+
+
+</script>

@@ -1,2 +1,865 @@
-<h4>💼 Investments</h4><p>Track all user investments per movie.</p>
+
+
+
+ <div class="tab-toggle" style="margin-top:2%">
+    <div class="tab-btn active" data-target="#userSection" onclick="switchTab('userSection')">🎬 User</div>
+    <div class="tab-btn " data-target="#movieSection" onclick="switchTab('movieSection')">🎬 Movie</div>
+    <div class="tab-btn" data-target="#productionSection" onclick="switchTab('productionSection')">🏭 Production</div>
+  </div>
+  
+  <!--modal window---->
+  
+ <!-- Modal -->
+<div id="investmentModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeInvestmentModal()">&times;</span>
+
+    <!-- Section 1: Table -->
+    <div id="investmentTableSection">
+<div class="movie-user-box" >
+        <div class="movie-user-info divPart" style = "width:100%;">
+            🎬<span class="movie-name" id="movieNameModal" style= "margin-right : 2%;"></span>  <!-- Movie Name -->
+            👤<span class="user-name" id="userName" ></span>    <!-- User Name -->
+        </div>
+</div>
+<div class = "divPart" style = "margin-top:1%">
+		<table id="investmentTable" border="1">
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Price</th>
+            <th>Shares</th>
+            <th>Amount</th>
+            <th>Return</th>
+			<th>Invested Date </th>
+
+			<th>update Date </th>
+			<th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+	  
+</div>	  
+    </div>
+
+    <!-- Section 2: Edit Form -->
+    <div id="editFormSection" style="display:none;">
+      <h2>Edit Investment Status</h2>
+      <div id="editForm" class="divPart">
+        <input type="hidden" id="editId">
+        <label>Status:
+          <select id="editStatus" style = "width:20%">
+            <option value="">-- Select Status --</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+          </select>
+        </label>
+        <label>Reason:<br>
+          <textarea id="editReason" rows="4" cols="50" placeholder="Enter reason..."></textarea>
+        <div class="error-message" id="error-editReason"></div>
+
+		</label>
+        <br><br>
+        
+      </div>
+	  <div class="divPart" style ="margin-top:1%">
+	  <button type="button"  class = "flimbitButton" onclick="saveStatus()">Save</button>
+        <button type="button" class = "flimbitButton" onclick="backToTable()">Back</button>
+	  
+	  </div>
+	  
+	  
+    </div>
+  </div>
+</div>
+
+  
+  <!---ModalWindow-->
+  
+
+<div id="userSection" class="tab-content active" style = "background-color:white;">
+    <!-- Add your form or data table for movies here -->
+	
+	<div class="user-investment-section">
+	
+	<!-- Investment Summary Section -->
+  <div class="investment-summary" style = "display:none;">
+    <h3>📊 Investment Summary</h3>
+    <div class="summary-stats">
+      <p><strong>💰 Total Invested:</strong> ₹3,50,000</p>
+      <p><strong>🎬 Movies Invested:</strong> 6</p>
+      <p><strong>🔁 Total Returns:</strong> ₹75,000</p>
+      <p><strong>👤 User:</strong> Raj Kumar</p>
+    </div>
+  </div>
+	
+  <!-- Filter Section -->
+  <div class="filter-section">
+    <h3>🔍 Filter Users:</h3>
+    <div class="filter-fields">
+            <select id="languageSelect" class="form-control" onchange="onLanguageChangeInv()">
+        <option value="" disabled selected>Select Language</option>
+        <!-- Language options will be populated dynamically -->
+      </select>
+      
+      <select id="movieSelect" class="form-control">
+        <option value="" disabled selected>Select Movie</option>
+        <!-- Movie options will be populated dynamically -->
+      </select>
+      <select id="statusSelect" class="form-control">
+        <option value="" disabled selected>Select Status</option>
+        <option value="active">Active</option>
+        <option value="inactive">Inactive</option>
+      </select>
+      <input type="text" id="searchText" class="form-control" placeholder="Search..." />
+      <button class="btn" onclick="reloadTable()" style = "    height: 37px;">🔎</button>
+    </div>
+  </div>
+
+  
+  <!-- Investment Table Section -->
+  <div class="investment-table">
+    <h3>📋 User Investments</h3>
+    <table id="userinvestmentTable">
+    
+    </table>
+  </div>
+</div>
+  
+  </div>
+
+  <div id="movieSection" class="tab-content">
+    <p>Show movie title, release date, language, etc.</p>
+    <!-- Add your form or data table for movies here -->
+  </div>
+
+  <div id="productionSection" class="tab-content">
+    <p>Show producer, budget, cast, shooting schedule, etc.</p>
+    <!-- Add your form or data table for production here -->
+  </div>
+ <script>
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      event.target.classList.add('active');
+	  
+    }
+	
+    function loadInvestSection()
+	{
+	drawUserInvestDataTable();
+	sendAjaxRequest(readMovLanguageUrl, "GET", getAppHeaer(), null,readAllLanguageFun );
+
+
+	}
+
+var readAllLanguageFun =  function readLanguageCallBack(response)
+{
+
+ var data = readFinalResult(response);
+
+   if(data != null)
+   {
+         populateSelectBoxFirstOptAll("languageSelect",data,"id","name");
+		  const $languageSelect = $('#languageSelect');
+        if ($languageSelect.find('option').length > 1) {
+          $languageSelect.prop('selectedIndex', 1).trigger('change');
+         } 
+		
+
+   }
+
+}
+
+function onLanguageChangeInv() {
+  var selectedLanguageId = $('#languageSelect').val();
+
+
+    if (selectedLanguageId === "" || selectedLanguageId == null) {
+    console.log("Default option selected. Ignoring change.");
+    return; // Exit early, block logic
+  }
+
+
+
+  var selectedLanguageName = $('#languageSelect option:selected').text();
+	sendAjaxRequest(readMovieBylangIdUrl+selectedLanguageId, "GET", getAppHeaer(), null,readMovieByLanCallBack );
+
+  // You can now use the selectedLanguageId to load movies dynamically, etc.
+}
+
+
+var  readMovieByLanCallBack =	function readMovieByLanSection(response)
+{
+var data = readFinalResult(response);
+
+   if(data != null)
+   {
+   	     populateSelectBoxFirstOptAll	("movieSelect",data,"id","title");
+         
+        
+   
+   }
+
+}
+
+
+
+
+
+	
+	function drawUserInvestDataTable()
+	{
+	
+
+	  
+$('#userinvestmentTable').DataTable({
+   destroy: true,
+    processing: true,
+    serverSide: true,
+    lengthChange: false,
+    pageLength: 10,
+	dom: 'lrtip', 
+  ajax: {
+    url: dataTableUserInvestUrl,
+    type: 'GET',
+    headers: getAppHeaer(),
+	data: function (d) {
+        return {
+          draw: d.draw,
+          start: d.start,
+          length: d.length,
+          searchText: $("#searchText").val(),
+          sortColumn: d.columns[d.order[0].column].data,
+          sortOrder: d.order[0].dir,
+		  language : $("#languageSelect").val() ,
+		  movie : $("#movieSelect").val() ,
+		  status: $("#statusSelect").val() 
+        };
+      },
+	  dataFilter: function (response) {
+        const fullResponse = JSON.parse(response);
+        const obj = fullResponse.result;
+		total = obj.recordsTotal ?? 0
+       $("#rewardCount").text("(" +total + ")");
+	   
+
+      // Debug: make sure obj is valid
+      return JSON.stringify({
+        draw: obj.draw > 0 ? obj.draw : 1,
+        recordsTotal: obj.recordsTotal ?? 0,
+        recordsFiltered: obj.recordsFiltered ?? 0,
+        data: obj.data ?? []
+      });
+      }
+
+  },
+  columns:  [
+        { data: 'firstName', title: 'Name',
+		 render: function (data, type, row) {
+		 
+		 
+          return toTitleCase(row.firstName + " " +row.lastName);
+        }
+
+
+
+		},
+	  { data: 'phoneNumber', title: 'Phone' ,
+	  render: function (data)
+	  {
+	    return formatPhoneOnly(data);
+	  }
+
+	  },
+      { data: 'movieName', title: 'Title' },
+      { data: 'langName', title: 'Language'},
+	  { data: 'totalShares', title: 'share' ,
+	  render: function (data,type, row)
+	  {
+	    var shareData = formatShares(data) + " x " + calculateSharePrice(row.investAmount,row.totalShares);
+	    return shareData;
+	  }
+	  
+	  },
+      { data: 'investAmount', title: 'TI' ,
+	  render: function (data)
+	  {
+	    return formatRupee(data);
+	  }
+	  
+	  },
+	  { data: 'returnAmount', title: 'TR',
+	  render: function (data)
+	  {
+	    return formatRupee(data);
+	  }
+	  },
+	   { data: 'status', 
+	   title: 'Status',
+	  render: function (data)
+	  {
+	    return renderStatus(data);
+	  } 
+	   
+	   
+	   
+	   },
+
+	  
+	  	  { data: 'totalShareType', 
+		  title: 'shareType' , 
+		 render: function (data, type, row) {
+		        var userName = row.firstName + " " +row.lastName;
+		       return `<button  class= "flimbitButton" onclick="viewShare(${row.movieId},${row.userId}
+			   ,'${row.movieName}' ,'${userName}'
+			   )"> ${data} View</button>`;
+
+        }
+		  
+		  }
+
+	  
+    ]
+});
+
+  $('#userinvestmentTable_filter input')
+    .unbind()
+    .bind('keyup', function (e) {
+      if (e.key === 'Enter' || e.keyCode === 13) {
+        $('#userinvestmentTable').DataTable().search(this.value).draw();
+      }
+    });
+  
+	  
+	  
+	}
+
+function reloadTable() {
+
+	     $("#userinvestmentTable").DataTable().ajax.reload(null, false);
+}
+
+function viewShare(movId,userId,movName,userName)
+{
+  			 $("#investmentModal").show();
+			 
+			 $("#userName").text(toTitleCase(userName));
+			 $("#movieNameModal").text(toTitleCase(movName));
+
+
+	sendAjaxRequest(readInvestShareBymovIdUrl+movId+"/"+userId, "GET", getAppHeaer(), null,readInvestForModalWinCall );
+
+}
+
+var readInvestForModalWinCall = function readInvestForModalWinCall(response)
+{
+var data = readFinalResult(response);
+		   if(data !=null)
+		   {
+             
+			 drawSharTypeInvest(data);
+
+
+		   }
+
+
+
+}
+
+function drawSharTypeInvest(data)
+
+{
+
+ const tableBody = document.querySelector('#investmentTable tbody');
+  tableBody.innerHTML = '';
+
+  data.forEach(inv => {
+    const row =  `
+  <tr>
+    <td>${inv.shareTypeName}</td>
+    <td>${formatRupee(inv.pricePerShare)}</td>
+    <td>${formatShares(inv.numberOfShares)}</td>
+    <td>${formatRupee(inv.amountInvested)}</td>
+    <td>${formatRupee(inv.returnAmount)}</td>
+	<td>${formatDateTime(inv.investedAt)}</td>
+    <td>${formatDateTime(inv.updatedDate)}</td>
+    <td>${renderStatus(inv.status)}</td>
+    <td><button class="flimbitButton" onclick="editInvestment(${inv.id}, '${inv.status}')">Edit</button></td>
+  </tr>
+`;
+    tableBody.innerHTML += row;
+  });
+
+  document.getElementById('investmentModal').style.display = 'block';
+  document.getElementById('investmentTableSection').style.display = 'block';
+  document.getElementById('editFormSection').style.display = 'none';
+
+
+
+}
+function editInvestment(id,status) {
+//alert("comming");
+   document.getElementById('editId').value = id;
+   document.getElementById('editStatus').value = status;
+   document.getElementById('editReason').value = '';
+
+  document.getElementById('investmentTableSection').style.display = 'none';
+  document.getElementById('editFormSection').style.display = 'block';
+}
+
+function backToTable() {
+  document.getElementById('editFormSection').style.display = 'none';
+  document.getElementById('investmentTableSection').style.display = 'block';
+}
+
+function showError(fieldId, message) {
+  document.getElementById(`error-${fieldId}`).textContent = message;
+
+}
+function saveStatus() {
+  const id = parseInt(document.getElementById('editId').value);
+  const newStatus = document.getElementById('editStatus').value;
+  const reason = document.getElementById('editReason').value;
+  hasError = false;
+
+  if (!reason.trim()) {
+    showError("editReason", "Reason is required.");
+    hasError = true;
+  }
+
+  (!hasError)
+  {
+    var payload = {
+	    id  : Number(id),
+		status :newStatus,
+		description : reason
+	
+	}
+	
+	 console.log(payload);
+	 
+     	sendAjaxRequest(saveInvestStatusChangeUrl, "POST", getAppHeaer(), payload,saveInvestStatusCall );
+
+  
+  }
+
+  
+ 
+}
+
+var  saveInvestStatusCall = function saveInvestStatusCall(response)
+{
+   var data = readFinalResult(response);
+		   if(data !=null)
+		   {
+
+           backToTable();
+	       sendAjaxRequest(readInvestShareBymovIdUrl+data.movieId+"/"+data.userId, "GET", getAppHeaer(), null,readInvestForModalWinCall );
+
+    }
+}
+
+
+function closeInvestmentModal() {
+  document.getElementById('investmentModal').style.display = 'none';
+}
+  </script>
+
+ <style>
+ 
+/* Modal Backdrop */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0,0,0,0.6);
+  overflow: auto;
+  font-family: Arial, sans-serif;
+}
+
+/* Modal Content Box */
+.modal-content {
+  background-color: #fffde7;
+  margin: 5% auto;
+  padding: 30px;
+  width: 90%;
+  max-width: 1000px;
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Close Button */
+.close {
+  float: right;
+  font-size: 26px;
+  font-weight: bold;
+  color: #444;
+  cursor: pointer;
+}
+.close:hover {
+  color: red;
+}
+
+/* Table Styling */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+th, td {
+  padding: 12px;
+  border: 1px solid #ccc;
+  text-align: center;
+}
+th {
+  background-color: #f2f2f2;
+  color: #333;
+}
+
+/* Buttons */
+button {
+  padding: 3px 16px;
+  margin: 5px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+button:hover {
+  background-color: #0056b3;
+}
+
+/* Edit Section Form */
+#editForm label {
+  display: block;
+  margin: 12px 0 5px;
+}
+#editForm select,
+#editForm textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 4px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+textarea {
+  resize: vertical;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+
+
+.close {
+  position: absolute;
+  top: 20px;
+  right: 25px;
+  font-size: 26px;
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+  z-index: 1000;
+}
+.close:hover {
+  color: red;
+}
+.modal-content {
+  position: relative; /* Important for .close positioning */
+}
+
+ .flimbitButton
+ {
+   background-color :#fddb23;
+ 
+ 
+ }
+ 
+ 
+.tab-toggle {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #FFD700;
+    }
+
+    .tab-btn {
+      padding: 10px 15px;
+      cursor: pointer;
+      font-weight: bold;
+      color: #555;
+      border-bottom: 3px solid transparent;
+    }
+
+    .tab-btn.active {
+      color: #FFD700;
+    }
+
+    .tab-content {
+      display: none;
+      padding: 20px;
+      border: 1px solid #eee;
+      border-radius: 5px;
+      background-color: #fffde7;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+
+/* General Section Styling */
+.user-investment-section {
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+}
+
+.filter-section {
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.filter-fields {
+  display: flex;
+  gap: 15px;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+}
+
+.filter-fields select,
+.filter-fields input {
+  padding: 5px 10px; /* Reduced padding */
+  height: 38px; /* Set height to reduce size */
+  width: 200px;
+  font-size: 14px; /* Adjust font size */
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.filter-fields button {
+  padding: 10px;
+  background-color: #ffcc00;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+.filter-fields button:hover {
+  background-color: #ff9900;
+}
+
+.investment-summary {
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.investment-summary h3 {
+  margin-bottom: 15px;
+}
+
+.summary-stats {
+  display: flex;
+  gap: 15px;
+  justify-content: space-between;
+  font-size: 16px;
+}
+
+.summary-stats p {
+  margin: 0;
+  font-weight: bold;
+}
+
+.investment-table {
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.investment-table h3 {
+  margin-bottom: 15px;
+}
+
+.investment-list {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.investment-list th, .investment-list td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+
+.investment-list th {
+  background-color: #f1f1f1;
+  font-weight: bold;
+}
+
+.investment-list td button {
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.investment-list td button:hover {
+  background-color: #0056b3;
+}
+
+
+.filter-fields select,
+.filter-fields input {
+  padding: 8px;
+  width: 200px;
+}
+
+.filter-fields button {
+  padding: 10px;
+  background-color: #fffde7;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  margin-top : 0%;
+}
+
+.filter-fields button:hover {
+  background-color: #FFD700;
+}
+
+table.dataTable>thead>tr>th,table.dataTable>thead>tr>td {
+    padding: 10px;
+    /* border-bottom: 1px solid rgba(0, 0, 0, 0.3); */
+}
+
+
+.investment-summary {
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.investment-summary h3 {
+  margin-bottom: 15px;
+}
+
+.summary-stats {
+  display: flex;
+  gap: 15px;
+  justify-content: space-between;
+  font-size: 16px;
+}
+
+.summary-stats p {
+  margin: 0;
+  font-weight: bold;
+}
+
+.investment-table {
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.investment-table h3 {
+  margin-bottom: 15px;
+}
+
+.investment-list {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.investment-list th, .investment-list td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+
+.investment-list th {
+  background-color: #f1f1f1;
+  font-weight: bold;
+}
+
+.investment-list td button {
+  padding: 3px 16px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.investment-list td button:hover {
+  background-color: #0056b3;
+}
+h3 {
+  font-size: 18px; /* Adjust the font size as needed */
+  font-weight: bold;
+  color: #333; /* Optional: Change the color */
+  margin-bottom: 10px; /* Optional: Adjust margin for spacing */
+}
+
+.error-message {
+    color: red;
+    font-size: 12px;
+    margin-top: 4px;
+  }
+
+  /* Dynamic Movie and User Box */
+        .movie-user-box {
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        /* Movie and User Information */
+        .movie-user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .movie-name, .user-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .movie-name {
+            color: #007bff; /* Blue for Movie Name */
+        }
+
+        .user-name {
+            color: #28a745; /* Green for User Name */
+        }
+  </style>
 

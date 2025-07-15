@@ -1,0 +1,98 @@
+<div class="audit-filter-section">
+  <!-- Entity Filter -->
+  <div class="audit-filter-group">
+    <label for="entityFilter">Entity:</label>
+    <select id="entityFilter" class="form-input">
+      <option value="">All</option>
+      <option value="USER">User</option>
+      <option value="MOVIE">Movie</option>
+      <option value="PAYOUT">Payout</option>
+      <option value="INVESTMENT">Investment</option>
+      <option value="ANNOUNCEMENT">Announcement</option>
+    </select>
+  </div>
+
+  <!-- Action Filter -->
+  <div class="audit-filter-group">
+    <label for="actionFilter">Action:</label>
+    <select id="actionFilter" class="form-input">
+      <option value="">All</option>
+      <option value="CREATE">Create</option>
+      <option value="UPDATE">Update</option>
+      <option value="DELETE">Delete</option>
+      <option value="LOGIN">Login</option>
+      <option value="LOGOUT">Logout</option>
+    </select>
+  </div>
+
+  <!-- From Date -->
+  <div class="audit-filter-group">
+    <label for="startDate">From:</label>
+    <input type="date" id="startDate" class="form-input" />
+  </div>
+
+  <!-- To Date -->
+  <div class="audit-filter-group">
+    <label for="endDate">To:</label>
+    <input type="date" id="endDate" class="form-input" />
+  </div>
+
+  <!-- Search Input -->
+  <div class="audit-filter-group">
+    <label for="searchText">Search:</label>
+    <input type="text" id="searchText" class="form-input" placeholder="Search keyword" />
+  </div>
+
+  <!-- Filter Button -->
+  <div class="audit-filter-group">
+    <button onclick="fetchAuditLogs()" class="audit-filter-button">🔍 Filter</button>
+  </div>
+</div>
+
+<style>
+  .audit-filter-section {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: flex-end;
+    margin-bottom: 20px;
+  }
+
+  .audit-filter-group {
+    display: flex;
+    flex-direction: column;
+    font-size: 14px;
+  }
+
+  .audit-filter-group label {
+    font-weight: bold;
+    margin-bottom: 4px;
+    color: #333;
+  }
+
+  .form-input {
+    padding: 6px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    min-width: 160px;
+  }
+
+  .audit-filter-button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    height: 38px;
+    margin-top: 4px;
+  }
+
+  .audit-filter-button:hover {
+    background-color: #218838;
+  }
+</style>
+
+

@@ -16,7 +16,7 @@
   
 
   <form id="promotionTypeForm">
-  <input type="hidden" id="promotionTypeId" />
+  <input type="hidden" id="promotionTypePageId" />
 
   <div class="form-group">
     <label for="typeCode">Type Code</label>
@@ -143,7 +143,7 @@
 <script>
 function openPromotionTypeModal() {
   document.getElementById("promotionTypeForm").reset();
-  document.getElementById("promotionTypeId").value = "";
+  document.getElementById("promotionTypePageId").value = "";
   document.getElementById("modalTitle").textContent = "Add Promotion Type";
   document.getElementById("promotionTypeModal").style.display = "block";
   isEdit = false;
@@ -258,7 +258,7 @@ var readPromoByIdCallBack = function ( response )
 	   if(response.message == "success")
 	   {
 	   data = response.result;
-        document.getElementById("promotionTypeId").value = data.id || '';
+        document.getElementById("promotionTypePageId").value = data.id || '';
       document.getElementById("typeCode").value = data.typeCode || '';
       document.getElementById("description").value = data.description || '';
       document.getElementById("status").value = data.status || 'Active';
@@ -295,7 +295,7 @@ var isEdit = false;
 function savePromotionType() {
   clearErrors();
 
-  const id = document.getElementById("promotionTypeId").value.trim();
+  const id = document.getElementById("promotionTypePageId").value.trim();
   const typeCode = document.getElementById("typeCode").value.trim();
   const description = document.getElementById("description").value.trim();
   const status = document.getElementById("status").value.trim();
