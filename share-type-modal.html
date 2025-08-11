@@ -1,13 +1,13 @@
 <!-- Share Type Modal -->
-<div class="modal fade" id="shareTypeModal" tabindex="-1" aria-labelledby="shareTypeModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable modal-xl">
-    <div class="modal-content modal-xl" style= " max-width: 100%">
-      <div class="modal-header bg-warning">
+<div class="modal" id="shareTypeModal" tabindex="-1" aria-labelledby="shareTypeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered" style ="max-width:86%;">
+    <div class="modal-content divPart " style= "max-width:100%;">
+      <div class="movie-user-box divPart">
         <h5 class="modal-title" id="shareTypeModalLabel">🎬 Manage Share Types - <span id="movieNameHead"></span></h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close"  onclick="closeModal('shareTypeModal')"></button>
       </div>
 
-      <div class="modal-body">
+      <div class="divPart">
 
         <!-- 🔼 SECTION A: Allocation + Table -->
         <div id="sectionA">
@@ -53,7 +53,7 @@
                 </table>
               </div>
               <div class="text-end mt-3">
-                <button class="btn btn-success" onclick="addShareType()">➕ Add New Share Type</button>
+                <button class="action-button" onclick="addShareType()">➕ Add New Share Type</button>
               </div>
             </div>
           </div>
@@ -133,9 +133,9 @@
               </div>
             </div>
             <div class="mt-4 text-end">
-              <button type="button" class="btn btn-success" onclick="saveShareType()">💾 Save</button>
-              <button type="reset" class="btn btn-secondary">❌ Clear</button>
-              <button type="button" class="btn btn-dark" onclick="backToList()">🔙 Back to List</button>
+              <button type="button" class="action-button" onclick="saveShareType()">💾 Save</button>
+              <button type="reset" class="action-button">❌ Clear</button>
+              <button type="button" class="action-button" onclick="backToList()">🔙 Back to List</button>
             </div>
           </form>
         </div>

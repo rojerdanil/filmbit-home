@@ -1,1 +1,957 @@
-<h4>⚙️ Settings</h4><p>Change system preferences and permissions.</p>
+
+<div id = "modalSettingDiv" >
+<div class="modal" style="display:none;" id="settingModal">
+  <div class="modal-content" style="max-width: 70%; padding: 20px; border-radius: 8px;">
+    
+    <div class="movie-user-box divPart" >
+      <h5 class="modal-title" id="">Create / Edit Setting</h5>
+      <button type="button" class = "action-button" onclick = "closeModal('settingModal')">
+        <span>&times;</span>
+      </button>
+    </div>
+    
+    <div class="modal-body divPart" style = "margin-top:0%" >
+      <div id="announcementForm" style="width: 90%;">
+        <input type="hidden" id="settingIdInput" name="settingIdInput" />
+
+        <!-- Row 1: Title + Language -->
+        <div class="row">
+          <div class="form-group col-md-6">
+            <label>Key <span id="checkTitle" class="text-success" style="display:none;">✔</span></label>
+            <input type="text" class="form-control" id="settingKey" >
+			 <div class="error-message" id="error-settingKey"></div>
+
+          </div>
+		  
+		   <div class="form-group col-md-6">
+            <label>Description <span id="checkTitle" class="text-success" style="display:none;">✔</span></label>
+            <input type="text" class="form-control" id="settingDescription" >
+			 <div class="error-message" id="error-settingDescription"></div>
+
+          </div>
+		  
+        </div>
+		
+			<div class="row">
+		<div class="form-group col-md-12">
+            <label>Value <span id="checkMessage" class="text-success" style="display:none;">✔</span></label>
+            <textarea class="form-control" id="settingValue" rows="3" required=""></textarea>
+            <div class="error-message" id="error-settingValue"></div>
+
+		  </div>
+         </div>
+
+        <div class = "row">
+		
+          <div class="form-group col-md-6">
+            <label>Type <span id="checkTitle" class="text-success" style="display:none;">✔</span></label>
+            <input type="text" class="form-control" id="settingType" >
+			 <div class="error-message" id="error-settingType"></div>
+
+          </div>
+       
+	     <div class="form-group col-md-6">
+            <label>Group <span id="checkTitle" class="text-success" style="display:none;">✔</span></label>
+            <input type="text" class="form-control" id="groupType" >
+			 <div class="error-message" id="error-groupType"></div>
+
+          </div>
+
+
+		</div>
+				
+	
+        
+        <!-- Row 3: Start & End Date -->
+      
+
+        <!-- Row 4: Image URL + Link URL -->
+        
+
+        <!-- Row 5: Priority + Status -->
+       
+
+        <!-- Row 6: Notification checkboxes -->
+       
+
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn action-button" onclick="submitSetting()">Save</button>
+        <button type="button" class = "btn action-button" onclick = "closeModal('settingModal')"> Close </button>
+
+    </div>
+
+  </div>
+</div>
+
+</div>
+
+
+
+
+
+ <div class="tab-toggle" style="margin-top:2%">
+    <div class="tab-btn" data-target="#userSection" onclick="switchTab('userSection')"><h4>🎬 Settings </h4></div>
+  </div>
+  
+  <!--modal window----
+  
+ <!-- Modal -->
+ <!-- Edit User Status Modal -->
+
+  
+  
+
+  <!---ModalWindow-->
+  
+
+<div id="userSection" class="tab-content active" style = "">
+    <!-- Add your form or data table for movies here -->
+	
+	<div class="user-investment-section">
+	
+	<!-- Investment Summary Section -->
+ 	
+  <!-- Filter Section -->
+  <div class="filter-section">
+    <div class="filter-fields">
+      
+      <!--  <select id="movieSelect" class="form-control" style>
+        <option value="" disabled selected>Select Movie</option>
+        Movie options will be populated dynamically 
+      </select>-->
+      <select id="groupSelectSetting" class="form-control">
+      </select>
+      <input type="text" id="searchTextSetting" class="form-control" placeholder="Search..." />
+      <button class="btn" onclick="reloadTableSettings()" style = "height: 37px;">🔎</button>
+       <div style="width:32%;text-align: right;">
+	  <button class="add-btn" style="background-color: #fffde7; color:black;" onclick="addSetting()">+ Add</button>
+	  </div>	
+    </div>
+  </div>
+
+  
+  <!-- Investment Table Section -->
+  <div class="investment-table">
+    <table id="settingTable">
+    </table>
+  </div>
+</div>
+  
+  </div>
+
+ 
+ <script>
+ function toggleDetails(btn) {
+		const mainRow = btn.closest('tr');
+    const nextRow1 = mainRow.nextElementSibling;
+    const nextRow2 = nextRow1.nextElementSibling;
+
+    const isVisible = nextRow1.style.display === 'table-row';
+
+    nextRow1.style.display = isVisible ? 'none' : 'table-row';
+    nextRow2.style.display = isVisible ? 'none' : 'table-row';
+
+    btn.textContent = isVisible ? '➕ Expand' : '➖ Collapse';
+  }
+ function addSetting()
+ {
+     $("#settingModal").show();
+	  $("#settingIdInput").val(0);
+	clearAllFormInsideDiv("#modalSettingDiv");
+ }
+ 
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      
+    }
+	
+    function loadSettingSection()
+	{
+      	sendAjaxRequest(readSettingGroupUrl, "GET", getAppHeaer(), null,readAllTypeSetting );
+        drawSettingDataTable();
+
+		
+
+	}
+	
+	
+	var readAllTypeSetting =  function readAllTypeSettingPartnerBack(response)
+{
+
+ var data = readFinalResult(response);
+
+   if(data != null)
+   {
+         populateSelectBoxFirstOptAll("groupSelectSetting",data,"key","value");
+
+		 
+		
+
+   }
+
+}
+
+
+
+
+	
+	
+	
+	function reloadTableSettings() {
+
+	     $("#settingTable").DataTable().ajax.reload(null, false);
+}
+
+function formatExpandRowSetting(rowData) {
+  return `
+    <div style="padding: 10px 20px; background-color: #f9f9f9; border-left: 4px solid #007bff;">
+   <strong>Type:</strong> ${formatNA(rowData.type)} &nbsp;&nbsp;
+
+   <strong>Description:</strong> ${formatNA(rowData.description)} &nbsp;&nbsp;  
+    &nbsp;&nbsp;    <strong>UpdatedAt:</strong> ${formatDateTime(rowData.updatedAt)} &nbsp;&nbsp;
+
+    </div>
+	
+	   
+  `;
+}
+
+
+function drawSettingDataTable() {
+  const table = $('#settingTable').DataTable({
+    destroy: true,
+    processing: true,
+    serverSide: true,
+    pageLength: 10,
+    dom: 'lrtip',
+    ajax: {
+      url: dataTableSettingUrl,
+      type: 'GET',
+      headers: getAppHeaer(),
+      data: function (d) {
+        return {
+          draw: d.draw,
+          start: d.start,
+          length: d.length,
+          searchText: $("#searchTextSetting").val(),
+          sortColumn: d.columns[d.order[0].column].data,
+          sortOrder: d.order[0].dir,
+          group: $("#groupSelectSetting").val()
+        };
+      },
+      dataFilter: function (response) {
+        const fullResponse = JSON.parse(response);
+        const obj = fullResponse.result;
+        $("#rewardCount").text("(" + (obj.recordsTotal ?? 0) + ")");
+        return JSON.stringify({
+          draw: obj.draw || 1,
+          recordsTotal: obj.recordsTotal ?? 0,
+          recordsFiltered: obj.recordsFiltered ?? 0,
+          data: obj.data ?? []
+        });
+      }
+    },
+    columns: [
+      {
+        className: 'dt-control',
+        orderable: false,
+        data: null,
+        defaultContent: '',
+        title: ''
+      }, 
+      {
+        data: 'key',
+        title: 'Key',
+        render: formatNA
+      },
+      {
+        data: 'value',
+        title: 'value',
+        render: formatNA
+      },
+	  {
+        data: 'groupName',
+        title: 'GroupName',
+        render: formatNA
+      },
+	  
+	  {
+  data: null,
+  title: 'Action',
+  orderable: false,
+  render: function (data, type, row) {
+    return `
+      <button class="action-button" onclick="editSetting('${row.id}')">✏️</button>
+      <button class="action-button" onclick="deleteSetting('${row.id}')">🗑️</button>
+   `;
+  }
+  }
+	  
+    ],
+    order: [[1, 'asc']]
+  });
+
+  // Toggle expand row
+  $('#settingTable tbody').off('click', 'td.dt-control').on('click', 'td.dt-control', function () {
+    const tr = $(this).closest('tr');
+    const row = table.row(tr);
+
+    if (row.child.isShown()) {
+      row.child.hide();
+      tr.removeClass('shown');
+    } else {
+      row.child(formatExpandRowSetting(row.data())).show();
+      tr.addClass('shown');
+    }
+  });
+  
+  $('#settingTable_length').hide();
+
+}
+
+
+
+
+
+function switchUserTab(sectionId, liElement) {
+  document.querySelectorAll(".tab-section").forEach(div => div.style.display = "none");
+  document.getElementById(sectionId).style.display = "block";
+
+  document.querySelectorAll(".side-nav li").forEach(li => li.classList.remove("active-tab"));
+  liElement.classList.add("active-tab");
+}
+
+function submitSetting()
+{
+  const isValid =
+    validateFieldValue('settingKey') &
+    validateFieldValue('settingDescription') &
+    validateFieldValue('settingValue') &
+    validateFieldValue('settingType') &
+    validateFieldValue('groupType') 
+	
+	
+	
+	  if (!isValid) return;
+	  
+if(isValid)
+{
+
+     const partnerRequest = {
+      key: $("#settingKey").val(),
+      value: $("#settingValue").val(),
+      description: $("#settingDescription").val(),
+      type: $("#settingType").val(),
+      groupName: $("#groupType").val()
+     
+    };
+	
+	     var  annonId = Number($("#settingIdInput").val());
+         	console.log(annonId);
+        urlx =   annonId == 0 ? insertSettingUrl : updateSettingUrl +  annonId ;
+		console.log(urlx);
+     	sendAjaxRequest(urlx, "POST", getAppHeaer(), partnerRequest,saveMovieSettingCall );
+
+}
+
+
+}
+
+ var saveMovieSettingCall = function saveMovieSettingCallFun(response)
+{
+
+var data = readFinalResult(response);
+	if(data !=null)
+		   {
+ 
+      closeModalAndReloadDataTable(response,"#settingModal","#settingTable")
+
+  }
+ 
+}
+
+function deleteSetting(id)
+{
+const confirmDelete = confirm("Are you sure you want to delete this setting record?");
+if (confirmDelete) {
+   	 sendAjaxRequest(deleteSettingUrl+id, "GET", getAppHeaer(), null,saveMovieSettingCall );
+}
+
+
+
+}
+
+function editSetting(id)
+{
+    
+   $("#settingIdInput").val(id);
+   sendAjaxRequest(readSettingUrl+id, "GET", getAppHeaer(), null,readSettingCallBack );
+
+
+}
+
+var readSettingCallBack =  function readSettingCallBackfun(response)
+{
+
+var data = readFinalResult(response);
+	if(data !=null)
+   {
+      $("#settingModal").show();
+      //console.log(data);
+	  $("#settingKey").val(data.key);
+      $("#settingDescription").val(data.description);
+      $("#settingValue").val(data.value);
+      $("#settingType").val(data.type);
+      $("#groupType").val(data.groupName);
+      
+		  
+
+	  
+
+    
+   
+    }
+
+}
+
+
+  </script>
+
+ <style>
+ 
+/* Modal Backdrop */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0,0,0,0.6);
+  overflow: auto;
+  font-family: Arial, sans-serif;
+}
+
+/* Modal Content Box */
+.modal-content {
+  background-color: #fffde7;
+  margin: 5% auto;
+  padding: 30px;
+  width: 90%;
+  max-width: 90%;
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Close Button */
+.close {
+  float: right;
+  font-size: 26px;
+  font-weight: bold;
+  color: #444;
+  cursor: pointer;
+}
+.close:hover {
+  color: red;
+}
+
+/* Table Styling */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+th, td {
+  padding: 12px;
+  border: 1px solid #ccc;
+  text-align: center;
+}
+th {
+  background-color: #f2f2f2;
+  color: #333;
+}
+
+/* Buttons */
+button {
+  padding: 3px 16px;
+  margin: 5px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+button:hover {
+  background-color: #0056b3;
+}
+
+/* Edit Section Form */
+#editForm label {
+  display: block;
+  margin: 12px 0 5px;
+}
+#editForm select,
+#editForm textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 4px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+textarea {
+  resize: vertical;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+
+
+.close {
+  position: absolute;
+  top: 20px;
+  right: 25px;
+  font-size: 26px;
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+  z-index: 1000;
+}
+.close:hover {
+  color: red;
+}
+.modal-content {
+  position: relative; /* Important for .close positioning */
+}
+
+ .flimbitButton
+ {
+   background-color :#fddb23;
+ 
+ 
+ }
+ 
+ 
+
+
+    .tab-btn {
+      padding: 10px 15px;
+      cursor: pointer;
+      font-weight: bold;
+      color: #555;
+      border-bottom: 3px solid transparent;
+    }
+
+    .tab-btn.active {
+      color: #FFD700;
+    }
+
+
+
+    .tab-content.active {
+      display: block;
+    }
+
+
+/* General Section Styling */
+.user-investment-section {
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+}
+
+.filter-section {
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.filter-fields {
+  display: flex;
+  gap: 15px;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+}
+
+.filter-fields select,
+.filter-fields input {
+  padding: 5px 10px; /* Reduced padding */
+  height: 38px; /* Set height to reduce size */
+  width: 200px;
+  font-size: 14px; /* Adjust font size */
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.filter-fields button {
+  padding: 10px;
+  background-color: #ffcc00;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+.filter-fields button:hover {
+  background-color: #ff9900;
+}
+
+.investment-summary {
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.investment-summary h3 {
+  margin-bottom: 15px;
+}
+
+.summary-stats {
+  display: flex;
+  gap: 15px;
+  justify-content: space-between;
+  font-size: 16px;
+}
+
+.summary-stats p {
+  margin: 0;
+  font-weight: bold;
+}
+
+.investment-table {
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.investment-table h3 {
+  margin-bottom: 15px;
+}
+
+.investment-list {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.investment-list th, .investment-list td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+
+.investment-list th {
+  background-color: #f1f1f1;
+  font-weight: bold;
+}
+
+.investment-list td button {
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.investment-list td button:hover {
+  background-color: #0056b3;
+}
+
+
+.filter-fields select,
+.filter-fields input {
+  padding: 8px;
+  width: 200px;
+}
+
+.filter-fields button {
+  padding: 10px;
+  background-color: #fffde7;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  margin-top : 0%;
+}
+
+.filter-fields button:hover {
+  background-color: #FFD700;
+}
+
+table.dataTable>thead>tr>th,table.dataTable>thead>tr>td {
+    padding: 10px;
+    /* border-bottom: 1px solid rgba(0, 0, 0, 0.3); */
+}
+
+
+.investment-summary {
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.investment-summary h3 {
+  margin-bottom: 15px;
+}
+
+.summary-stats {
+  display: flex;
+  gap: 15px;
+  justify-content: space-between;
+  font-size: 16px;
+}
+
+.summary-stats p {
+  margin: 0;
+  font-weight: bold;
+}
+
+.investment-table {
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.investment-table h3 {
+  margin-bottom: 15px;
+}
+
+.investment-list {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.investment-list th, .investment-list td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+
+.investment-list th {
+  background-color: #f1f1f1;
+  font-weight: bold;
+}
+
+.investment-list td button {
+  padding: 3px 16px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.investment-list td button:hover {
+  background-color: #0056b3;
+}
+h3 {
+  font-size: 18px; /* Adjust the font size as needed */
+  font-weight: bold;
+  color: #333; /* Optional: Change the color */
+  margin-bottom: 10px; /* Optional: Adjust margin for spacing */
+}
+
+.error-message {
+    color: red;
+    font-size: 12px;
+    margin-top: 4px;
+  }
+
+  /* Dynamic Movie and User Box */
+        .movie-user-box {
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        /* Movie and User Information */
+        .movie-user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .movie-name, .user-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .movie-name {
+            color: #007bff; /* Blue for Movie Name */
+        }
+
+        .user-name {
+            color: #28a745; /* Green for User Name */
+        }
+		
+		
+		.expand-btn {
+      cursor: pointer;
+      color: #007bff;
+    }
+
+    .details-row {
+      display: none;
+      background-color: #f9f9f9;
+    }
+
+    .details-cell {
+      padding: 10px;
+      border-top: none;
+      color: #444;
+    }
+	
+	/* Yellow checkbox design */
+.custom-checkbox {
+  appearance: none;
+  width: 15px;
+  height: 15px;
+  border: 2px solid #ffc107;
+  border-radius: 4px;
+  background-color: #fffbe6;
+  position: relative;
+  cursor: default;
+  box-shadow: 0 0 3px rgba(255, 193, 7, 0.5);
+  transition: all 0.2s ease;
+  vertical-align: middle;
+  padding: 0;
+}
+
+.custom-checkbox:checked {
+  background-color: #ffe600;
+  border-color: #ffca2c;
+  box-shadow: 0 0 6px rgba(255, 193, 7, 0.8);
+}
+
+.custom-checkbox:checked::after {
+  content: '✔';
+  color: #212529;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -48%);
+  font-size: 10px;
+  font-weight: bold;
+  line-height: 1;
+}
+  .dt-expand-row {
+    padding: 10px 20px;
+    background-color: #f9f9f9;
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+  
+  /* Target the DataTables expand/collapse arrow cell */
+table.dataTable tbody td.dt-control {
+  color: #ffe600 !important;       /* Change arrow color */
+  cursor: pointer;
+  font-weight: bold;
+}
+table.dataTable tbody td.dt-control::before {
+  content: "▶";
+  color: #ffe600;
+  font-size: 14px;
+}
+
+/* Optional: Highlight the background on hover */
+table.dataTable tbody td.dt-control:hover {
+  background-color: #fffacd;       /* Light yellow */
+}
+
+
+.action-button {
+    background-color: #ffe600;
+    border: none;
+    padding: 5px 8px;
+    margin-right: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+
+  .action-button:hover {
+    background-color: #ffcd00;
+  }
+  
+
+.modal-header {
+  background-color: #f9f9f9;
+  padding: 10px 20px;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.side-nav {
+  width: 150px;
+  background: #f0f0f0;
+  padding: 20px;
+  border-right: 1px solid #ddd;
+}
+
+.side-nav ul {
+  list-style: none;
+  padding: 0;
+}
+
+.side-nav li {
+  cursor: pointer;
+  padding: 8px;
+  margin-bottom: 5px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.side-nav .active-tab {
+  background-color: #ffe600;
+  font-weight: bold;
+}
+
+.tab-content-area {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.tab-section {
+  display: block;
+}
+
+.offer-box {
+  border: 1px solid #ccc;
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  background-color: #fdfdfd;
+}
+
+.offer-box select {
+  margin-top: 8px;
+}
+
+  
+  </style>
+

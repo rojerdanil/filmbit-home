@@ -1,14 +1,16 @@
 	 
 	 
-  <h4 class="mb-4">📊 Dashboard</h4>
+  <h4 class="flimBitSectionHead" style = "margin-top:2%">Dashboard</h4>
+
+<div class = "flimBitMainDiv">  
 
   <!-- Stats Overview -->
-  <div class="row g-3 mb-4">
-    <div class="col-md-2"><div class="card text-bg-light"><div class="card-body"><h6>💰 Total Investment</h6><p>₹1.2 Cr</p></div></div></div>
-    <div class="col-md-2"><div class="card text-bg-light"><div class="card-body"><h6>🎞️ Total Movies</h6><p>42</p></div></div></div>
-    <div class="col-md-2"><div class="card text-bg-light"><div class="card-body"><h6>👥 Total Users</h6><p>12,450</p></div></div></div>
-    <div class="col-md-3"><div class="card text-bg-light"><div class="card-body"><h6>📤 Earnings Paid</h6><p>₹34 Lakh</p></div></div></div>
-    <div class="col-md-3"><div class="card text-bg-light"><div class="card-body"><h6>🏢 Company Profit</h6><p>₹2.3 Cr</p></div></div></div>
+  <div class="row g-3 mb-4 divPart">
+    <div class="col-md-2"><div class="card text-bg-light"><div class="card-body"><h6>💰 Total Investment</h6><p	id = "totalInvestment"></p></div></div></div>
+    <div class="col-md-2"><div class="card text-bg-light"><div class="card-body"><h6>🎞️ Total Movies</h6><p id = "totalMovie">0</p></div></div></div>
+    <div class="col-md-2"><div class="card text-bg-light"><div class="card-body"><h6>👥 Total Users</h6><p id = "totalUser" >0</p></div></div></div>
+    <div class="col-md-3"><div class="card text-bg-light"><div class="card-body"><h6>📤 Earnings Paid</h6><p id = "totalPaid">0</p></div></div></div>
+    <div class="col-md-3"><div class="card text-bg-light"><div class="card-body"><h6>🏢 Company Profit</h6><p id = "totalProfit">0</p></div></div></div>
   </div>
 
   <!-- Graphs Section -->
@@ -85,3 +87,120 @@
       </div>
     </div>
   </div>
+  
+</div>  
+<script>
+
+
+var readDashBoardCall = function readDashBoardfn(response)
+{
+var data = readFinalResult(response);
+
+   if(data != null)
+   {
+       
+	   $("#totalInvestment").text('₹ ' + formatIndian(data.amtInvestSum));
+	   $("#totalMovie").text(data.movCount);
+	   $("#totalUser").text(data.userCount);
+	   $("#totalPaid").text('₹ ' + formatIndian(data.totalPayOutAmt));
+	   $("#totalProfit").text('₹ ' + formatIndian(data.totalPayOutAmt));
+
+	   
+	   
+	   
+	   
+	   
+   }
+   
+
+}
+
+  function  loadDashBoardDetails()
+	{
+	
+	
+	sendAjaxRequest(dashBoadReadUrl, "GET", getAppHeaer(), null,readDashBoardCall );
+    sendAjaxRequest(dashBoardChartUrl, "GET", getAppHeaer(), null,drawDashBoardChartFun );
+    
+	
+	
+	
+	
+
+    // User Growth Chart
+    
+    // Profit Distribution Chart
+    new Chart(document.getElementById('profitChart'), {
+      type: 'pie',
+      data: {
+        labels: ['Investor Earnings', 'Company Profit'],
+        datasets: [{
+          data: [85, 15],
+          backgroundColor: ['#00c851', '#ffbb33']
+        }]
+      }
+    });
+	
+		   
+
+	
+	}
+var drawDashBoardChartFun	= function drawDashBoardChart(response)
+{
+  var data = readFinalResult(response);
+
+   if(data != null)
+   {
+   drawInvestmentChart(data);
+   drawUserchart(data);
+   
+   }
+
+
+
+}
+	
+	
+	
+	function  drawInvestmentChart(input)
+	{
+	new Chart(document.getElementById('investmentChart'), {
+      type: 'line',
+      data: {
+        labels: input.investmentChart.labels,
+        datasets: [{
+          label: 'Investment (₹)',
+          data: input.investmentChart.data,
+          fill: false,
+          borderColor: '#FFD700',
+          tension: 0.4
+        }]
+      }
+	  
+    });
+	
+	}
+	
+	function drawUserchart(input)
+	{
+	new Chart(document.getElementById('userChart'), {
+      type: 'bar',
+      data: {
+        labels: input.userChart.labels,
+        datasets: [{
+          label: 'New Users',
+          data: input.userChart.data,
+          backgroundColor: '#ffdd57'
+        }]
+      }
+    });
+
+	
+	
+	
+	
+	
+	}
+	
+
+</script>

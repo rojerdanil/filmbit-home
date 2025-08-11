@@ -1,23 +1,35 @@
 <div class="section-header">
-  <h4>🏆 Promotion Rewards <span id="rewardCount">(0)</span></h4>
-  <button class="add-btn" onclick="openPromotionRewardModal()">+ Add Reward</button>
-
+  <h4 class = "flimBitSectionHead"> Promotion Rewards </h4>
+ 
+<div>
+ <span id="rewardCount"></span>
+ <button class="btn" onclick="openPromotionRewardModal()">+ Add</button>
 </div>
-
+</div>
+<div class = "flimBitMainDiv">
+<div class = "divPart">
 <table id="promotionRewardTable"></table>
-
+</div>
+</div>
 <!-- Promotion Reward Modal -->
 <div id="promotionRewardModal" class="modal">
   <div class="modal-content">
-    <span class="close" onclick="closePromotionRewardModal()">&times;</span>
-    <h3 id="rewardModalTitle">Add Promotion Reward</h3>
-
-    <form id="promotionRewardForm">
+   <div class = "movie-user-box divPart" >
+    <h3 id="rewardModalTitle">Create / update Promotion Reward</h3>
+	<button type="button" class="action-button" onclick="closeModal('promotionRewardModal')">
+        <span>×</span>
+      </button>
+    </div>	
+	
+   <div class = "divPart">
+    <div id="promotionRewardForm">
       <input type="hidden" id="promotionRewardId" />
 
             <div style="display: flex; gap: 16px;">
         <div class="form-group" style="flex: 1;">
           <label for="Reward Name">Reward Name</label>
+		  	<span id="checkTitle" class="text-success" style="display:none;">✔</span>
+
           <input type="text" id="rewardName" class="form-control" step="0.01" />
           <div class="error-message" id="error-rewardName"></div>
         </div>
@@ -28,12 +40,16 @@
       <div style="display: flex; gap: 16px;">
         <div class="form-group" style="flex: 1;">
           <label for="promotionTypeId">Promotion Type</label>
+		  	<span id="checkTitle" class="text-success" style="display:none;">✔</span>
+
           <select id="promotionTypeId" class="form-control"></select>
           <div class="error-message" id="error-promotionTypeId"></div>
         </div>
 
         <div class="form-group" style="flex: 1;">
           <label for="rewardType">Reward Type</label>
+		  	<span id="checkTitle" class="text-success" style="display:none;">✔</span>
+
           <select id="rewardType" class="form-control" onchange="onRewardTypeChange()">
             <option value="" disabled>-- Select --</option>
             <option value="CASH">CASH</option>
@@ -50,12 +66,16 @@
       <div style="display: flex; gap: 16px;">
         <div class="form-group" style="flex: 1;">
           <label for="rewardValue">Reward Value</label>
+		  	<span id="checkTitle" class="text-success" style="display:none;">✔</span>
+
           <input type="number" id="rewardValue" class="form-control" step="0.01" />
           <div class="error-message" id="error-rewardValue"></div>
         </div>
 
         <div class="form-group" style="flex: 1;">
           <label for="rewardTarget">Reward Target</label>
+		  	<span id="checkTitle" class="text-success" style="display:none;">✔</span>
+
           <select id="rewardTarget" class="form-control">
             
           </select>
@@ -66,12 +86,16 @@
 	  <div id="movieShareSection" style="display: flex; gap: 16px;">
   <div class="form-group" style="flex: 1;">
     <label for="movieId">Movie</label>
+		<span id="checkTitle" class="text-success" style="display:none;">✔</span>
+
     <select id="movieId" class="form-control" onchange= "onMovieTypeChange()"></select>
     <div class="error-message" id="error-movieId"></div>
   </div>
 
   <div class="form-group" style="flex: 1;">
     <label for="shareTypeId">Share Type</label>
+		<span id="checkTitle" class="text-success" style="display:none;">✔</span>
+
     <select id="shareTypeId" class="form-control"></select>
     <div class="error-message" id="error-shareTypeId"></div>
   </div>
@@ -80,12 +104,16 @@
       <div style="display: flex; gap: 16px;">
         <div class="form-group" style="flex: 1;">
           <label for="minInvestment">Min Investment</label>
+		  	<span id="checkTitle" class="text-success" style="display:none;">✔</span>
+
           <input type="number" id="minInvestment" class="form-control" step="0.01" />
           <div class="error-message" id="error-minInvestment"></div>
         </div>
 
         <div class="form-group" style="flex: 1;">
           <label for="milestoneCount">Milestone Count</label>
+		  	<span id="checkTitle" class="text-success" style="display:none;">✔</span>
+
           <input type="number" id="milestoneCount" class="form-control" />
           <div class="error-message" id="error-milestoneCount"></div>
         </div>
@@ -94,12 +122,16 @@
       <div style="display: flex; gap: 16px;">
         <div class="form-group" style="flex: 1;">
           <label for="rewardLimit">Reward Limit</label>
+		  	<span id="checkTitle" class="text-success" style="display:none;">✔</span>
+
           <input type="number" id="rewardLimit" class="form-control" />
           <div class="error-message" id="error-rewardLimit"></div>
         </div>
 
         <div class="form-group" style="flex: 1;">
           <label for="rewardStatus">Status</label>
+		  	<span id="checkTitle" class="text-success" style="display:none;">✔</span>
+
           <select id="rewardStatus" class="form-control">
             <option value="Active">Active</option>
             <option value="Inactive">Inactive</option>
@@ -109,12 +141,23 @@
         </div>
       </div>
 
-      <div class="form-actions" style="margin-top: 15px;">
-        <button type="button" onclick="savePromotionReward()" class="btn btn-primary">Save</button>
-        <button type="button" onclick="closePromotionRewardModal()" class="btn btn-secondary">Cancel</button>
-      </div>
-    </form>
+      
+    </div>
+ 
   </div>
+ 
+ 
+ <div class="modal-footer">
+        <button type="button" onclick="savePromotionReward()" class="btn action-button">Save</button>
+        <button type="button" onclick="closePromotionRewardModal()" class="btn action-button">Cancel</button>
+      </div>
+ </div>
+
+
+
+
+
+
 </div>
 
 <style>
@@ -142,12 +185,7 @@
   padding: 20px;
   z-index: 1000;
 }
-.modal-content {
-  position: relative;
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-}
+
 .close {
   position: absolute;
   top: -10px;
@@ -183,9 +221,10 @@
 var isEditReward = false;
 function openPromotionRewardModal() {
   isEditReward = false;
-  document.getElementById("promotionRewardForm").reset();
+  		     clearAllFormInsideDiv("promotionRewardForm");
+
+  
   document.getElementById("promotionRewardId").value = "";
-  document.getElementById("rewardModalTitle").textContent = "Add Promotion Reward";
   document.getElementById("promotionRewardModal").style.display = "block";
   clearRewardErrors();
 }
@@ -430,9 +469,10 @@ var readPromoRewardCallBack = function(response)
   var data = readFinalResult(response);
 		   if(data !=null)
 		   {
-   document.getElementById("promotionRewardForm").reset();
+		   
+		     clearAllFormInsideDiv("promotionRewardForm");
+
   document.getElementById("promotionRewardId").value = "";
-  document.getElementById("rewardModalTitle").textContent = "Update Promotion Reward";
    row = data;
   $("#promotionRewardModal").show();
     $('#promotionRewardId').val(row.id || '');

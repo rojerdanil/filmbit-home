@@ -1,10 +1,10 @@
 
 
+<h4 class="flimBitSectionHead" style="padding-bottom:0px;">Payouts</h4>
 
- <div class="tab-toggle" style="margin-top:2%">
-    <div class="tab-btn active" data-target="#userSection" onclick="switchTab('userSection')">🎬 User</div>
-    <div class="tab-btn " data-target="#movieSection" onclick="switchTab('movieSection')">🎬 Movie</div>
-    <div class="tab-btn" data-target="#productionSection" onclick="switchTab('productionSection')">🏭 Production</div>
+ <div class="tab-toggle" >
+    <div class="tab-btn active" data-target="#userSection" onclick="switchTab('userSection')">Tracking</div>
+    <div class="tab-btn " data-target="#movieInitationSection" onclick="switchTab('movieInitationSection')">Initiation</div>
   </div>
   
   <!--modal window---->
@@ -239,27 +239,7 @@
 
   
   <!---ModalWindow-->
-  
-
-<div id="userSection" class="tab-content active" style = "background-color:white;">
-    <!-- Add your form or data table for movies here -->
-	
-	<div class="user-investment-section">
-	
-	<!-- Investment Summary Section -->
-  <div class="investment-summary" style = "display:none;">
-    <h3>📊 Investment Summary</h3>
-    <div class="summary-stats">
-      <p><strong>💰 Total Invested:</strong> ₹3,50,000</p>
-      <p><strong>🎬 Movies Invested:</strong> 6</p>
-      <p><strong>🔁 Total Returns:</strong> ₹75,000</p>
-      <p><strong>👤 User:</strong> Raj Kumar</p>
-    </div>
-  </div>
-	
-  <!-- Filter Section -->
   <div class="filter-section">
-    <h3>🔍 Filter Users:</h3>
     <div class="filter-fields">
             <select id="languageSelect" class="form-control" onchange="onLanguageChangeInv()">
         <option value="" disabled selected>Select Language</option>
@@ -280,10 +260,28 @@
     </div>
   </div>
 
+
+<div id="userSection" class="tab-content active" style = "background-color:white;">
+    <!-- Add your form or data table for movies here -->
+	
+	<div class="user-investment-section">
+	
+	<!-- Investment Summary Section -->
+  <div class="investment-summary" style = "display:none;">
+    <h3>📊 Investment Summary</h3>
+    <div class="summary-stats">
+      <p><strong>💰 Total Invested:</strong> ₹3,50,000</p>
+      <p><strong>🎬 Movies Invested:</strong> 6</p>
+      <p><strong>🔁 Total Returns:</strong> ₹75,000</p>
+      <p><strong>👤 User:</strong> Raj Kumar</p>
+    </div>
+  </div>
+	
+  <!-- Filter Section -->
+  
   
   <!-- Investment Table Section -->
   <div class="investment-table">
-    <h3>📋 User Investments</h3>
     <table id="userPayoutTable">
     
     </table>
@@ -292,9 +290,13 @@
   
   </div>
 
-  <div id="movieSection" class="tab-content">
-    <p>Show movie title, release date, language, etc.</p>
-    <!-- Add your form or data table for movies here -->
+  <div id="movieInitationSection" class="tab-content">
+    Testing
+     <div class="investment-table">
+    <table id="userPayoutInitTable">
+    
+    </table>
+  </div>
   </div>
 
   <div id="productionSection" class="tab-content">
@@ -302,11 +304,16 @@
     <!-- Add your form or data table for production here -->
   </div>
  <script>
+  var  currentSwitch = 'userSection'
     function switchTab(tabId) {
       document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
       document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
       document.getElementById(tabId).classList.add('active');
       event.target.classList.add('active');
+      currentSwitch = tabId;
+     if(tabId === "movieInitationSection")
+        drawUserPayoutInitiationDataTable();
+
 	  
     }
 	
@@ -410,7 +417,141 @@ var data = readFinalResult(response);
 
 }
 
+function drawUserPayoutInitiationDataTable()
+	{
+	
 
+	  
+$('#userPayoutInitTable').DataTable({
+   destroy: true,
+    processing: true,
+    serverSide: true,
+    lengthChange: false,
+    pageLength: 10,
+	dom: 'lrtip', 
+  ajax: {
+    url: dataTableUserPayoutInitiationUrl,
+    type: 'GET',
+    headers: getAppHeaer(),
+	data: function (d) {
+	
+	
+        return {
+          draw: d.draw,
+          start: d.start,
+          length: d.length,
+          searchText: $("#searchText").val(),
+          sortColumn: d.columns[d.order[0].column].data,
+          sortOrder: d.order[0].dir,
+		  language : $("#languageSelect").val() ,
+		  movie : $("#movieSelect").val() ,
+		  status: $("#statusSelect").val() 
+        };
+      },
+	  dataFilter: function (response) {
+        const fullResponse = JSON.parse(response);
+        const obj = fullResponse.result;
+		total = obj.recordsTotal ?? 0
+       $("#rewardCount").text("(" +total + ")");
+	   
+
+      // Debug: make sure obj is valid
+      return JSON.stringify({
+        draw: obj.draw > 0 ? obj.draw : 1,
+        recordsTotal: obj.recordsTotal ?? 0,
+        recordsFiltered: obj.recordsFiltered ?? 0,
+        data: obj.data ?? []
+      });
+      }
+
+  },
+  columns:  [
+        { data: 'firstName', title: 'Name',
+		 render: function (data, type, row) {
+		 
+		 
+          return toTitleCase(row.firstName + " " +row.lastName);
+        }
+
+
+
+		},
+	  { data: 'phoneNumber', title: 'Phone' ,
+	  render: function (data)
+	  {
+	    return formatPhoneOnly(data);
+	  }
+
+	  },
+      { data: 'movieName', title: 'Title' },
+	  { data: 'totalShares', title: 'TI : TR' ,
+	  render: function (data,type, row)
+	  {
+	    var shareData = formatRupee(row.investAmount) + " : " +  formatRupee(row.returnAmount);
+	    return shareData;
+	  }
+	  
+	  },
+      { data: 'initiatedOn', title: 'InitiatedOn' ,
+	  render: function (data)
+	  {
+	    return formatDateTime(data);
+	  }
+	  
+	  },
+	  { data: 'processedOn', title: 'ProcessedOn',
+	  render: function (data)
+	  {
+	    return formatDateTime(data);
+	  }
+	  }
+	  ,
+	  { data: 'payAmount', title: 'Amt',
+	  render: function (data)
+	  {
+	    return formatRupee(data);
+	  }
+	  },
+	   { 
+      data: 'payStatus', 
+	   title: 'Status',
+	  render: function (data,type, row)
+	  {
+	    return renderPayoutStatus(data,row.returnAmount,row.payAmount);
+	  } 
+	   
+	   
+	   
+	   },
+	     { data: 'totalShareType', 
+		  title: 'shareType' , 
+		 render: function (data, type, row) {
+		        var userName = row.firstName + " " +row.lastName;
+				
+                				
+		       return `<button  class= "flimbitButton" onclick="viewShareInit(${row.movieId},${row.userId}
+			   ,'${row.movieName}' ,'${userName}',${row.returnAmount},${row.payAmount}
+			   )"> ${data} View</button>`;
+
+        }
+		  
+		  }
+
+	  
+    ]
+});
+
+  $('#userPayoutInitTable_filter input')
+    .unbind()
+    .bind('keyup', function (e) {
+      if (e.key === 'Enter' || e.keyCode === 13) {
+        $('#userPayoutInitTable').DataTable().search(this.value).draw();
+      }
+    });
+  
+	  
+	  
+	}
 
 
 
@@ -559,8 +700,154 @@ $('#userPayoutTable').DataTable({
 
 function reloadTable() {
 
+       if(currentSwitch === 'movieInitationSection')
+       {
+	     $("#userPayoutInitTable").DataTable().ajax.reload(null, false);
+
+       }
+       else
 	     $("#userPayoutTable").DataTable().ajax.reload(null, false);
+}   
+
+function viewShareInit(movId,userId,movName,userName,returnAmt , paidAmt)
+{
+
+
+				var remain = checkValidNumber(returnAmt) - checkValidNumber(paidAmt);
+                
+				var txt = remain + " = "  +checkValidNumber(returnAmt) + " - " + checkValidNumber(paidAmt);
+				
+				
+				$("#repayMovieId").val(movId);
+		    	 $("#repayUserId").val(userId);  
+				 
+				 $("#repaySharerUser").val(userName);
+		    	 $("#repaySharerMovie").val(movName); 
+				 
+			
+
+			$("#repayTxt").text(txt);
+				
+				
+
+  			 $("#investmentModal").show();
+			 $("#repayMovie").val(movName);
+			 $("#repayUser").val(userName);
+             $("#repayAmount").val(remain);
+
+			 
+			 
+			 $("#userName").text(toTitleCase(userName));
+			 $("#movieNameModal").text(toTitleCase(movName));
+			 
+			 
+
+    
+	sendAjaxRequest(readPayoutInitiationByuserIdAndMovIdUrl+userId+"/"+movId , "GET", getAppHeaer(), null,readPayoutInitiationForModalWinCall );
+
+
 }
+
+var readPayoutInitiationForModalWinCall = function readPayoutInitiationForModalWinCallFun(response)
+{
+var data = readFinalResult(response);
+		   if(data !=null)
+		   {
+			 drawPayoutInitTable(data);
+      
+
+		   }
+
+
+
+
+}
+function drawPayoutInitTable(data) {
+  const table = document.getElementById('investmentTable');
+  if (!table) return;
+
+  // Clear previous content (thead + tbody)
+  table.innerHTML = '';
+
+  // Create THEAD
+  const thead = document.createElement('thead');
+  thead.innerHTML = `
+    <tr>
+      <th></th>  <!-- Expand button column -->
+      <th>Type</th>
+      <th>Price</th>
+      <th>Shares</th>
+      <th>Amount</th>
+      <th>Initiate</th>
+      <th>InitiatedOn</th>
+      <th>ProcessedOn</th>
+      <th>Status</th>
+    </tr>
+  `;
+  table.appendChild(thead);
+
+  // Create TBODY
+  const tbody = document.createElement('tbody');
+
+  data.forEach(inv => {
+    // Main row
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td class="dt-control"></td>  
+      <td>${inv.shareTypeName || 'N/A'}</td>
+      <td>${formatRupee(inv.perShareAmount)}</td>
+      <td>${formatShares(inv.totalShares)}</td>
+      <td>${formatRupee(inv.investAmount)}</td>
+      <td>${formatRupee(inv.payAmount)}</td>
+      <td>${formatDateTime(inv.initiatedOn)}</td>
+      <td>${formatDateTime(inv.processedOn)}</td>
+      <td>${renderPayoutStatus(inv.payStatus, inv.returnAmount, inv.payAmount)}</td>
+    `;
+    tbody.appendChild(row);
+
+    // Hidden expandable detail row
+    const detailRow = document.createElement('tr');
+    detailRow.style.display = 'none';
+    detailRow.classList.add('expandable-content');
+    detailRow.innerHTML = `
+      <td colspan="9" style="background-color:#f9f9f9; padding: 10px;">
+        <strong>More Details:</strong><br>
+        Remark: ${inv.remarks || 'N/A'}<br>
+        <!-- Add any other details you want here -->
+      </td>
+    `;
+    tbody.appendChild(detailRow);
+  });
+
+  table.appendChild(tbody);
+
+  // Attach click event listeners for expand buttons
+  tbody.querySelectorAll('.dt-control').forEach(cell => {
+    cell.addEventListener('click', () => toggleExpandRow(cell));
+  });
+
+  // Show modal (if needed)
+  const modal = document.getElementById('investmentModal');
+  if (modal) {
+    modal.style.display = 'block';
+  }
+}
+
+function toggleExpandRow(cell) {
+  const tr = cell.parentElement; // main row
+  const nextTr = tr.nextElementSibling; // detail row
+
+  if (!nextTr || !nextTr.classList.contains('expandable-content')) return;
+
+  if (nextTr.style.display === 'table-row') {
+    nextTr.style.display = 'none';
+    cell.classList.remove('expanded');
+  } else {
+    nextTr.style.display = 'table-row';
+    cell.classList.add('expanded');
+  }
+}
+
 
 function viewShare(movId,userId,movName,userName,returnAmt , paidAmt)
 {
@@ -597,6 +884,8 @@ function viewShare(movId,userId,movName,userName,returnAmt , paidAmt)
 
     
 	sendAjaxRequest(readPayoutByuserIdAndMovIdUrl+userId+"/"+movId , "GET", getAppHeaer(), null,readInvestForModalWinCall );
+
+
 
 }
 
@@ -1007,8 +1296,7 @@ textarea {
 .tab-toggle {
       display: flex;
       gap: 20px;
-      margin-bottom: 20px;
-      border-bottom: 2px solid #FFD700;
+      
     }
 
     .tab-btn {
@@ -1307,6 +1595,34 @@ button {
     border-radius: 6px;
     cursor: pointer;
     font-size: 14px;
+}
+
+.detail-row td {
+  background-color: #f9f9f9;
+  font-style: italic;
+}
+
+/* Add this CSS to your styles */
+.dt-control {
+  cursor: pointer;
+  color: #ffe600;
+  font-weight: bold;
+  font-size: 14px;
+  user-select: none;
+  padding-left: 8px;
+  position: relative;
+}
+
+.dt-control::before {
+  content: "▶";
+  display: inline-block;
+  margin-right: 6px;
+  transition: transform 0.3s ease;
+}
+
+.dt-control.expanded::before {
+  content: "▼";
+  color: #ffe600;
 }
 
 

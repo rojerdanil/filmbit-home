@@ -1,11 +1,9 @@
-  <h4>🎬 Movies Management </h4>
+  <h4 class = "flimBitSectionHead"> Movies Management </h4>
+<div class = "flimBitMainDiv">  
+  
 <div class="d-flex align-items-center gap-3 flex-wrap divPart">
   <select id="languageFilter" class="form-select form-select-sm w-auto">
-    <option value="">🌐 All Languages</option>
-    <option value="Tamil">Tamil</option>
-    <option value="Hindi">Hindi</option>
-    <option value="Telugu">Telugu</option>
-  </select>
+    </select>
 
   <span class="movie-label-highlight">
   🎬 Total Movie: <span id="movieCount">(0)</span>
@@ -13,12 +11,12 @@
 <span class="movie-label-highlight">
    Total Filtered: <span id="movieCountFilter">(0)</span>
 </span>
-<span style = "margin-left:20%">
-   <button class="btn" onclick="addMovieDropClick();" id="btnAddMovie">+ Add</button>
+<div style = "margin-left:29%;width: 32%;">
+   <button class="btn" onclick="addMovieDropClick();" id="btnAddMovie" style = "margin-left: 35%;">+ Add</button>
     <button class="btn" onclick="updateSelectedMovie()">✏️ Update</button>
     <button class="btn" onclick="deleteMovies()">🗑️ Delete</button>
 	
-</span>
+</div>
 </div>
 
 <div class="table-toolbar d-flex justify-content-between align-items-center mb-2">
@@ -40,14 +38,16 @@
 	  
     <thead class="table-light">
  <tr>
+     <th class= ""> </th>
+
 <th><input type="checkbox" class="select-all"></th>
+   
     <th>Title</th>
     <th>Description</th>
     <th>Budget</th>
     <th>P/S</th>
     <th>Live</th>
     <th>Status</th>
-    <th>Date</th>
     <th>Trailer</th>
     <th>Action</th>
 	   
@@ -58,46 +58,18 @@
   </table>
   
   </div>
+  
+</div>  
 <script>
 var updateMovieId  = 0;
 var isUpdateMovie = false;
 var exitPosterUrl = "";
-function updateSelectedMovie()
-{
-var data={};
-   var ids=[];
-   $("#movieTable").find("tr").each(function()
-   {
-       if($(this).hasClass("row_selected"))
-	   {
-	     var id=parseInt($(this).find("td:first input[type='checkbox']").val());
-		 //(id);
-		 ids.push(id);
-		}
-	  
-   });
-   if( ids.length == 1)
-  {
-	updateMovieId = ids[0];
-	
-	  openDropDownWithCallBack('#addMovieModal','add-movie-modal.html',updateMovieModalWindow);
 
-    //sendAjaxRequest(readMovieEintyByMovIdUrl+idx, "GET", getAppHeaer(), null,readMovEntityUpdateCall );
-
-	
-  } 
-   else if(ids.length==0)
-   alert("please select any one row");
-  else if( ids.length > 1)
-    alert("do not select more than one");
-   
-   
-}
 var updateMovieModalWindow = function openModelWinForUpateMov()
 {
-   //alert("update movieId " +updateMovieId);
    isUpdateMovie = true;
    $("#addMovieLabel").text("🎬 Update Movie");
+   console.log("update movie modal " + movieLanuguageList.length);
     if (movieLanuguageList != null && movieLanuguageList.length > 0) {
 	  	       populateLanguageSelect("mLanguageSelect", movieLanuguageList,"addlanguage");
 	  }
@@ -117,6 +89,38 @@ var updateMovieModalWindow = function openModelWinForUpateMov()
 
    
 }
+function updateSelectedMovie()
+{
+var data={};
+   var ids=[];
+   $("#movieTable").find("tr").each(function()
+   {
+       if($(this).hasClass("row_selected"))
+	   {
+	     var id=parseInt($(this).find("td:nth-child(2) input[type='checkbox']").val());
+		 //(id);
+		 console.log(id);
+		 ids.push(id);
+		}
+	  
+   });
+   if( ids.length == 1)
+  {
+	updateMovieId = ids[0];
+	  openDropDownWithCallBack('#addMovieModal','add-movie-modal.html',updateMovieModalWindow);
+
+      //sendAjaxRequest(readMovieEintyByMovIdUrl+updateMovieId, "GET", getAppHeaer(), null,readMovEntityUpdateCall );
+
+	
+  } 
+   else if(ids.length==0)
+   alert("please select any one row");
+  else if( ids.length > 1)
+    alert("do not select more than one");
+   
+   
+}
+
 var  readMovEntityUpdateCall = function readMovEntityUpdate(response)
 {
  if(response != null)
@@ -272,7 +276,7 @@ if (selectedDateTime <= currentDateTime) {
     const release = new Date(releaseDateVal);
     const trailer = new Date(trailerDateVal);
 	
-	
+	 console.log(releaseDateVal + " : "+ trailerDateVal);
 
     if (release <= trailer) {
       releaseField.classList.add('is-invalid');
@@ -437,4 +441,370 @@ isUpdateMovie = false;
 
  
   }
+  
+  function formatExpandMovieRow(rowData) {
+  return `
+    <div style="padding: 10px 20px; background-color: #f9f9f9; border-left: 4px solid #007bff;">
+	          <span class="date-icon">📅</span> <span class="date-label">UpdatedDate:</span> <span class="date-value">${formatDateTime(rowData.updatedDate)}</span>
+	  &nbsp;&nbsp  
+      <span class="date-icon">📅</span> <span class="date-label">Created:</span> <span class="date-value">${formatDateTime(rowData.createdDate)}</span>
+	  &nbsp;&nbsp  
+      <span class="date-icon">🎞️</span> <span class="date-label">Trailer:</span> <span class="date-value">${formatDateTime(rowData.trailerDate)}</span>
+       &nbsp;&nbsp  
+      <span class="date-icon">🎬</span> <span class="date-label">Release:</span> <span class="date-value">${formatDateTime(rowData.releaseDate)}</span>
+       <div> <strong>   ${formatNA(rowData.description)} </strong> </div>
+	  </div>
+	
+	   
+  `;
+}
+  
+  function loadMovieSection()
+	{
+	
+	var mvTable = $('#movieTable').DataTable({
+		stripeClasses: [],
+		     dom: '<"top"f>rt<"bottom"p><"clear">', // Only filter (f), remove length (l)
+    pageLength: 10,
+    lengthChange: false ,// hides "Show entries" dropdown
+	processing: true,
+    serverSide: true,
+	   ajax: {
+        url: readMovieUrl,
+        type: 'POST',
+        contentType: 'application/json',
+		headers: getAppHeaer(),
+        data: function (d) {
+		 d.language =  $('#languageFilter').val();
+
+  return JSON.stringify(d);                // 👈 no wrapper!
+        },
+		dataFilter: function (responseStr) {
+        const fullResponse = JSON.parse(responseStr);
+        const obj = fullResponse.result;
+        $("#movieCount").text(obj.recordsTotal ?? 0);
+	    $("#movieCountFilter").text(obj.recordsFiltered);
+
+      // Debug: make sure obj is valid
+      return JSON.stringify({
+        draw: obj.draw > 0 ? obj.draw : 1,
+        recordsTotal: obj.recordsTotal ?? 0,
+        recordsFiltered: obj.recordsFiltered ?? 0,
+        data: obj.data ?? []
+      });
+    },
+    error: function (xhr, status, error) {
+      console.error('AJAX Error:', error);
+	  Alert("Issue on dataLoading");
+    }
+      },
+ columns: [
+      {
+        className: 'dt-control',
+        orderable: false,
+        data: null,
+        defaultContent: ''
+      },
+ 
+        {
+          data: 'id',
+          orderable: false,
+          render: function (data) {  
+            return `<input type="checkbox" class="rowCheckbox" value="${data}" onclick="enableRowSelected(this)">`;
+          }	
+        },
+        {
+      data: 'title',
+      render: function (data, type, row) {
+        const status = row.activeStatus === 'active';
+        const color = status ? 'green' : 'red';
+        const dot = `<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${color};margin-right:8px;"></span>`;
+        return `${dot}${data}`;
+      }
+    },
+        { data: 'language' 
+		   ,
+		render: function(data, type, row)  {
+		
+		    const lang = row.languageName || 'N/A';
+           const typeName = row.typeName || 'N/A';
+		
+return `
+      <div class="type-column">
+        <span class="type-lang">${lang}</span>
+        <span class="type-dot"> · </span>
+        <span class="type-name">${typeName}</span>
+      </div>
+    `; 
+          }
+		
+		},
+       // { data: 'budget' },
+       		{
+  data: 'shareSoldAmount',
+  render: function(data, type, row) {
+    const percent = row.fundingPercent || 0;
+    const sold = row.sharesSold * row.perShareAmount;
+    const total = row.totalShares * row.perShareAmount;
+
+    return `
+      <div>
+        ₹${sold.toLocaleString()} 
+        <small style="color:#888;">of ₹${total.toLocaleString()}</small>
+        <div class="progress" style="height: 6px; margin-top: 4px;">
+          <div class="progress-bar bg-success" role="progressbar" style="width: ${percent}%;" aria-valuenow="${percent}" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+      </div>`;
+  }
+}
+,
+{ data: 'perShareAmount' },
+ 
+		 
+		 
+		 { 
+      data: 'shareStatus', // or however you're mapping statusId
+      render: function(data, type, row) {
+       const colorMap = {
+      'Live': 'badge-success',
+      'Sold Out': 'badge-dark',
+      'Not Started': 'badge-secondary',
+      'Closed': 'badge-danger',
+      'Day-Before Only': 'badge-warning'
+    };
+	const dayBending = row.daysBeforeRelease;
+    const badgeClass = colorMap[data] || 'badge-info';
+    return `<span class="badge ${badgeClass}">${data || 'N/A'} ${dayBending || 'N/A'}</span>`;
+      }
+    },
+        { data: 'statusId' ,
+          render: function (data) {
+        let status = getValueFromMap(idNameMovieStatusMap,data);
+       const badgeMap = {
+      'idea stage': 'badge-idea',
+      'pre-production': 'badge-pre',
+      'funding open': 'badge-funding-open',
+      'funding closed': 'badge-funding-closed',
+      'production': 'badge-production',
+      'post-production': 'badge-post',
+      'trailer released': 'badge-trailer',
+      'coming soon': 'badge-coming',
+      'released': 'badge-released',
+      'box office running': 'badge-boxoffice',
+      'profit distribution': 'badge-profit',
+      'archived': 'badge-archived',
+      'on hold': 'badge-hold',
+      'cancelled': 'badge-cancelled'
+    };
+    const badgeClass = badgeMap[status.toLowerCase()]; // default fallback
+    return `<span class="">${status}</span>`;
+  }
+           
+		
+			   
+
+		
+		}
+	/*,
+        { data: 'typeName',
+		render: function (data) {
+            return data;
+          }
+
+		}*/
+		,
+		{
+          data: 'trailerUrl',
+          render: function (data) {
+     if (!data) return 'N/A';
+    const videoId = extractYouTubeVideoID(data);
+    if (!videoId) return `<span>${data}</span>`;
+
+    const thumbnail = `https://img.youtube.com/vi/${videoId}/0.jpg`;
+    return `
+      <div class="preview-hover">
+        <a href="${data}" target="_blank" style="text-decoration: none; color: inherit;">
+          Watch
+        </a>
+        <div class="preview-box">
+          <img src="${thumbnail}" alt="Trailer Preview">
+        </div>
+      </div>`;
+	  
+	  
+	  
+          }
+        }
+		,
+        {
+          data: 'posterUrl',
+  render: function (data, type, row) {
+    const safeTitle = row.title ? row.title.replace(/'/g, "\\'") : '';
+const percent = row.fundingPercent || 0;
+        const total = row.totalShares;
+
+          return `
+      <span class="action-button" onclick="viewMovie(${row.id})">🔍</span>
+	  <span class="action-button" onclick="manageCast(${row.id}, '${safeTitle}')">👤</span>
+      <span class="action-button" onclick="activateDayBefore(${row.id}, '${row.title.replace(/'/g, "\\'")}',${total},${row.perShareAmount})">💼</span>
+  `;
+          }
+        }
+      ],
+	   language: {
+    emptyTable: "🔍 No records found matching your criteria."
+  },
+    drawCallback: function () {
+      //enableCheckboxSelectAll('movieTable');
+    },
+    initComplete: function () {
+      const table = this.api();
+      $(table.rows().nodes()).off('click').on('click', function (e) {
+        if ($(e.target).is('input')) return;
+
+        if($(this).hasClass("row_selected"))
+							{
+							 $(this).removeClass("row_selected");
+							 var $checkboxValue=$(this).find("input:checkbox");
+						     $checkboxValue.prop('checked',false);
+							}
+							else
+							{
+							 $(this).addClass("row_selected");
+							 var $checkboxValue=$(this).find("input:checkbox");
+							 $checkboxValue.prop('checked',true);
+							}
+      });
+    },
+    columnDefs: [
+      { targets: 0, orderable: false, className: 'no-sort' }
+    ]
+	  
+	
+	
+		   }
+		   );
+		   
+
+$('#movieTable tbody').off('click', 'td.dt-control').on('click', 'td.dt-control', function () {
+    const tr = $(this).closest('tr');
+    const row = mvTable	.row(tr);
+
+    if (row.child.isShown()) {
+      row.child.hide();
+      tr.removeClass('shown');
+    } else {
+      row.child(formatExpandMovieRow(row.data())).show();
+      tr.addClass('shown');
+    }
+  });
+
+
+
+
+
+
+		   $('#movieTable_filter input')
+  .off() // unbind default search event
+  .on('keyup', function (e) {
+    if (e.key === 'Enter') {
+      mvTable.search(this.value).draw();
+    }
+  });
+	console.log(movieLanuguageList.length);
+	if (!movieLanuguageList || movieLanuguageList.length > 0) {
+	       populateLanguageSelect("languageFilter", movieLanuguageList,"language")
+
+	  
+           }
+
+
+$('#languageFilter').on('change', function () {
+    mvTable.ajax.reload();
+  });
+  
+  
+  currentTable = mvTable;
+	
+	}
+
+  
+  function callMovieTable()
+  {
+  $('#movieTable').DataTable({
+      serverSide: true,
+      processing: true,
+      ajax: {
+        url: '/api/movies', // Replace with your backend URL
+        type: 'GET',
+        dataSrc: function (json) {
+          // You can transform data here if needed
+          return json.data;
+        }
+      },
+     columns: [
+  {
+    data: 'id',
+    orderable: false,
+    render: function (data) {
+      return `<input type="checkbox" class="rowCheckbox" value="${data}">`;
+    }
+  },
+  { data: 'title' },
+  { data: 'description' },
+  { data: 'language' },
+  { data: 'budget' },
+  { data: 'perShareAmount' },
+  { data: 'statusId' },
+  { data: 'movieTypeId' },
+  {
+    data: 'posterUrl',
+    render: function(data) {
+      return `<img src="${data}" width="50" height="50"/>`;
+    }
+  },
+  {
+    data: 'trailerUrl',
+    render: function(data) {
+      return `<a href="${data}" target="_blank">Trailer</a>`;
+    }
+  },
+  {
+    data: 'createdDate',
+    render: function(data) {
+      return new Date(data).toLocaleDateString();
+    }
+  },
+  {
+    data: 'releaseDate',
+    render: function(data) {
+      return data ? new Date(data).toLocaleDateString() : 'Coming Soon';
+    }
+  },
+  {
+    data: 'id',
+    render: function(data) {
+      return `<button onclick="editMovie(${data})">Edit</button> <button onclick="deleteMovie(${data})">Delete</button>`;
+    }
+  }
+]
+,
+      pageLength: 10,
+      lengthMenu: [10, 20, 50, 100]
+    });
+  
+  
+  }
+
 </script>
+
+<style>
+.modal {
+  
+  width: 100%; height: 100%;
+  background-color: rgba(0,0,0,0.6);
+  font-family: Arial, sans-serif;
+}
+
+
+</style>

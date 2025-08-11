@@ -1,7 +1,7 @@
 
 
-
- <div class="tab-toggle" style="margin-top:2%">
+<h4 class="flimBitSectionHead" style="padding-bottom:0px;">Investment</h4>
+ <!--<div class="tab-toggle" sytle = "display: none;">
     <div class="tab-btn active" data-target="#userSection" onclick="switchTab('userSection')">🎬 User</div>
     <div class="tab-btn " data-target="#movieSection" onclick="switchTab('movieSection')">🎬 Movie</div>
     <div class="tab-btn" data-target="#productionSection" onclick="switchTab('productionSection')">🏭 Production</div>
@@ -97,7 +97,6 @@
 	
   <!-- Filter Section -->
   <div class="filter-section">
-    <h3>🔍 Filter Users:</h3>
     <div class="filter-fields">
             <select id="languageSelect" class="form-control" onchange="onLanguageChangeInv()">
         <option value="" disabled selected>Select Language</option>
@@ -121,7 +120,6 @@
   
   <!-- Investment Table Section -->
   <div class="investment-table">
-    <h3>📋 User Investments</h3>
     <table id="userinvestmentTable">
     
     </table>
@@ -206,7 +204,21 @@ var data = readFinalResult(response);
 
 }
 
+function formatExpandRowInvestMent(rowData) {
+  return `
+    <div style="padding: 10px 20px; background-color: #f9f9f9; border-left: 4px solid #007bff;">
+   <strong>Free Share:</strong> ${formatNA(rowData.totalFreeShare)} &nbsp;&nbsp;
 
+   <strong>TotalDiscountAmount:</strong> ${formatNA(rowData.totalDiscountAmount)} &nbsp;&nbsp;  
+    &nbsp;&nbsp;    <strong>TotalWalletDiscoutAmount:</strong> ${formatNA(rowData.totalWalletDiscountAmount)} &nbsp;&nbsp;
+	<strong>CreatedAt:</strong> ${formatDateTime(rowData.createdDate)} &nbsp;&nbsp;
+	<strong>updatedAt:</strong> ${formatDateTime(rowData.updateDate)} &nbsp;&nbsp;
+
+    </div>
+	
+	   
+  `;
+}
 
 
 
@@ -216,7 +228,7 @@ var data = readFinalResult(response);
 	
 
 	  
-$('#userinvestmentTable').DataTable({
+ const table = $('#userinvestmentTable').DataTable({
    destroy: true,
     processing: true,
     serverSide: true,
@@ -227,19 +239,32 @@ $('#userinvestmentTable').DataTable({
     url: dataTableUserInvestUrl,
     type: 'GET',
     headers: getAppHeaer(),
-	data: function (d) {
-        return {
-          draw: d.draw,
-          start: d.start,
-          length: d.length,
-          searchText: $("#searchText").val(),
-          sortColumn: d.columns[d.order[0].column].data,
-          sortOrder: d.order[0].dir,
-		  language : $("#languageSelect").val() ,
-		  movie : $("#movieSelect").val() ,
-		  status: $("#statusSelect").val() 
-        };
-      },
+data: function (d) {
+    let colName = d.columns[d.order[0].column].data;
+
+    // Fallback if colName is null/empty
+    if (!colName) {
+        colName = 'createdDate'; // must be a column name your query can order by
+    }
+
+    // Special remap if it’s `id`
+    if (colName === 'id') {
+        colName = 'createdDate';
+    }
+
+    return {
+        draw: d.draw,
+        start: d.start,
+        length: d.length,
+        searchText: $("#searchText").val(),
+        sortColumn: colName,
+        sortOrder: d.order[0].dir,
+        language: $("#languageSelect").val(),
+        movie: $("#movieSelect").val(),
+        status: $("#statusSelect").val()
+    };
+}
+,
 	  dataFilter: function (response) {
         const fullResponse = JSON.parse(response);
         const obj = fullResponse.result;
@@ -258,6 +283,14 @@ $('#userinvestmentTable').DataTable({
 
   },
   columns:  [
+
+   {
+        className: 'dt-control',
+        orderable: false,
+        data: null,
+        defaultContent: '',
+        title: ''
+      }, 
         { data: 'firstName', title: 'Name',
 		 render: function (data, type, row) {
 		 
@@ -280,7 +313,7 @@ $('#userinvestmentTable').DataTable({
 	  { data: 'totalShares', title: 'share' ,
 	  render: function (data,type, row)
 	  {
-	    var shareData = formatShares(data) + " x " + calculateSharePrice(row.investAmount,row.totalShares);
+	    var shareData = formatShares(data) + " x " + row.perShareAmount;
 	    return shareData;
 	  }
 	  
@@ -334,7 +367,18 @@ $('#userinvestmentTable').DataTable({
       }
     });
   
-	  
+	  $('#userinvestmentTable tbody').off('click', 'td.dt-control').on('click', 'td.dt-control', function () {
+    const tr = $(this).closest('tr');
+    const row = table.row(tr);
+
+    if (row.child.isShown()) {
+      row.child.hide();
+      tr.removeClass('shown');
+    } else {
+      row.child(formatExpandRowInvestMent(row.data())).show();
+      tr.addClass('shown');
+    }
+  });
 	  
 	}
 
@@ -591,8 +635,7 @@ textarea {
 .tab-toggle {
       display: flex;
       gap: 20px;
-      margin-bottom: 20px;
-      border-bottom: 2px solid #FFD700;
+   
     }
 
     .tab-btn {
@@ -861,5 +904,7 @@ h3 {
         .user-name {
             color: #28a745; /* Green for User Name */
         }
+		
+		
   </style>
 

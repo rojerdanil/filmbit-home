@@ -1,0 +1,177 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FilmBit Test Payment</title>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="./script/jquery-3.6.0.min.js"></script>
+    <script src="./script/auth.js"></script>
+
+<style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #FFD700;
+            padding: 50px;
+        }
+        .container {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            width: 350px;
+            margin: auto;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+        .logo {
+            font-size: 26px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        button {
+            background-color: #000;
+            color: #fff;
+            padding: 12px 20px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 90%;
+        }
+        button:hover {
+            background-color: #444;
+        }
+        .fail-btn {
+            background-color: red;
+        }
+        select, input {
+            padding: 10px;
+            width: 95%;
+            margin: 10px 0;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+        .note {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🎬 FilmBit</div>
+
+        <input type="text" id="orderNo" placeholder="Enter Order No" />
+
+        <button onclick="payWithUPI()">Test UPI Payment</button>
+
+        <h3>Test Card Payment (India)</h3>
+        <select id="cardSelect">
+            <option value="5399690123456789">HDFC Domestic – 5399 6901 2345 6789</option>
+            <option value="4312990000000000">SBI Domestic – 4312 9900 0000 0000</option>
+            <option value="5204700000000000">ICICI Domestic – 5204 7000 0000 0000</option>
+            <option value="4111111111111111">VISA Generic – 4111 1111 1111 1111</option>
+            <option value="5555555555554444">MasterCard Generic – 5555 5555 5555 4444</option>
+        </select>
+        <button onclick="payWithCard()">Test Card Payment</button>
+
+        <!-- Simulate Failure Button -->
+        <button class="fail-btn" onclick="simulateFailure()">Simulate Failed Payment</button>
+
+        <div class="note">
+            ✅ Use <b>success@razorpay</b> for UPI success<br>
+            ✅ Use OTP: <b>123456</b> for successful card transactions<br>
+            ❌ Click "Simulate Failed Payment" to test failure webhook
+        </div>
+    </div>
+
+    <script>
+        function payWithUPI() {
+            var orderId = document.getElementById("orderNo").value;
+            if(!orderId){
+                alert("Please enter Order Number first.");
+                return;
+            }
+            var options = {
+                "key": "rzp_test_6yjHqZxPkJmvO0",
+                "order_id": orderId,
+                "currency": "INR",
+                "name": "FilmBit",
+                "description": "UPI Test Payment for Order: " + orderId,
+                "handler": function (response){
+                    alert("Payment Successful! Payment ID: " + response.razorpay_payment_id);
+                    console.log("UPI Payment:", response);
+                },
+                "prefill": {
+                    "contact": "9876543210",
+                    "email": "success@razorpay"
+                },
+                "method": {
+                    "upi": true
+                },
+                "theme": {
+                    "color": "#F4C430"
+                }
+            };
+            var rzp = new Razorpay(options);
+            rzp.open();
+        }
+
+        function payWithCard() {
+            var orderId = document.getElementById("orderNo").value;
+            if(!orderId){
+                alert("Please enter Order Number first.");
+                return;
+            }
+            var options = {
+                "key": "rzp_test_6yjHqZxPkJmvO0",
+                "order_id": orderId,
+                "currency": "INR",
+                "name": "FilmBit",
+                "description": "Card Test Payment for Order: " + orderId,
+                "handler": function (response){
+                    alert("Payment Successful! Payment ID: " + response.razorpay_payment_id);
+                },
+                "prefill": {
+                    "email": "test@filmBit.com",
+                    "contact": "9876543210"
+                },
+                "theme": {
+                    "color": "#F4C430"
+                }
+            };
+            var rzp = new Razorpay(options);
+            rzp.open();
+        }
+
+        function simulateFailure() {
+            var orderId = document.getElementById("orderNo").value || "order_test_123";
+            fetch("http://localhost:8090/webhook/razorpay", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-Razorpay-Signature": "test-fail-signature"
+                },
+                body: JSON.stringify({
+                    "event": "payment.failed",
+                    "payload": {
+                        "payment": {
+                            "entity": {
+                                "id": "pay_testFail_" + Math.floor(Math.random() * 10000),
+                                "order_id": orderId,
+                                "status": "failed",
+                                "error_code": "BAD_REQUEST_ERROR",
+                                "error_description": "Test Simulation: Payment declined by bank"
+                            }
+                        }
+                    }
+                })
+            })
+            .then(res => res.text())
+            .then(data => alert("❌ Simulated failed payment webhook sent!\nServer response: " + data))
+            .catch(err => console.error("Simulation error:", err));
+        }
+    </script>
+</body>
+</html>

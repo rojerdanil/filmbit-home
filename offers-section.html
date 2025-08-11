@@ -1,5 +1,5 @@
  <!-- Toggle Buttons -->
-   <h4>🏆 Offers <span id="offers">(0)</span></h4>
+   <h4 class = "flimBitSectionHead"> Offers  </h4>
 
   <div class="tab-toggle">
     <button class="tab-btn active" onclick="showSection('category')">📂 Offer Type Category</button>
@@ -9,34 +9,39 @@
 	
   </div>
   <!-- Section 1: Offer Type Category -->
-  <div id="offerTypeCategorySection" class="section-container">
-    <div class="section-header">
-      <h4>📂 Offer Type Categories</h4>
-      <button class="add-btn" onclick="openOfferTypeCategoryModal()">+ Add Category</button>
+  <div id="offerTypeCategorySection" class="flimBitMainDiv">
+    <div class="">
+	<div class="divPart" style="text-align:right">
+      <button class="btn" onclick="openOfferTypeCategoryModal()">+ Add Category</button>
     </div>
+	</div>
+	<div class = "divPart">
     <table id="offerTypeCategoryTable">
       
     </table>
+	</div>
   </div>
 
   <!-- Section 2: Offer Type -->
-  <div id="offerTypeSection" class="section-container" style="display: none;">
-    <div class="section-header">
-      <h4>🏷️ Offer Types</h4>
-      <button class="add-btn" onclick="openOfferTypeModal()">+ Add Offer Type</button>
+  <div id="offerTypeSection" class="flimBitMainDiv" style="display: none;">
+	<div class="divPart" style="text-align:right">
+      <button class="btn" onclick="openOfferTypeModal()">+ Add Offer Type</button>
     </div>
+		<div class = "divPart">
+
     <table id="offerTypeTable">
      
     </table>
+	</div>
   </div>
   
   
   
   
-   <div id="offerMovieSection" style="display: none;" >
+   <div id="offerMovieSection" style="display: none;" class="flimBitMainDiv" >
 
   <!-- 🔹 Filter Section: Language & Movie -->
-<div class="filter-bar" style="display: flex; flex-wrap: wrap; gap: 2rem; align-items: center; margin-bottom: 1rem;">
+<div class="filter-bar divPart" style="display: flex; flex-wrap: wrap; gap: 2rem; align-items: center; margin-bottom: 1rem;">
 
   <div style="display: flex; flex-direction: column;">
     <label for="languageSelect" style="font-weight: bold;">🌐 Language:</label>
@@ -58,7 +63,7 @@
 
 
 
-  <div id="dynamicOfferContent" class="section-container">
+  <div id="dynamicOfferContent" class="divPart">
 
   <!-- 🔹 Movie Information -->
  <div class="card">
@@ -168,84 +173,117 @@
 
 <div id="offerShareTypeMovieModal" class="modal">
   <div class="modal-content">
-    <span class="close" onclick="closeOfferShareTypeMovieModal()">&times;</span>
-    <h3>Add Offer-Share-Movie Mapping <div style="font-size: 13px; background-color: #fff3cd; color: #856404; padding: 4px 8px; border-radius: 5px;">
-    🕒 <span id="movshareStart"></span>
+ 	
+	    <div class="movie-user-box divPart" >
+ <h5 class="modal-title">Add Offers 	<br>  Movie Name : <span id="offerTitleMovieName" style="color:#ffe600"></span>   
+ Offer Name : <span id="offerTitleShareName" style="color:#ffe600"></span> </h5>
+ <button type="button" class = "action-button" onclick = "closeModal('offerShareTypeMovieModal')">
+        <span>&times;</span>
+      </button>   
+ 
+
+
   </div>
-  </h3>
+        <input type="hidden" id="movieIdInput" />
+        <input type="hidden" id="shareTypeIdInput" name="shareTypeHidden" />
 
-    <div id="offerShareTypeMovieForm">
-      <input type="hidden" id="offerShareTypeMovieId" />
+      
+    <div id="offerShareTypeMovieForm" class="divPart" >
+	 <div style="font-size: 13px; background-color: #fff3cd; color: #856404; padding: 4px 8px; border-radius: 5px;"> 
+    🕒 <span id="movshareStart"></span>
+</div>
 
+    <div class="row" >
       <!-- Offer -->
-      <div class="form-group">
+      <div class="form-group col-md-6">
         <label for="offerId">Offer</label>
-        <select id="offerId" class="form-control" onchange="validateField('offerId')"></select>
+        <select id="offerId" class="form-control" onchange="copySelectedNameToInputJQ(this,'targetId')"></select>
         <div class="error-message" id="error-offerId"></div>
       </div>
 
       <!-- Share Type -->
-      <div class="form-group">
-	  	<input type="hidden" id="shareTypeIdInput" name="shareTypeHidden" />
-        <label for="shareTypeId">Share Type</label>
+      <div class="form-group col-md-6">
+        <label for="shareTypeId">targetAudience</label>
         
-	    <input type="text" id="shareTypeId" class="form-control" oninput="validateField('shareTypeId')" disabled/>
+	    <input type="text" id="targetId" class="form-control" oninput="validateField('shareTypeId')" disabled/>
 
 		<div class="error-message" id="error-shareTypeId"></div>
       </div>
+	  
+	 </div> 
+     
+	     <div class="row" >
 
       <!-- Movie -->
-      <div class="form-group">
-	  	<input type="hidden" id="movieIdInput" name="movieIdHidden" />
-        <label for="movieId">Movie</label>
-         <input type="text" id="movieId" class="form-control" oninput="validateField('movieId')"  disabled/>
+      <div class="form-group col-md-6">
+    <div class="form-check mb-2">
+        <input type="checkbox" class="form-check-input" id="buyGetCheckbox" onchange="toggleBuyGetInputs(this)">
+        <label class="form-check-label" for="buyGetCheckbox">Enable Buy & Get Offer</label>
+    </div>
 
-		<div class="error-message" id="error-movieId"></div>
-      </div>
+    <div id="buyGetContainer" class="input-group mt-2" style="display: none;">
+        <input type="number" id="buyQty" class="form-control" placeholder="Buy Quantity">
+        <input type="number" id="getQty" class="form-control ml-2" placeholder="Get Quantity">
+    </div>
 
+    <div class="error-message" id="error-buyGet"></div>
+</div>
+	  <!-- Max Users -->
+      <div class="form-group col-md-6">
+        <label for="maxUsers">Max Users <span style="color: #007bff; font-size: 0.9em;">(-1 for unlimited)</span></label>
+        <input type="number" id="maxUsers" class="form-control" />
+      </div> 
+	  
+	  
+     </div>
+	 
+	 
+	 
+   	     <div class="row" >
+	 
       <!-- Valid Dates -->
-      <div class="form-group">
+      <div class="form-group col-md-6">
         <label for="validFrom">Valid From</label>
         <input type="datetime-local" id="validFrom" class="form-control" oninput="validateField('validFrom')" />
         <div class="error-message" id="error-validFrom"></div>
       </div>
 
-      <div class="form-group">
+      <div class="form-group col-md-6">
         <label for="validTo">Valid To</label>
         <input type="datetime-local" id="validTo" class="form-control" oninput="validateField('validTo')" />
         <div class="error-message" id="error-validTo"></div>
       </div>
-
-      <!-- Max Users -->
-      <div class="form-group">
-        <label for="maxUsers">Max Users</label>
-        <input type="number" id="maxUsers" class="form-control" />
-      </div>
+     </div>
+     
+   	     <div class="row" >
 
       <!-- Discount -->
-      <div class="form-group">
+      <div class="form-group col-md-6">
         <label for="discountAmount">Discount Amount</label>
         <input type="number" step="0.01" id="discountAmount" class="form-control" />
       </div>
 
       <!-- Wallet Credit -->
-      <div class="form-group">
+      <div class="form-group col-md-6">
         <label for="walletCreditAmount">Wallet Credit Amount</label>
         <input type="number" step="0.01" id="walletCreditAmount" class="form-control" />
       </div>
+    </div>
+
+   	     <div class="row" >
 
       <!-- Checkboxes -->
-      <div class="form-group">
+      <div class="form-group form-group col-md-6">
 	    <label><input type="checkbox" id="noPlatFormCommission" /> No Platform Commission</label>
 
         <label style="margin-right:5%;"><input type="checkbox" id="noProfitCommission" /> No Profit Commission</label>
-      </div>
-      <div class="form-group">
+     
         <label><input type="checkbox" id="promoCodeRequired" /> Promo Code Required</label>
-      </div>
+
+	 </div>
 
       <!-- Status -->
-      <div class="form-group">
+      <div class="form-group form-group col-md-6">
         <label for="status">Status</label>
         <select id="status" class="form-control" onchange="validateField('status')">
           <option value="active">Active</option>
@@ -253,12 +291,18 @@
         </select>
         <div class="error-message" id="error-status"></div>
       </div>
+	  
+	</div>  
 
-      <div class="form-actions">
+      
+    </div>
+	
+	<div class="modal-footer">
         <button type="button" class="btn btn-primary" onclick="saveOfferShareTypeMovie()">Save</button>
         <button type="button" class="btn btn-secondary" onclick="closeOfferShareTypeMovieModal()">Cancel</button>
       </div>
-    </div>
+	
+	
   </div>
 </div>
 
@@ -276,6 +320,14 @@ input.invalid, textarea.invalid, select.invalid {
   border-color: red;
 }
 
+.main-content
+{
+
+ margin-top:2%;
+
+}
+
+
     body {
       font-family: 'Segoe UI', sans-serif;
       background: #f9f9f9;
@@ -285,21 +337,20 @@ input.invalid, textarea.invalid, select.invalid {
     .tab-toggle {
       display: flex;
       gap: 10px;
-      margin-bottom: 20px;
     }
 
-    .tab-btn {
-      padding: 8px 16px;
-      background-color: #eee;
-      border: none;
-      border-radius: 6px;
-      font-weight: bold;
+   .tab-btn {
+      padding: 7px 12px;
       cursor: pointer;
+      font-weight: bold;
+      color: #555;
+      border-bottom: 3px solid transparent;
+	      border: 0px;
+    background-color: transparent;	
     }
 
     .tab-btn.active {
-      background-color: #ffcc00;
-      color: black;
+      color: #FFD700;
     }
 
     .section-container {
@@ -323,6 +374,9 @@ input.invalid, textarea.invalid, select.invalid {
       font-size: 18px;
       font-weight: 600;
       color: #333;
+	  display: flex;
+  justify-content: flex-end;
+  align-items: center;
     }
 
     .add-btn {
@@ -362,19 +416,13 @@ input.invalid, textarea.invalid, select.invalid {
       display: none;
       position: fixed;
       top: 10%;
-      left: 35%;
-      width: 40%;
+      left: 20%;
+      width: 70%;
       background-color: transparent;
       z-index: 1000;
     }
 
-    .modal-content {
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      position: relative;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-    }
+    
 
     .close {
       position: absolute;
@@ -455,8 +503,7 @@ input.invalid, textarea.invalid {
 }
 
 .card {
-  background: #fff8d6;
-  border: 1px solid #f2d024;
+  background: #f5f4ef;
   padding: 15px;
   margin-bottom: 20px;
   border-radius: 10px;
@@ -580,18 +627,39 @@ input.invalid, textarea.invalid {
 var isUpdateMovShareOffer = false;
 var movShareOfferId = 0;	 
 	 
+	 var shareStartTime;
+	 var shareEndTime;
+
+
+   function toggleBuyGetInputs(checkbox) {
+    if ($(checkbox).is(':checked')) {
+        $("#buyGetContainer").show();
+        $("#buyQty, #getQty").prop("disabled", false);
+    } else {
+        $("#buyGetContainer").hide();
+        $("#buyQty, #getQty").prop("disabled", true).val("");
+    }
+}
 
    function openOfferMovieModal(movId,movName,shareId,ShareName,startDate,endDate)
    {
    isUpdateMovShareOffer = false;
    $("#offerShareTypeMovieModal").show();
    $("#movieId").val(movName);
+   console.log("coco");
+   $("#offerTitleMovieName").text(movName);
    $("#shareTypeId").val(ShareName);
+   $("#offerTitleShareName").text(ShareName);
    $("#movieIdInput").val(movId);
    $("#shareTypeIdInput").val(shareId);
    $('#movshareStart').text(startDate +" → " +endDate);
    
+   shareStartTime = startDate;
+   shareEndTime   = endDate;
+   
 
+   	clearAllFormInsideDiv("#offerShareTypeMovieForm");
+       toggleBuyGetInputs(document.getElementById("buyGetCheckbox"));
 
    
 
@@ -800,12 +868,20 @@ var data = readFinalResult(response);
 
 }
 
+
+function copySelectedNameToInputJQ(selectElement, targetInputId) {
+    // Use jQuery to get selected option
+    var selectedName = $(selectElement).find(":selected").attr("name") || "";
+    
+    // Set value to input box using jQuery
+    $("#" + targetInputId).val(selectedName);
+}
 var   loadOfferSelectBox = function readAllForOfferSelect(response)
 { 
 
  if(response.result != null)
    {
-   	     populateSelectBox("offerId",response.result,"id","offerName");
+   	     populateSelectBox("offerId",response.result,"id","offerName",null,"targetAudience");
 		 
 		 
 		 
@@ -814,11 +890,26 @@ var   loadOfferSelectBox = function readAllForOfferSelect(response)
    
    }
 }	
+
+function formatExpandRowOffer(rowData) {
+  return `
+    <div style="padding: 10px 20px; background-color: #f9f9f9; border-left: 4px solid #007bff;">
+      
+   <strong>Offer Type Description:</strong> ${formatNA(rowData.typeDescription)}&nbsp;&nbsp;
+
+	<strong>updatedAt:</strong> ${formatDateTime(rowData.updatedAt)} &nbsp;&nbsp;
+
+    </div>
+
+	
+	   
+  `;
+}
 	
 	function loadOfferType()
 	{
 	  
-	   $('#offerTypeTable').DataTable({
+	 const table =  $('#offerTypeTable').DataTable({
    destroy: true,
     processing: true,
     serverSide: true,
@@ -856,19 +947,27 @@ var   loadOfferSelectBox = function readAllForOfferSelect(response)
 
   },
   columns:  [
+     {
+        className: 'dt-control',
+        orderable: false,
+        data: null,
+        defaultContent: '',
+        title: ''
+      },
       { data: 'offerName', title: 'Offer Name' },
       {
-        data: 'offerType',
+        data: 'typeName',
         title: 'Offer Type',
-        render: function (data) {
-          // Map numeric type to readable label
-          if (data === 1) return 'FLAT';
-          if (data === 2) return 'BONUS';
-          return 'UNKNOWN';
-        }
+        render: formatNA
+
       },
-      { data: 'targetAudience', title: 'Target Audience' },
-      { data: 'status', title: 'Status' },
+      { data: 'targetAudience',
+       title: 'Target Audience',
+               render: formatNA
+
+      
+      },
+      { data: 'status', title: 'Status' , render: renderStatus},
       {
         data: 'createdAt',
         title: 'Created At',
@@ -889,7 +988,18 @@ var   loadOfferSelectBox = function readAllForOfferSelect(response)
       }
     ]
 });
+	    $('#offerTypeTable tbody').off('click', 'td.dt-control').on('click', 'td.dt-control', function () {
+    const tr = $(this).closest('tr');
+    const row = table.row(tr);
 
+    if (row.child.isShown()) {
+      row.child.hide();
+      tr.removeClass('shown');
+    } else {
+      row.child(formatExpandRowOffer(row.data())).show();
+      tr.addClass('shown');
+    }
+  });
   $('#offerTypeTable_filter input')
     .unbind()
     .bind('keyup', function (e) {
@@ -898,7 +1008,8 @@ var   loadOfferSelectBox = function readAllForOfferSelect(response)
       }
     });
   
-	  
+
+  
 	  
 	}
 
@@ -1071,6 +1182,8 @@ var data = readFinalResult(response);
 		   if(data !=null)
 		   {
                   closeOfferTypeCategoryModal();
+				  
+				  
               	 $('#offerTypeTable').DataTable().ajax.reload(null, false);
 
 			 
@@ -1117,14 +1230,43 @@ if (confirmDelete) {
 
 }
 
+function validateBuyGetInputs() {
+    let isValid = true;
+
+    // Reset previous states
+    $("#buyQty, #getQty").removeClass("is-invalid is-valid");
+    $("#error-buyGet").text("");
+
+    if ($("#buyGetCheckbox").is(":checked")) {
+        const buyQty = parseInt($("#buyQty").val()) || 0;
+        const getQty = parseInt($("#getQty").val()) || 0;
+
+        if (buyQty <= 0 || getQty <= 0) {
+            isValid = false;
+
+            // Add invalid class to both fields
+            $("#buyQty, #getQty").addClass("is-invalid");
+            $("#error-buyGet").text("Both Buy and Get quantities must be greater than zero.");
+        } else {
+            // Add valid class to both fields
+            $("#buyQty, #getQty").addClass("is-valid");
+        }
+    }
+
+    return isValid;
+}
+
 function saveOfferShareTypeMovie() {
   // Validate required fields
+
+
+
   const isValid =
     validateField('offerId') &
-    validateField('shareTypeId') &
-    validateField('movieId') &
+
     validateField('validFrom') &
     validateField('validTo') &
+    validateBuyGetInputs() &
     validateField('status');
 
   if (!isValid) return;
@@ -1135,12 +1277,26 @@ const validToDate = new Date($('#validTo').val());
 const validToInput = document.getElementById('validTo');
 const errorDiv = document.getElementById('error-validTo');
 
+
+const ShareFromDate = new Date(shareStartTime);
+const ShareEndDate = new Date(shareEndTime);
+
+saveOfferShareTypeMovie
+
 if (validToDate < validFromDate) {
   validToInput.classList.remove("valid");
   validToInput.classList.add("invalid");
   errorDiv.textContent = "'Valid To' cannot be earlier than 'Valid From'";
   return;
-} else {
+} 
+else if (validFromDate < ShareFromDate || validToDate > ShareEndDate) {
+  validToInput.classList.remove("valid");
+  validToInput.classList.add("invalid");
+  errorDiv.textContent = "'Start date and End Date' must be between the 'Share start date' and 'Share end date'";
+  return;
+}
+
+else {
   validToInput.classList.remove("invalid");
   validToInput.classList.add("valid");
   errorDiv.textContent = "";
@@ -1153,7 +1309,7 @@ if(isUpdateMovShareOffer)
     urlx = updateMovieShareOfferUrl + movShareOfferId;
 
 
-
+ isBuyGet = $('#buyGetCheckbox').is(':checked') || false;
   // Collect data
   const data = {
     offerId: parseInt($('#offerId').val(),10) ,
@@ -1167,7 +1323,11 @@ if(isUpdateMovShareOffer)
     noProfitCommission: $('#noProfitCommission').is(':checked') || false,
 	noPlatFormCommission: $('#noPlatFormCommission').is(':checked') || false,
     promoCodeRequired: $('#promoCodeRequired').is(':checked') || false,
-    status: $('#status').val()
+    status: $('#status').val(),
+    isBuyAndGet : isBuyGet,
+    buyCount : isBuyGet ? (parseInt($("#buyQty").val()) || 0) : 0,
+    freeCount : isBuyGet ? (parseInt($("#getQty").val()) || 0) : 0
+
   };
 	    sendAjaxRequest(urlx, "POST", getAppHeaer(), data,saveMovieShareOffer );
 
@@ -1239,7 +1399,7 @@ function renderOfferMovieSection(data) {
   const $shareContainer = $('<div id="shareTypeOfferContainer"></div>');
 
   shareTypes.forEach(st => {
-    const $shareSection = $('<div class="share-section"></div>');
+    const $shareSection = $('<div class="divPart"></div>');
     const $header = $(`
 <div class="share-header" style="display: flex; justify-content: space-between; align-items: center;">
   <div>
@@ -1258,6 +1418,7 @@ function renderOfferMovieSection(data) {
             <th>Offer Title</th>
             <th>Offer Type</th>
             <th>D/W/NPFC/NPC/P </th>
+            <th>Buy/Get
             <th>Start</th>
             <th>End</th>
             <th>Status</th>
@@ -1273,14 +1434,16 @@ function renderOfferMovieSection(data) {
       st.offers.forEach(offer => {
         const $row = $(`
           <tr>
-            <td>${offer.offerName}</td>
+            <td>${offer.offerName} :  ${offer.targetAudience}  : ${offer.maxUsers} </td>
             <td>${offer.offerTypeName}</td>
 <td>
    ${offer.discountAmount ?? 0}% / ₹${offer.walletCreditAmount ?? 0}
    /<input type="checkbox" class="custom-checkbox" disabled ${offer.noPlatFormCommission ? 'checked' : ''}>
    /    <input type="checkbox" class="custom-checkbox" disabled ${offer.noProfitCommission ? 'checked' : ''}>
    /   <input type="checkbox" class="custom-checkbox" disabled ${offer.promoCodeRequired ? 'checked' : ''}>
-</td>            <td>${offer.validFrom}</td>
+</td>        
+<td> ${offer.buyQuantity} / ${offer.freeQuantity} </td>
+<td>${offer.validFrom}</td>
             <td>${offer.validTo}</td>
 <td>
   <span class="status-badge ${offer.offerStatus === 'active' ? 'active' : 'inactive'}">
@@ -1352,7 +1515,9 @@ var movShareOfferCallBack = function movShareOfferCallBackFn(response)
 		   if(data !=null)
 		   {
 		   
-    $('#offerId').val(data.offerId);    
+    $('#offerId').val(data.offerId);   
+    $("#offerId").trigger("change");
+ 
    $('#validFrom').val(formatDateTimeFromTimeStamp(data.validFrom)); 
     $('#validTo').val(formatDateTimeFromTimeStamp(data.validTo));
 
@@ -1362,7 +1527,16 @@ var movShareOfferCallBack = function movShareOfferCallBackFn(response)
     $('#noProfitCommission').prop('checked', data.noProfitCommission);
     $('#promoCodeRequired').prop('checked', data.promoCodeRequired);
     $('#status').val(data.status);
+  
+    $("#buyGetCheckbox").prop('checked', data.buyOneGetOne);
+    
+    $('#buyQty').val(data.buyQuantity);
+       $('#getQty').val(data.getQuantity);
 
+       toggleBuyGetInputs(document.getElementById("buyGetCheckbox"));
+
+    
+    
   // $('#promoCodeRequired').is(':checked') || false,
  //  
  

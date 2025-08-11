@@ -1,0 +1,1248 @@
+
+
+  <h4 class = "flimBitSectionHead"  style= "padding-bottom:0px;">Users</h4>
+
+ <div class="tab-toggle" >
+    <div class="tab-btn active" data-target="#userSection" onclick="switchTab('userSection')">🎬 User</div>
+    <div class="tab-btn " data-target="#influencerSection" onclick="switchTab('influencerSection')">🎬 Influencers</div>
+    <div class="tab-btn" data-target="#partnerSection" onclick="switchTab('partnerSection')">🏭 Production</div>
+  </div>
+  
+  <!--modal window----
+  
+ <!-- Modal -->
+ <!-- Edit User Status Modal -->
+<div id="editUserStatusModal" class="modal" style="display:none;">
+  <div class="modal-content" style="max-width: 400px; padding: 20px; border-radius: 8px;">
+    <span class="close" onclick="closeEditUserStatusModal()" style="float: right; font-size: 22px; cursor: pointer;">&times;</span>
+    <h3>Edit User Status</h3>
+
+    <div style="margin-top: 20px;">
+      <label for="editUserStatus" style="font-weight: bold;">Status:</label>
+      <select id="editUserStatus" class="form-input" style="width: 100%; padding: 8px; margin-top: 10px;">
+        <option value="active">✅ Active</option>
+        <option value="inactive">⏸️ Inactive</option>
+        <option value="blocked">⛔ Blocked</option>
+      </select>
+    </div>
+
+    <input type="hidden" id="editUserId" />
+
+    <div style="margin-top: 20px; text-align: right;">
+      <button onclick="submitUserStatusChange()" class="flimbitButton" style="background-color: #28a745; color: white;">Save</button>
+      <button onclick="closeEditUserStatusModal()" class="flimbitButton" style="background-color: #dc3545; color: white;">Cancel</button>
+    </div>
+  </div>
+</div>
+
+  
+  
+  
+  <!-- Modal -->
+<div id="userDetailsModal" class="modal">
+  <div class="modal-content" style="min-width: 700px; min-height: 400px;">
+    <!-- Header with Username -->
+    <div class="movie-user-box divPart">
+      <span class="modal-title" id="modalUserName"> 👤 Username</span>
+      <span class="close" onclick="closeUserDetailsModal()">&times;</span>
+    </div>
+
+    <div style="display: flex; height: 100%;" class = "divPart">
+      <!-- Left Navigation -->
+      <div class="side-nav">
+        <ul>
+        <!--  <li onclick="switchUserTab('walletSection', this)" class="active-tab">💰 Wallet</li> -->
+          <li onclick="switchUserTab('offerSection', this)">🎁 Offers</li>
+		  <li onclick="switchUserTab('userRewardSection', this)">🎁 Rewards</li>
+          <li onclick="switchUserTab('userShareRewardSection', this)">🎁 Share Rewards</li>
+ 
+        </ul>
+      </div>
+
+      <!-- Right Content Area -->
+      <div class="tab-content-area">
+        <!-- Wallet Section -->
+        <div id="walletSection" class="tab-section" style="display: none;">
+                       Wallet Section 
+					   
+					   
+        </div>
+		
+       <div id="userRewardSection" class="tab-section" style="display: none;">
+  <h3>User Rewards</h3>
+          <div id="rewardListContainer">
+            <!-- Offers will be loaded here -->
+          </div>
+					   
+					   
+        </div>
+
+         <div id="userShareRewardSection" class="tab-section" style="display: none;">
+              	
+
+<h3>User Share Reward </h3>
+          <div id="userShareRewardListContainer">
+            <!-- Offers will be loaded here -->
+          </div>			  
+					   
+        </div>
+		
+
+        <!-- Offer Section -->
+		
+		
+		
+        <div id="offerSection" class="tab-section" >
+          <h3>User Offers</h3>
+          <div id="offerListContainer">
+            <!-- Offers will be loaded here -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+  
+  
+  <!---ModalWindow-->
+  
+
+<div id="userSection" class="tab-content active" style = "">
+    <!-- Add your form or data table for movies here -->
+	
+	<div class="user-investment-section">
+	
+	<!-- Investment Summary Section -->
+  <div class="investment-summary" style = "display:none;">
+    <h3>📊 Investment Summary</h3>
+    <div class="summary-stats">
+      <p><strong>💰 Total Invested:</strong> ₹3,50,000</p>
+      <p><strong>🎬 Movies Invested:</strong> 6</p>
+      <p><strong>🔁 Total Returns:</strong> ₹75,000</p>
+      <p><strong>👤 User:</strong> Raj Kumar</p>
+    </div>
+  </div>
+	
+  <!-- Filter Section -->
+  <div class="filter-section">
+    <div class="filter-fields">
+            <select id="languageSelect" class="form-control" >
+        <option value="" disabled selected>Select Language</option>
+        <!-- Language options will be populated dynamically -->
+      </select>
+      
+      <!--  <select id="movieSelect" class="form-control" style>
+        <option value="" disabled selected>Select Movie</option>
+        Movie options will be populated dynamically 
+      </select>-->
+      <select id="statusSelect" class="form-control">
+        <option value="" disabled selected>Select Status</option>
+	   <option value="" >-All-</option>
+
+        <option value="active">Active</option>
+        <option value="inactive">Inactive</option>
+      </select>
+      <input type="text" id="searchText" class="form-control" placeholder="Search..." />
+      <button class="btn" onclick="reloadTable()" style = "height: 37px;">🔎</button>
+    </div>
+  </div>
+
+  
+  <!-- Investment Table Section -->
+  <div class="investment-table">
+    <table id="userTable">
+    </table>
+  </div>
+</div>
+  
+  </div>
+
+  <div id="influencerSection" class="tab-content">
+    <!-- Add your form or data table for movies here -->
+	<div id ="influencerDiv" >
+	
+	
+	</div>
+  </div>
+
+  <div id="partnerSection" class="tab-content">
+    <!-- Add your form or data table for production here -->
+  </div>
+ <script>
+ function toggleDetails(btn) {
+    const mainRow = btn.closest('tr');
+    const nextRow1 = mainRow.nextElementSibling;
+    const nextRow2 = nextRow1.nextElementSibling;
+
+    const isVisible = nextRow1.style.display === 'table-row';
+
+    nextRow1.style.display = isVisible ? 'none' : 'table-row';
+    nextRow2.style.display = isVisible ? 'none' : 'table-row';
+
+    btn.textContent = isVisible ? '➕ Expand' : '➖ Collapse';
+  }
+ 
+ 
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      event.target.classList.add('active');
+	  
+	  if(tabId  == "influencerSection")
+	  {
+	    //influencerSection 
+		
+				  $("#influencerDiv").load("influencerSection.html", function () {
+				  
+				    loadInfluencerSection();
+				  });
+
+	  
+	  }
+	  else if(tabId  == "partnerSection")
+       {
+	   
+	     $("#partnerSection").load("partnerSection.html", function () {
+				  
+				    loadPartnerSection();
+				  });
+
+	   
+	   
+
+       }	   
+	  
+    }
+	
+    function loadUserSection()
+	{
+      	sendAjaxRequest(readMovLanguageUrl, "GET", getAppHeaer(), null,readAllLanguageFun );
+        drawUserDataTable();
+
+	}
+	
+	function reloadTable() {
+
+	     $("#userTable").DataTable().ajax.reload(null, false);
+}
+
+function formatExpandRow(rowData) {
+  return `
+    <div style="padding: 10px 20px; background-color: #f9f9f9; border-left: 4px solid #007bff;">
+      <strong>Email:</strong> ${formatNA(rowData.email)} &nbsp;&nbsp;
+      <strong>Device:</strong> ${formatNA(rowData.deviceId)} &nbsp;&nbsp;
+      <strong>Ban:</strong> ${formatNA(rowData.panId)} &nbsp;&nbsp;
+      <strong>Verified:</strong>
+      ${rowData.isPhoneVerified ? '📱' : ''}
+      ${rowData.isEmailVerified ? '📧' : ''}
+      ${rowData.isPanVerified ? '🪪' : ''}
+      ${rowData.isNamesVerified ? '🧍' : ''}
+      ${rowData.isLanguageVerified ? '🌐' : ''}
+	  
+	  &nbsp;&nbsp;   <strong>Created:</strong> ${formatDateTime(rowData.createdDate)} &nbsp;&nbsp;
+    &nbsp;&nbsp;    <strong>Updated:</strong> ${formatDateTime(rowData.pdatedDate)} &nbsp;&nbsp;
+    &nbsp;&nbsp;    <strong>W/U:</strong> ${formatDateTime(rowData.walletUpdate)} &nbsp;&nbsp;
+
+    </div>
+	
+	   
+  `;
+}
+
+
+function drawUserDataTable() {
+  const table = $('#userTable').DataTable({
+    destroy: true,
+    processing: true,
+    serverSide: true,
+    pageLength: 10,
+    dom: 'lrtip',
+    ajax: {
+      url: dataTableUserUrl,
+      type: 'GET',
+      headers: getAppHeaer(),
+      data: function (d) {
+        return {
+          draw: d.draw,
+          start: d.start,
+          length: d.length,
+          searchText: $("#searchText").val(),
+          sortColumn: d.columns[d.order[0].column].data,
+          sortOrder: d.order[0].dir,
+          language: $("#languageSelect").val(),
+          status: $("#statusSelect").val()
+        };
+      },
+      dataFilter: function (response) {
+        const fullResponse = JSON.parse(response);
+        const obj = fullResponse.result;
+        $("#rewardCount").text("(" + (obj.recordsTotal ?? 0) + ")");
+        return JSON.stringify({
+          draw: obj.draw || 1,
+          recordsTotal: obj.recordsTotal ?? 0,
+          recordsFiltered: obj.recordsFiltered ?? 0,
+          data: obj.data ?? []
+        });
+      }
+    },
+    columns: [
+      {
+        className: 'dt-control',
+        orderable: false,
+        data: null,
+        defaultContent: '',
+        title: ''
+      },
+      {
+        data: 'firstName',
+        title: 'Name',
+        render: (data, type, row) => toTitleCase(`${row.firstName} ${row.lastName}`)
+      },
+      {
+        data: 'phoneNumber',
+        title: 'Phone',
+        render: formatPhoneOnly
+      },
+      { data: 'languageName', title: 'Language' },
+      {
+        data: 'isPhoneVerified',
+        title: 'P/E/B/N/L',
+        orderable: false,
+        render: function (data, type, row) {
+          return `
+            <input type="checkbox" class="custom-checkbox" disabled ${row.isPhoneVerified ? 'checked' : ''}>
+            <input type="checkbox" class="custom-checkbox" disabled ${row.isEmailVerified ? 'checked' : ''}>
+            <input type="checkbox" class="custom-checkbox" disabled ${row.isPanVerified ? 'checked' : ''}>
+            <input type="checkbox" class="custom-checkbox" disabled ${row.isNamesVerified ? 'checked' : ''}>
+            <input type="checkbox" class="custom-checkbox" disabled ${row.isLanguageVerified ? 'checked' : ''}>
+          `;
+        }
+      },
+	  {
+        data: 'walletBalance',
+        title: 'Wallet',
+        render: formatRupee
+      }
+	 ,
+      {
+        data: 'lastLogin',
+        title: 'Login',
+        render: formatDateTime
+      },
+      {
+        data: 'status',
+        title: 'Status',
+        render: renderStatus
+      },
+	  
+	  {
+  data: null,
+  title: 'Action',
+  orderable: false,
+  render: function (data, type, row) {
+    return `
+      <button class="action-button" onclick="editUser('${row.id}','${row.status}')">✏️</button>
+      <button class="action-button" onclick="viewWalletAndOffers('${row.id}')">💰🎁</button>
+    `;
+  }
+  }
+	  
+    ],
+    order: [[1, 'asc']]
+  });
+
+  // Toggle expand row
+  $('#userTable tbody').off('click', 'td.dt-control').on('click', 'td.dt-control', function () {
+    const tr = $(this).closest('tr');
+    const row = table.row(tr);
+
+    if (row.child.isShown()) {
+      row.child.hide();
+      tr.removeClass('shown');
+    } else {
+      row.child(formatExpandRow(row.data())).show();
+      tr.addClass('shown');
+    }
+  });
+  
+  $('#userTable_length').hide();
+
+}
+
+
+
+var readAllLanguageFun =  function readLanguageCallBack(response)
+{
+
+ var data = readFinalResult(response);
+
+   if(data != null)
+   {
+         populateSelectBoxFirstOptAll("languageSelect",data,"id","name");
+		 
+		
+
+   }
+
+}
+
+
+function onLanguageChangeInv() {
+  var selectedLanguageId = $('#languageSelect').val();
+
+
+    if (selectedLanguageId === "" || selectedLanguageId == null) {
+    console.log("Default option selected. Ignoring change.");
+    return; // Exit early, block logic
+  }
+
+
+
+ // var selectedLanguageName = $('#languageSelect option:selected').text();
+	//sendAjaxRequest(readMovieBylangIdUrl+selectedLanguageId, "GET", getAppHeaer(), null,readMovieByLanCallBack );
+
+  // You can now use the selectedLanguageId to load movies dynamically, etc.
+}
+
+
+var  readMovieByLanCallBack =	function readMovieByLanSection(response)
+{
+var data = readFinalResult(response);
+
+   if(data != null)
+   {
+   	     //populateSelectBoxFirstOptAll("movieSelect",data,"id","title");
+         
+        
+   
+   }
+
+}
+
+function editUser(userId,status) {
+  // Set the user ID and show the modal
+  document.getElementById('editUserId').value = userId;
+
+  // Optionally load the current status via AJAX if needed
+  // For now just set default
+  document.getElementById('editUserStatus').value = status;
+
+  document.getElementById('editUserStatusModal').style.display = 'block';
+}
+
+function closeEditUserStatusModal() {
+  document.getElementById('editUserStatusModal').style.display = 'none';
+}
+
+function submitUserStatusChange() {
+  const userId = document.getElementById('editUserId').value;
+  const newStatus = document.getElementById('editUserStatus').value;
+
+  // Example AJAX call
+  var payload = {};
+    payload.id = Number(userId);
+	payload.status = newStatus;
+	payload.description = "";
+
+    	sendAjaxRequest(updateUserStatus, "POST", getAppHeaer(), payload,userStatusCallBack );
+
+
+      closeEditUserStatusModal();
+     // $('#userTable').DataTable().ajax.reload(null, false); // Reload without resetting page
+   
+}
+
+var userStatusCallBack = function userStatusCallBackFn(response)
+{
+ var data = readFinalResult(response);
+		   if(data !=null)
+		   {
+              closeEditUserStatusModal();
+			  $('#languageSelect option:first').prop('selected', true);
+              reloadTable();
+           }
+
+}
+
+
+
+function viewWalletAndOffers(userId) {
+  console.log("Wallet/Offers for user:", userId);
+
+  // Dummy user data
+  const dummyUsername = "User #" + userId;
+  const dummyWallet = {
+    shareCashBalance: "₹1500.75",
+    lastUpdated: "2025-07-15 16:30"
+  };
+
+  const dummyOffers = [
+    { id: 101, redeemedAt: "2025-06-10", bonusCredited: true, status: "ACTIVE" },
+    { id: 102, redeemedAt: "2025-06-15", bonusCredited: false, status: "UNUSED" },
+    { id: 103, redeemedAt: "2025-07-01", bonusCredited: true, status: "INACTIVE" }
+  ];
+
+  openUserDetailsModal(dummyUsername, dummyWallet, dummyOffers);
+}
+
+
+
+function openUserDetailsModal(username, walletData, offers) {
+  document.getElementById("modalUserName").innerText = "👤" + username;
+  
+  renderOfferList(offers);
+  renderRewardList();
+  document.getElementById("userDetailsModal").style.display = 'block';
+  
+  const userShareRewards = [
+  { id: 1, movieId: 101, shareTypeId: 5, numberOfShares: 50, allocatedAt: '2025-07-15' },
+  { id: 2, movieId: 102, shareTypeId: 3, numberOfShares: 30, allocatedAt: '2025-07-16' }
+];
+
+renderUserShareRewardList(userShareRewards);
+}
+
+function renderUserShareRewardList(userShareRewards) {
+  const $container = $("#userShareRewardListContainer");
+  $container.empty();
+
+  // Add header row
+  const $headerRow = $(`
+    <div class="offer-box" style="display: flex; align-items: center; border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; font-weight: bold;">
+      <!-- User Share Reward ID -->
+      <div style="flex: 1;">
+        <strong>Share id </strong>
+      </div>
+
+      <!-- Movie ID -->
+      <div style="flex: 1;">
+        <strong>Movie ID</strong>
+      </div>
+
+      <!-- Share Type ID -->
+      <div style="flex: 1;">
+        <strong>Share Type ID</strong>
+      </div>
+
+      <!-- Number of Shares -->
+      <div style="flex: 1;">
+        <strong>Number of Shares</strong>
+      </div>
+
+      <!-- Allocated At -->
+      <div style="flex: 1;">
+        <strong>Allocated At</strong>
+      </div>
+    </div>
+  `);
+
+  // Append header row
+  $container.append($headerRow);
+
+  // Render each reward row
+  userShareRewards.forEach((reward, index) => {
+    const $rewardRow = $(`
+      <div class="offer-box" style="display: flex; align-items: center; border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
+        <!-- User Share Reward ID -->
+        <div style="flex: 1;">
+          ${reward.id}
+        </div>
+
+        <!-- Movie ID -->
+        <div style="flex: 1;">
+          ${reward.movieId}
+        </div>
+
+        <!-- Share Type ID -->
+        <div style="flex: 1;">
+          ${reward.shareTypeId}
+        </div>
+
+        <!-- Number of Shares -->
+        <div style="flex: 1;">
+          ${reward.numberOfShares}
+        </div>
+
+        <!-- Allocated At -->
+        <div style="flex: 1;">
+          ${reward.allocatedAt}
+        </div>
+      </div>
+    `);
+
+    $container.append($rewardRow);
+  });
+}
+
+
+function renderRewardList() {
+  const $rewardListContainer = $("#rewardListContainer");
+  $rewardListContainer.empty(); // Clear the container before rendering
+
+  // Dummy list of rewards
+  const rewards = [
+    { id: 1, userId: 1001, promotionRewardId: 10, creditedAmount: 50.00, creditedAt: '2025-07-01 10:30:00', referenceNote: 'Bonus for movie share' },
+    { id: 2, userId: 1002, promotionRewardId: 11, creditedAmount: 30.00, creditedAt: '2025-07-05 14:20:00', referenceNote: 'Referral bonus' },
+    { id: 3, userId: 1003, promotionRewardId: 12, creditedAmount: 100.00, creditedAt: '2025-07-10 18:45:00', referenceNote: 'Invested in premium movie' },
+  ];
+
+  // Create the table structure
+  const $table = $("<table>").addClass("reward-table");
+  const $thead = $("<thead>").append(`
+    <tr>
+      <th>Reward ID</th>
+      <th>User ID</th>
+      <th>Promotion Reward ID</th>
+      <th>Credited Amount</th>
+      <th>Credited At</th>
+      <th>Reference Note</th>
+    </tr>
+  `);
+  const $tbody = $("<tbody>");
+  
+  // Iterate over the rewards and create rows
+  $.each(rewards, function(index, reward) {
+    const $row = $("<tr>");
+    $row.append(`
+      <td>${reward.id}</td>
+      <td>${reward.userId}</td>
+      <td>${reward.promotionRewardId}</td>
+      <td>$${reward.creditedAmount.toFixed(2)}</td>
+      <td>${reward.creditedAt}</td>
+      <td>${reward.referenceNote}</td>
+    `);
+    $tbody.append($row);
+  });
+
+  // Append the table to the container
+  $table.append($thead, $tbody);
+  $rewardListContainer.append($table);
+
+  // Add Save Button at the end of the table
+  const $saveBtn = $("<button>").addClass("flimbitButton")
+    .text("Save Rewards")
+    .css("margin-top", "15px")
+    .on("click", function() {
+      saveRewardStatuses(rewards);
+    });
+
+  $rewardListContainer.append($saveBtn);
+}
+
+// Dummy function for saving reward statuses (you can implement the actual logic)
+function saveRewardStatuses(rewards) {
+  console.log("Saving rewards with statuses:", rewards);
+}
+
+
+function renderOfferList(offers) {
+  const $container = $("#offerListContainer");
+  $container.empty();
+
+  offers.forEach((offer, index) => {
+    const $offerRow = $(`
+      <div class="offer-box" style="display: flex; align-items: center; border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
+        <!-- Offer ID -->
+        <div style="flex: 1;">
+          <strong>Offer ID:</strong> ${offer.id}
+        </div>
+
+        <!-- Redeemed At -->
+        <div style="flex: 1;">
+          <strong>Redeemed At:</strong> ${offer.redeemedAt}
+        </div>
+
+        <!-- Bonus Credited -->
+        <div style="flex: 1;">
+          <strong>Bonus Credited:</strong> ${offer.bonusCredited ? '✅' : '❌'}
+        </div>
+
+        <!-- Status Dropdown -->
+        <div style="flex: 1;">
+          <label>Status:
+            <select class="offer-status-select" data-offer-id="${offer.id}">
+              <option value="UNUSED" ${offer.status === 'UNUSED' ? 'selected' : ''}>UNUSED</option>
+              <option value="ACTIVE" ${offer.status === 'ACTIVE' ? 'selected' : ''}>ACTIVE</option>
+              <option value="INACTIVE" ${offer.status === 'INACTIVE' ? 'selected' : ''}>INACTIVE</option>
+            </select>
+          </label>
+        </div>
+      </div>
+    `);
+
+    $container.append($offerRow);
+  });
+
+  const $saveBtn = $(`<button class="flimbitButton" style="margin-top: 15px;"  onclick = "saveUserOfferStatus()" >Save Offers</button>`);
+  
+
+  $container.append($saveBtn);
+}
+
+function saveUserOfferStatus()
+{
+   const updatedOffers = [];
+
+    $(".offer-status-select").each(function () {
+      const offerId = $(this).data("offer-id");
+      const status = $(this).val();
+      updatedOffers.push({ id: offerId, status: status });
+    });
+
+
+}
+
+
+function closeUserDetailsModal() {
+  document.getElementById("userDetailsModal").style.display = 'none';
+}
+
+function switchUserTab(sectionId, liElement) {
+  document.querySelectorAll(".tab-section").forEach(div => div.style.display = "none");
+  document.getElementById(sectionId).style.display = "block";
+
+  document.querySelectorAll(".side-nav li").forEach(li => li.classList.remove("active-tab"));
+  liElement.classList.add("active-tab");
+}
+
+
+  </script>
+
+ <style>
+ 
+/* Modal Backdrop */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0,0,0,0.6);
+  overflow: auto;
+  font-family: Arial, sans-serif;
+}
+
+/* Modal Content Box */
+.modal-content {
+  background-color: #fffde7;
+  margin: 5% auto;
+  padding: 30px;
+  width: 90%;
+  max-width: 90%;
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Close Button */
+.close {
+  float: right;
+  font-size: 26px;
+  font-weight: bold;
+  color: #444;
+  cursor: pointer;
+}
+.close:hover {
+  color: red;
+}
+
+/* Table Styling */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+th, td {
+  padding: 12px;
+  border: 1px solid #ccc;
+  text-align: center;
+}
+th {
+  background-color: #f2f2f2;
+  color: #333;
+}
+
+/* Buttons */
+button {
+  padding: 3px 16px;
+  margin: 5px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+button:hover {
+  background-color: #0056b3;
+}
+
+/* Edit Section Form */
+#editForm label {
+  display: block;
+  margin: 12px 0 5px;
+}
+#editForm select,
+#editForm textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 4px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+textarea {
+  resize: vertical;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+
+
+.close {
+  position: absolute;
+  top: 20px;
+  right: 25px;
+  font-size: 26px;
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+  z-index: 1000;
+}
+.close:hover {
+  color: red;
+}
+.modal-content {
+  position: relative; /* Important for .close positioning */
+}
+
+ .flimbitButton
+ {
+   background-color :#fddb23;
+ 
+ 
+ }
+ 
+ 
+.tab-toggle {
+      display: flex;
+      gap: 20px;
+    }
+
+    .tab-btn {
+      padding: 10px 15px;
+      cursor: pointer;
+      font-weight: bold;
+      color: #555;
+      border-bottom: 3px solid transparent;
+    }
+
+    .tab-btn.active {
+      color: #FFD700;
+    }
+
+   
+    .tab-content.active {
+      display: block;
+    }
+
+
+/* General Section Styling */
+.user-investment-section {
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+}
+
+.filter-section {
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.filter-fields {
+  display: flex;
+  gap: 15px;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+}
+
+.filter-fields select,
+.filter-fields input {
+  padding: 5px 10px; /* Reduced padding */
+  height: 38px; /* Set height to reduce size */
+  width: 200px;
+  font-size: 14px; /* Adjust font size */
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.filter-fields button {
+  padding: 10px;
+  background-color: #ffcc00;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+.filter-fields button:hover {
+  background-color: #ff9900;
+}
+
+.investment-summary {
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.investment-summary h3 {
+  margin-bottom: 15px;
+}
+
+.summary-stats {
+  display: flex;
+  gap: 15px;
+  justify-content: space-between;
+  font-size: 16px;
+}
+
+.summary-stats p {
+  margin: 0;
+  font-weight: bold;
+}
+
+.investment-table {
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.investment-table h3 {
+  margin-bottom: 15px;
+}
+
+.investment-list {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.investment-list th, .investment-list td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+
+.investment-list th {
+  background-color: #f1f1f1;
+  font-weight: bold;
+}
+
+.investment-list td button {
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.investment-list td button:hover {
+  background-color: #0056b3;
+}
+
+
+.filter-fields select,
+.filter-fields input {
+  padding: 8px;
+  width: 200px;
+}
+
+.filter-fields button {
+  padding: 10px;
+  background-color: #fffde7;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  margin-top : 0%;
+}
+
+.filter-fields button:hover {
+  background-color: #FFD700;
+}
+
+table.dataTable>thead>tr>th,table.dataTable>thead>tr>td {
+    padding: 10px;
+    /* border-bottom: 1px solid rgba(0, 0, 0, 0.3); */
+}
+
+
+.investment-summary {
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.investment-summary h3 {
+  margin-bottom: 15px;
+}
+
+.summary-stats {
+  display: flex;
+  gap: 15px;
+  justify-content: space-between;
+  font-size: 16px;
+}
+
+.summary-stats p {
+  margin: 0;
+  font-weight: bold;
+}
+
+.investment-table {
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.investment-table h3 {
+  margin-bottom: 15px;
+}
+
+.investment-list {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.investment-list th, .investment-list td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+
+.investment-list th {
+  background-color: #f1f1f1;
+  font-weight: bold;
+}
+
+.investment-list td button {
+  padding: 3px 16px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.investment-list td button:hover {
+  background-color: #0056b3;
+}
+h3 {
+  font-size: 18px; /* Adjust the font size as needed */
+  font-weight: bold;
+  color: #333; /* Optional: Change the color */
+  margin-bottom: 10px; /* Optional: Adjust margin for spacing */
+}
+
+.error-message {
+    color: red;
+    font-size: 12px;
+    margin-top: 4px;
+  }
+
+  /* Dynamic Movie and User Box */
+        .movie-user-box {
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        /* Movie and User Information */
+        .movie-user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .movie-name, .user-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .movie-name {
+            color: #007bff; /* Blue for Movie Name */
+        }
+
+        .user-name {
+            color: #28a745; /* Green for User Name */
+        }
+		
+		
+		.expand-btn {
+      cursor: pointer;
+      color: #007bff;
+    }
+
+    .details-row {
+      display: none;
+      background-color: #f9f9f9;
+    }
+
+    .details-cell {
+      padding: 10px;
+      border-top: none;
+      color: #444;
+    }
+	
+	/* Yellow checkbox design */
+.custom-checkbox {
+  appearance: none;
+  width: 15px;
+  height: 15px;
+  border: 2px solid #ffc107;
+  border-radius: 4px;
+  background-color: #fffbe6;
+  position: relative;
+  cursor: default;
+  box-shadow: 0 0 3px rgba(255, 193, 7, 0.5);
+  transition: all 0.2s ease;
+  vertical-align: middle;
+  padding: 0;
+}
+
+.custom-checkbox:checked {
+  background-color: #ffe600;
+  border-color: #ffca2c;
+  box-shadow: 0 0 6px rgba(255, 193, 7, 0.8);
+}
+
+.custom-checkbox:checked::after {
+  content: '✔';
+  color: #212529;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -48%);
+  font-size: 10px;
+  font-weight: bold;
+  line-height: 1;
+}
+  .dt-expand-row {
+    padding: 10px 20px;
+    background-color: #f9f9f9;
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+  
+  /* Target the DataTables expand/collapse arrow cell */
+table.dataTable tbody td.dt-control {
+  color: #ffe600 !important;       /* Change arrow color */
+  cursor: pointer;
+  font-weight: bold;
+}
+table.dataTable tbody td.dt-control::before {
+  content: "▶";
+  color: #ffe600;
+  font-size: 14px;
+}
+
+/* Optional: Highlight the background on hover */
+table.dataTable tbody td.dt-control:hover {
+  background-color: #fffacd;       /* Light yellow */
+}
+
+
+.action-button {
+    background-color: #ffe600;
+    border: none;
+    padding: 5px 8px;
+    margin-right: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+
+  .action-button:hover {
+    background-color: #ffcd00;
+  }
+  
+
+.modal-header {
+  background-color: #f9f9f9;
+  padding: 10px 20px;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.side-nav {
+  width: 150px;
+  background: #f0f0f0;
+  padding: 20px;
+  border-right: 1px solid #ddd;
+}
+
+.side-nav ul {
+  list-style: none;
+  padding: 0;
+}
+
+.side-nav li {
+  cursor: pointer;
+  padding: 8px;
+  margin-bottom: 5px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.side-nav .active-tab {
+  background-color: #ffe600;
+  font-weight: bold;
+}
+
+.tab-content-area {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.tab-section {
+  display: block;
+}
+
+.offer-box {
+  border: 1px solid #ccc;
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  background-color: #fdfdfd;
+}
+
+.offer-box select {
+  margin-top: 8px;
+}
+
+  
+  </style>
+

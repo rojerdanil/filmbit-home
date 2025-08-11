@@ -6,26 +6,146 @@
   <title>FilmBit Admin Panel</title>
   <script src="./script/jquery-3.6.0.min.js"></script>
 
- <script src="./script/api-config.js"></script>
-	  <script src="./script/auth.js"></script>
-
-
-
   <script src="./script/chart.js"></script>
   
   <script src="./script/jquery.dataTables.min.js"></script>
   <script src="./script/bootstrap.bundle.min.js"></script>
- 
+
+
   <link href="./css/bootstrap.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="./css/jquery.dataTables.min.css">
   <link rel="stylesheet" href="./css/adminPanel.css">
 
 <script>  
-						 	
-    //console.log("sessionStorage.getItem " + getUserKey());							
-	//console.log("xxxx entry "  +getAccessToken())
+
+    var baseUrlApi = 'http://localhost:8090';
+	var readMovieUrl = baseUrlApi + "/movie/datatable";
+    var readMovieStatusUrl = baseUrlApi + "/movie-status/allstatus";
+    var readMovieTypeUrl = baseUrlApi + "/movie-types/alltypes";
+	var readMovLanguageUrl = baseUrlApi + "/languages/alllangugage";
+	var readMovSummaryByIdURl = baseUrlApi + "/movie/moviebyId?id=";
+	var readActorsBylanIdUrl = baseUrlApi +"/movie-person/movie_by_languagae?id=";
+	var readMovieRolesUrl = baseUrlApi + "/roles-in-movie/getAllRole";
+	var addMovieRoleUrl   =   baseUrlApi + "/roles-in-movie/addRoleInMovie"
+	var addMovieUrl =  baseUrlApi + "/movie/addMovie"
+	var readActorInMovByMovIdUrl = baseUrlApi  + "/actors-in-movie/actorsInMovieById?id=";
+	var addActorInMovieUrl = baseUrlApi  + "/actors-in-movie/addMovieActor";
+    var deleteActorInMovieUrl = baseUrlApi  + "/actors-in-movie/deleteMoviePlay?id=";
+	var readShareTypeByMovIdUrl = baseUrlApi  + "/share-types/movie/" ;
+	var addUpdateShareTypeUrl = baseUrlApi + "/share-types/updateInsert/";
+	var deleteShareTypeUrl = baseUrlApi + "/share-types/deleteShareType/";
+	var readMovieEintyByMovIdUrl = baseUrlApi + "/movie/entity/moviebyId?id=";
+    var dataTablePromotionTypeUrl = baseUrlApi  + "/promotion-types/page";
+	var readPromoByIdUrl =  baseUrlApi  + "/promotion-types/promotionType/";
+    var upateInsertPromoTypeUrl =  baseUrlApi  + "/promotion-types/insertUpdate";
+    var deletePromoByIdUrl   = baseUrlApi + "/promotion-types/deleteBromoType/";
+	var readAllPromoTypeUrl = baseUrlApi  + "/promotion-types/findAll";
+	var dataTableRewardUrl =  baseUrlApi  + "/reward-types/page";
+    var insertRewardTypeUrl = baseUrlApi  + "/reward-types/insert";
+    var readRewardByIdUrl = baseUrlApi  + "/reward-types/rewards/";
+	var updateRewardUrl = baseUrlApi  + "/reward-types/update/";
+    var deleteRewardByIdUrl =  baseUrlApi +"/reward-types/delete/";
+	var dataTableOfferTypeUrl = baseUrlApi + "/offertypes/paged"
+	var insertOfferTypeUrl = baseUrlApi  + "/offertypes/insert";
+    var readOfferTypeByIdUrl = baseUrlApi  + "/offertypes/type/";
+    var updateOfferTypeByIdUrl = baseUrlApi  + "/offertypes/update/";
+	var deleteOfferTypeByIdUrl = baseUrlApi  + "/offertypes/delete/";
+	var dataTableOfferUrl = baseUrlApi + "/offers/paged"
+    var insertOfferUrl = baseUrlApi  + "/offers/insert";
+	var readOfferByIdUrl = baseUrlApi  + "/offers/offerId/";
+    var updateOfferByIdUrl = baseUrlApi  + "/offers/update/";
+    var deleteOfferByIdUrl = baseUrlApi  + "/offers/delete/";
+	var readAllOfferUrl = baseUrlApi  + "/offers/all";
+    var readMovieBylangIdUrl = baseUrlApi + "/movie/language/"
+    var readMovieOfferBymovIdUrl =  baseUrlApi   + "/offers/movieOffer/";
+    var insertMovieShareOfferUrl = baseUrlApi   + "/offer-mappings/saveMovieShareOffer";
+    var readMovieShareOfferByOfferIdUrl = baseUrlApi   + "/offer-mappings/readShareOffer/";
+    var updateMovieShareOfferUrl = baseUrlApi   + "/offer-mappings/update/";
+    var deleteMovieShareOfferUrl = baseUrlApi   + "/offer-mappings/delete/";
+    var dataTablePromoCodeUrl = baseUrlApi + "/pron         mo-codes/page"
+	var readRewardByTypeIdUrl =  baseUrlApi +"/reward-types/rewardsbytype/";
+    var inserrPromotionCodesUrl = baseUrlApi + "/promo-codes/create"
+    var dataTablePromoRewardMapUrl =  baseUrlApi +  "/promotion-rewards-map/page/"
+	var deleteRewardMapUrl = baseUrlApi   + "/promotion-rewards-map/delete/";
+    var insertPromoCodeUrl = baseUrlApi   + "/promo-codes/createPromoCode";
+	var updatePromoCodeUrl = baseUrlApi   + "/promo-codes/updatePromoCode";
+    var deletePromoUrl =  baseUrlApi +  "/promo-codes/delete/"
+    var dataTableUserInvestUrl =  baseUrlApi +  "/movieInvest/dataTableUserInvestment"
+	var readInvestShareBymovIdUrl =  baseUrlApi +  "/movieInvest/readInvestbymovie/"
+    var saveInvestStatusChangeUrl = baseUrlApi +  "/movieInvest/udpateStatus"
+	var dataTableUserPayoutUrl =  baseUrlApi +  "/payout/dataTableUserPayout"
+    var readInvestShareByShareIdUrl =  baseUrlApi +  "/movieInvest/readInvestbymoviebyshareId/"
+    var readPayoutByuserIdAndMovIdUrl = baseUrlApi +  "/payout/readPayoutByUserIdAndMovieId/"
+    var repayAlLreturnforMovieUrl = baseUrlApi +  "/payout/repayAlLreturnforMovie"
+	var repayAlLreturnforShareUrl = baseUrlApi +  "/payout/repayAlLreturnforShare"
+    var repayAllInvestedforShareUrl = baseUrlApi +  "/movieInvest/repayAllInvestedforShare"
+    var dataTableUserUrl = baseUrlApi +  "/users/dataTableUsers"
+	var updateUserStatus = baseUrlApi +  "/users/udpateStatus"
+	var dataTableAnnounUrl = baseUrlApi +  "/announcements/dataTable"
+	var insertAnnounUrl = baseUrlApi +  "/announcements/add"
+    var deleteAnnounUrl = baseUrlApi +  "/announcements/delete/"
+    var readAnnounUrl = baseUrlApi +  "/announcements/annoncebyid/"
+    var updateAnnounUrl = baseUrlApi +  "/announcements/update/"
+   	var dataTableInfluencerUrl = baseUrlApi +  "/influencers/dataTable"
+    var insertInfluencerUrl = baseUrlApi +  "/influencers/add"
+	var readInfluencerUrl = baseUrlApi +  "/influencers/influencerbyid/"
+	var updateInfluencerUrl = baseUrlApi +  "/influencers/update/"
+	var deleteInfluencerUrl = baseUrlApi +  "/influencers/delete/"
+	var dataTablePartnerUrl = baseUrlApi +  "/partners/dataTable"
+	var insertPartnerUrl = baseUrlApi +  "/partners/add"
+    var readPartnerUrl = baseUrlApi +  "/partners/read/"
+    var updatePartnerUrl = baseUrlApi +  "/partners/update/"
+	 var deletePartnerUrl = baseUrlApi +  "/partners/delete/"
+	var dataTableSettingUrl = baseUrlApi +  "/settings/dataTable"
+    var insertSettingUrl = baseUrlApi +  "/settings/add"
+	var readSettingUrl = baseUrlApi +  "/settings/read/"
+	var updateSettingUrl = baseUrlApi +  "/settings/update/"
+    var deleteSettingUrl = baseUrlApi +  "/settings/delete/"
+	var readSettingGroupUrl = baseUrlApi +  "/settings/readGroup"
+	var dataTableAuditUrl = baseUrlApi +  "/audit/dataTable"
+	var readAuditEntityGroupUrl = baseUrlApi +  "/audit/readGroupEntity"
+    var dataTableActorUrl = baseUrlApi + "/movie-person/dataTable"
+    var readactorRolesUrl = baseUrlApi + "/movie-person-role/allRole";
+    var insertActorUrl = baseUrlApi +  "/movie-person/add"
+    var readActorUrl = baseUrlApi +  "/movie-person/read/"
+	var updateActorUrl = baseUrlApi +  "/movie-person/update/"
+	var deleteActorUrl = baseUrlApi +  "/movie-person/delete/"
+	var dashBoadReadUrl = baseUrlApi + "/dashboard/readDashBoard"
+	var dashBoardChartUrl = baseUrlApi + "/dashboard/dashBoardChart"
+
+
+
+
+
+
+
 	
-	ENABLE_AUTH_HEADERS = true;
+
+
+
+
+
+	
+		
+		
+
+
+
+
+
+
+
+
+
+
+
+	
+
+	 
+	 
+	 
+
+
 	
     let currentTable;
 	let idNameMovieStatusMap = {};
@@ -34,8 +154,6 @@
 	
 	let  languageMap = 	[];
 	let  actorRolelist = [];
-
-      	
 
     function loadSection(section) {
 	
@@ -52,7 +170,17 @@
 
 	 }
 	
-    
+      const sections = ['dashboard', 'movies', 'actors', 'roles', 'users', 
+	  'investments', 'reports', 'announcements', 'payouts', 'settings',
+	  'offerPromotion','promotiontypes','promotionrewards','offers','promocodes',
+	  'aduit'];
+      sections.forEach(id => {
+        document.getElementById(`${id}-section`).style.display = 'none';
+		document.getElementById(`${id}-section`).innerHTML = "";
+      });
+      document.getElementById(`${section}-section`).style.display = 'block';
+	  
+	  
 	  document.getElementById("mainLoadContent").innerHTML = "";
 	  
 	  var pageName = section +"-section.html";
@@ -75,7 +203,7 @@
                  loadAnnoncementSection();
           if(section == 'reports')
 		     renderReportCharts();
-		  if(section == 'appusers')
+		  if(section == 'users')
 		     loadUserSection();
 		  if(section == 'actors')
 	         loadActorSection();	
@@ -94,13 +222,9 @@
 		  if(section == 'payouts')
 	          loadPayoutSection();	  
 		  if(section == 'settings')
-	          loadSettingSection();	   
+	          loadSettingSection();	  
 		  if(section == 'aduit')
-	          loadAduitSection();	
-         if(section == 'adminUser')
-	          loadAdminUserSection();			  
-			  if(section == 'movie-payout')
-	          loadMoviePayout();			  
+	          loadAduitSection();		  
 			  
 			  
 			  
@@ -291,15 +415,12 @@ if (value !== undefined) {
 	}
 	
 	
-	function sendAjaxRequest(url, method, headerObj, body, onSuccess) {
-	
-	
-	
+	function sendAjaxRequest(url, method, headers, body, onSuccess) {
   $.ajax({
     url: url,
     type: method.toUpperCase(),
     contentType: 'application/json',
-    headers: headerObj,
+    headers: headers || {},
     data: method.toUpperCase() === 'GET' ? null : JSON.stringify(body),
     success: function (response) {
       if (typeof onSuccess === 'function') {
@@ -310,13 +431,7 @@ if (value !== undefined) {
     },
     error: function (xhr, status, error) {
       
-        if (xhr.status === 401) {
-            console.log("Token expired or invalid. Skipping error alert for 401.");
-            // Optionally, handle the token refresh logic here
-        } else {
-            // Show alert for any error other than 401 Unauthorized
-            alert("❌ Error: " + (xhr.responseText || error));
-        }
+        alert("❌ Error: " + (xhr.responseText || error));
       
     }
   });
@@ -377,8 +492,7 @@ function loadActorSection()
     const d = new Date(dateStr);
     return isNaN(d) ? 'Invalid Date' : d.toLocaleDateString();
   }
-  
-  function getAppHeaerOld()
+  function getAppHeaer()
   {
   
   
@@ -396,38 +510,6 @@ function loadActorSection()
 		  
 		  return headerObj;
   
-  }
-  function getAppHeaer()
-  {
-  
-  
-  
-        var headerObj = {};
-		headerObj['X-Device-Type'] = "web";
-
-    const token = getAccessToken();
-    const deviceId = generateDeviceId();
- 	
-	headerObj['accessToken'] = "test";
-
-
-    if (token) {
-        headerObj['Authorization'] = 'Bearer ' + token;
-    }
-	else 
-	{
-	 console.log("token is empty");
-	}
-
-    if (deviceId) {
-        headerObj['X-Device-ID'] = deviceId;
-		 headerObj['deviceId'] = deviceId;
-        //dummieshoud be removed		
-		headerObj['phoneNumber'] = "9999";
-		 
-
-    }
-    return headerObj;
   }
   
   function enableCheckboxSelectAll(tableId) {
@@ -474,7 +556,7 @@ function openDropDownWithCallBack(modalId,page,onSuccess)
     $("#modalContainer").empty();
 
     $('#modalContainer').load(page, function () {
-      $(modalId).show();
+      $(modalId).modal('show');
 	  onSuccess();
     });
   
@@ -947,7 +1029,7 @@ console.log("comming inside");
  
    // Investment Trend Chart
    //showPopupLoader();
-   
+   $(document).ready(function () {
   $('.sidebar').hover(
     function () {
       $(this).addClass('expanded');
@@ -961,12 +1043,11 @@ console.log("comming inside");
   
 	
   
+});
 
-
-    //verifyAccessTokenOrRedirect();
-
+   
    loadSection('dashboard');
-		
+    
  
   });
   
@@ -1165,7 +1246,11 @@ function hidePopupLoader() {
 
 function closeModelWindowById(modalId)
 {
-  $("#"+modalId).hide();
+  const modalElement = document.getElementById(modalId);
+  const modalInstance = bootstrap.Modal.getInstance(modalElement);
+  if (modalInstance) {
+    modalInstance.hide();
+  }
   // Cleanup fallback (optional)
   document.body.classList.remove('modal-open');
   document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
@@ -1234,38 +1319,26 @@ function toFullSqlTimestamp(value) {
   return value.replace("T", " ") + ".000"; // Add space and milliseconds
 }
 
-function populateSelectBox(selectId, list, valueField, textField, firtOption, nameField) {
-    const $select = $('#' + selectId);
-    $select.empty(); // Clear existing options
+function populateSelectBox( selectId,list, valueField, textField) {
+  const $select = $('#' + selectId);
+  $select.empty(); // Clear existing options
 
-    // Add the first disabled option
-    var firtOptText = '-- Select --';
-    if (firtOption != null)
-        firtOptText = '-- Select ' + firtOption + ' --';
+  // Add the first disabled option
+  $select.append($('<option>', {
+    value: '',
+    text: '-- Select --',
+    disabled: true,
+    selected: true
+  }));
 
+  // Append options from object list
+  list.forEach(item => {
     $select.append($('<option>', {
-        value: '',
-        text: firtOptText,
-        disabled: true,
-        selected: true
+      value: item[valueField],
+      text: item[textField]
     }));
-
-    // Append options from object list
-    list.forEach(item => {
-        const optionData = {
-            value: item[valueField],
-            text: item[textField]
-        };
-
-        // ✅ If nameField is provided and exists in the item, add it as name attribute
-        if (nameField && item[nameField] !== undefined) {
-            optionData['name'] = item[nameField];
-        }
-
-        $select.append($('<option>', optionData));
-    });
+  });
 }
-
 function populateSelectBoxFirstOptAll( selectId,list, valueField, textField) {
   const $select = $('#' + selectId);
   $select.empty(); // Clear existing options
@@ -1284,6 +1357,7 @@ function populateSelectBoxFirstOptAll( selectId,list, valueField, textField) {
     }));
   });
 }
+
 
 function readFinalResult(response)
 {
@@ -1342,15 +1416,13 @@ if(response.status == "success")
 
 }
 
-function clearAllFormInsideDiv(divId) { 
-    $(divId).find('input[type="text"], input[type="number"], input[type="checkbox"], input[type="date"],input[type="datetime-local"], select')
-        .each(function () {
-            if ($(this).is(':checkbox')) {
-                $(this).prop('checked', false); // Uncheck checkboxes
-            } else {
-                $(this).val(''); // Clear text, number, date, and select inputs
-            }
-        });
+function clearAllFormInsideDiv(divId)
+{
+
+$(divId).find('input[type="text"], input[type="number"], input[type="checkbox"], select').each(function() {
+    $(this).val('').prop('checked', false); // Clear text and number inputs, uncheck checkboxes
+  });
+
 }
 function isSelectBoxNoOption(inpid)
 {
@@ -1410,7 +1482,6 @@ function calculateSharePrice(totalAmount, numberOfShares) {
 
 function renderStatus(status) {
     // Convert to lowercase to handle case insensitivity
-    
     status = status.toLowerCase();
 
     let color = '';
@@ -1497,12 +1568,6 @@ function renderPayoutStatus(status, totalAmount = 0, paidAmount = 0) {
             backgroundColor = '#2196f3';
             displayText = 'Processing';
             break;
-         case 'initiated':
-            backgroundColor = '#2196f3';
-            displayText = 'initiated';
-            break;
-            
-             
         case 'completed':
             backgroundColor = '#673ab7';
             displayText = 'Completed';
@@ -1746,7 +1811,7 @@ function formatIndianLabel(input,spanId) {
   <!-- Top Navbar -->
   <nav class="navbar navbar-dark bg-dark fixed-top px-3">
     <span class="navbar-brand">🎬 FilmBit Admin Panel</span>
-    <a href="#" class="logout-btn" onclick="logoutAndRedirect()">🔓 Logout</a>
+    <a href="#" class="logout-btn">🔓 Logout</a>
   </nav>
 
   <!-- Sidebar -->
@@ -1772,38 +1837,9 @@ function formatIndianLabel(input,spanId) {
 <li class="nav-item"><a class="nav-link" href="#" onclick="loadSection('investments')" data-section="investments"> 💼<span class="nav-text">Investments</span></a></li>
       <li class="nav-item"><a class="nav-link" href="#" onclick="loadSection('payouts')" data-section="payouts">📤 <span class="nav-text">Payouts</span></a></li>
 
-      <li class="nav-item"><a class="nav-link" href="#" onclick="loadSection('movie-payout')" data-section="movie-payout">📤 <span class="nav-text">Movie Payout</span></a></li>
-
     </ul>
   </li>
-
-      
-
-	 
-  
-  
-  
-      <li class="nav-item">
-    <a class="nav-link" href="#usersRef" data-bs-toggle="collapse">
-      👨‍💼<span class="nav-text">Users</span>
-    </a>
-	 
-      
-
-	
-	      <ul class="collapse list-unstyled ps-3" id="usersRef">
-           <li><a class="nav-link" href="#" onclick="loadSection('appusers')" data-section="appusers">
-		    📱 <span class="nav-text"> App / Investors</span></a></li>
-           <li><a class="nav-link" href="#" onclick="loadSection('adminUser')" data-section="adminUser">
-		    👤 <span class="nav-text">Admins</span></a></li>
-     
-	       </ul>   
-	  </li>
-
-
-
-
-
+      <li class="nav-item"><a class="nav-link" href="#" onclick="loadSection('users')" data-section="Users">👨‍💼 <span class="nav-text">Users</span></a></li>
 	  <li class="nav-item"><a class="nav-link" href="#" onclick="loadSection('announcements')" data-section="Announcements">📣 <span class="nav-text">Announcements</span></a></li>
      
       
@@ -1839,6 +1875,25 @@ function formatIndianLabel(input,spanId) {
 	
 	<div id="mainLoadContent" >  </div>
 	
+      <!-- Sections -->
+   <div id="dashboard-section" style = ""></div>
+   <div id = "movies-section"> </div>
+
+
+      <div id="actors-section" style="display: none;"></div>
+      <div id="roles-section" style="display: none;"></div>
+      <div id="users-section" style="display: none;"></div>
+      <div id="investments-section" style="display: none;"></div>
+      <div id="reports-section" style="display: none;"></div>
+      <div id="announcements-section" style="display: none;"></div>
+      <div id="payouts-section" style="display: none;"></div>
+      <div id="settings-section" style="display: none;"></div>
+	  <div id="offerPromotion-section" style="display: none;"></div>
+      <div id="promotiontypes-section" style="display: none;"></div>
+      <div id="promotionrewards-section" style="display: none;"></div>
+      <div id="offers-section" style="display: none;"></div>
+      <div id="promocodes-section" style="display: none;"></div>
+	  <div id="aduit-section" style="display: none;"></div>
 
 	  
     </div>

@@ -1,0 +1,1253 @@
+    <div id="updateModal" class="modal">
+    <div class="modal-content"  style = "top: 21%;left: 26%;">
+        <span class="close-btn" onclick="closeModal('updateModal')">&times;</span>
+         <h3>📜 Update Staus</h3>
+      <div class="form-group">
+  <label for="statusDisplay">Current Status:</label>
+  <input type="text" id="statusDisplay" class="form-control" readonly>
+</div>
+
+<div class="form-group">
+  <label for="reasonInput">Reason <span style="color: red;">*</span>:</label>
+  <textarea id="reasonInput" class="form-control" rows="3" placeholder="Enter reason here..."></textarea>
+  <small id="reasonError" class="text-danger" style="display: none;">Reason is required.</small>
+</div>
+
+<button onclick="saveStatus()" class="btn btn-primary">Save</button>
+
+
+
+        
+    </div>
+</div>
+   
+   
+   <div id="historyModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeHistoryPopup()">&times;</span>
+        <h3>📜 Payment History</h3>
+        <table class="history-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Processed By</th>
+                    <th>Reason</th>
+                </tr>
+            </thead>
+            <tbody id="historyData">
+                <!-- Data will be dynamically inserted -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<div id="jobmodal" class="modal">
+    <div class="modal-content"  style = "top: 21%;left: 37%;max-width :412px;">
+        <span class="close-btn" onclick="closeModal('jobmodal')">&times;</span>
+        <h3>📜 Job Starts </h3>
+        <p style="font-size: 14px; color:red; margin-bottom: 12px;">
+    Run job works based on jobs in queue.<br>
+    Please verify data before run.
+  </p>
+
+        <label for="jobSelect" style="display: block; margin-bottom: 8px; font-weight: bold;">Please select job:</label>
+    <select id="jobSelect" style="width: 100%; padding: 6px 8px; margin-bottom: 16px;">
+        <option value="" disabled selected>Select a job</option>
+        <option value="PAYMENT_INITIALIZATION_FAILLED_RECALL">PAYMENT_INITIALIZATION_FAILLED_RECALL</option>
+        <option value="PAYMENT_APPROVED">PAYMENT_APPROVED</option>
+
+        <!-- Add your actual job options here -->
+    </select>
+   <span id="jobSelectError" style="color: red; font-size: 12px; display: none;">Please select a job</span>
+
+    <div style="text-align: right;">
+        <button class = "btn btn-filmBit btn-sm" onclick="runSelectedJob()" style="padding: 6px 12px; margin-right: 8px;">Run</button>
+        <button class = "btn btn-filmBit btn-sm" onclick="closeModal('jobmodal')" style="padding: 6px 12px;">Close</button>
+    </div>
+
+        
+    </div>
+</div>
+
+
+
+   
+   <h4 class = "flimBitSectionHead"> Movie Profit Distribution  </h4>
+<div id="moviePayout"  class="flimBitMainDiv" >
+<div class="filter-bar divPart" style="display: flex; flex-wrap: wrap; gap: 2rem; align-items: center; margin-bottom: 1rem;">
+
+  <div style="display: flex; flex-direction: column;">
+    <label for="languageSelect" style="font-weight: bold;">🌐 Language:</label>
+    <select id="languageSelect" class="form-control" style="padding: 6px 12px; border-radius: 6px; min-width: 200px;" onchange = "onLanguageChange()">
+     
+    </select>
+  </div>
+  
+
+
+
+  <div style="display: flex; flex-direction: column;">
+    <label for="movieSelect" style="font-weight: bold;">🎬 Movie:</label>
+    <select id="movieSelect" class="form-control" style="padding: 6px 12px; border-radius: 6px; min-width: 220px;" onchange = "onMovieChange()">
+      
+    </select>
+  </div>
+  </div>
+
+<div id = "dynamicMoviePayout"  class="" >
+
+     <!-- Select Movie -->
+
+    <!-- Movie Details -->
+<div class="movie-details divPart flimbitDivider">
+    <h3 class="flimBitSectionHead flimBitHeaderBlocker">📌 Movie Details</h3>
+
+    <div class="row">
+        <div class="col-md-6">
+            <p><strong>Movie Name:</strong> <span id="movieName">---</span></p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-2">
+            <p><strong> Budget:</strong> ₹ <span id="totalBudget">0</span></p>
+        </div>
+        <div class="col-md-2">
+            <p><strong> Invested Amount:</strong> ₹ <span id="totalInvestedAmount">0</span></p>
+        </div>
+              <div class="col-md-2">
+            <p><strong> Shares Purchased:</strong>  <span id="totalSharesPurchased">0</span></p>
+        </div>
+        <div class="col-md-2">
+            <p><strong> Investors:</strong> <span id="totalInvestors">0</span></p>
+        </div>
+        <div class="col-md-2">
+            <p><strong> FreeShare:</strong>  <span id="totalFreeShare">0</span></p>
+        </div>
+        <div class="col-md-2">
+            <p><strong> Discount/Wallet:</strong> ₹ <span id="totalDisAndWallet">0</span></p>
+        </div>
+  
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <p class="highlight"><strong>Net Profit per Share (excl. profit commission):</strong> ₹ <span id="netProfit">0</span></p>
+        </div>
+        <div class="col-md-6">
+            <p><strong> Per Share Amount :</strong> ₹ <span id="perShareAmount">0</span></p>
+
+        </div>
+    </div>
+
+    <!-- Last row for Total Profit Earned input and Calculate button -->
+    <div class="row align-items-center mt-3">
+        <div class="col-auto">
+            <label for="totalProfitInput" class="form-label"><strong>Total Profit Earned:</strong></label>
+        </div>
+        <div class="col-auto">
+                <input type="number" class="form-control form-control-sm" id="totalProfitInput" placeholder="Enter Amount"
+                oninput="changeProfitEarned(this,'mvPayoutformattedLabel')">
+                    <div id="errorMsg" class="error-message">Please enter a value</div>
+
+
+        </div>
+<div class="col-auto">  <label id="mvPayoutformattedLabel" class="formatted-currency"></label></div>
+        <div class="col-auto">  <label id="labelPercentage" class="formatted-currency"></label></div>
+      
+
+        <div class="col-auto">
+         <button id="calculateBtn" class="btn btn-filmBit btn-sm"  onclick="calculatePayout()">📤 Calculate</button>
+        </div>
+    </div>
+</div>
+
+    <!-- Calculate Button -->
+
+    <!-- Distribution Summary -->
+  <div class="distribution-summary divPart flimbitDivider">
+    <h3 class="flimBitSectionHead flimBitHeaderBlocker">📊 Distribution Summary</h3>
+   <div class="row">
+<table id="profitSummaryTable"></table>
+
+   </div>
+
+  
+</div>
+
+ <div class="status-section divPart flimbitDivider">
+    <h3 class="flimBitSectionHead flimBitHeaderBlocker">✅ Payment Status</h3>
+
+    <div class="status-flow">
+        <button class="status-btn" id="status-initiated" onclick="updateStatus('Initiated', this)">Initiated</button>
+         <span class="arrow">→</span>
+         <button class="status-btn" id="status-sys-verified" onclick="updateStatusSystem('PAYMENT_INITIALIZATION_FAILLED_RECALL', this)">System Verified <span  id = "systemError" style="display:none;color: red;">&#9888;</span></button>
+
+        <span class="arrow">→</span>
+         <button class="status-btn" id="status-verified" onclick="updateStatus('Verified', this)">Verified</button>
+        <span class="arrow">→</span>
+        
+        <button class="status-btn" id="status-onhold" onclick="updateStatus('on_hold', this)">On-Hold</button>
+        <span class="arrow">→</span>
+        <button class="status-btn" id="status-rejected" onclick="updateStatus('Rejected', this)">Rejected</button>
+        <span class="arrow">→</span>
+        <button class="status-btn" id="status-approved" onclick="updateStatus('Approved', this)">Approved</button>
+        <span class="arrow">→</span>
+        <button class="status-btn" id="status-done" onclick="updateStatusSystem('PAYMENT_APPROVED', this)">Payment Done<span  id = "systemErrorPay" style="display:none;color: red;">&#9888;</span></button>
+    </div>
+
+ <div class="status-info-row">
+    <div class="status-info">
+        <strong>Last Approved Date:</strong> <span id="lastPaymentDate">---</span>
+    </div>
+    <div class="status-info">
+        <strong>Processed By:</strong> <span id="processedBy">---</span>
+    </div>
+    <div class="status-info">
+        <input type="hidden" id="moviePayoutId" name="settingIdInput" value="0" />
+
+        <a href="#" onclick="openHistoryPopup()" class="history-link">📜 History</a>
+    </div>
+    <div class="status-info">
+        <strong>Initiations:</strong> <span id="initiationCount">0</span>
+    </div>
+ <div class="status-info">
+        <strong>Fully Failed:</strong> <span id="fullyFailed">0</span>
+    </div>
+     <div class="status-info">
+        <strong>Partial Failure:</strong> <span id="partialFailure">0</span>
+    </div>
+
+    <div class="status-info">
+        <strong>Paid:</strong> <span id="paidCount">0</span>
+    </div>
+    <div class="status-info">
+        <strong>Success:</strong> <span id="successCount">0</span>
+    </div>
+    <div class="status-info">
+        <strong>Failure:</strong> <span id="failureCount">0</span>
+    </div>
+</div>
+
+
+
+
+<!-- Warning Message -->
+<div class = "divPart flimbitDivider">
+    <div class="warning-message">
+        ⚠️ <b>Note:</b> Once you click "Initiate Payment", the system will start transferring profits to all eligible investors' wallets instantly. This action cannot be undone.
+    </div>
+
+    <!-- Initiate Payment Button -->
+    <div class="action-section">
+        <button id="initiatePaymentBtn" class="btn btn-filmBit" onclick="initiateFullPayment();">💰 Initiate Full Payment</button>
+    </div>
+
+    <!-- Status Section -->
+</div>
+
+</div>
+
+
+
+
+
+
+</div>
+
+
+<script>
+
+
+function saveStatus() {
+    const reasonInput = document.getElementById("reasonInput");
+    const reasonError = document.getElementById("reasonError");
+    const reason = reasonInput.value.trim();
+
+    if (!reason) {
+        reasonError.style.display = "block";
+        reasonInput.classList.add("is-invalid"); // optional for red border if you use Bootstrap
+        return;
+    } else {
+        reasonError.style.display = "none";
+        reasonInput.classList.remove("is-invalid");
+    }
+
+    const status = document.getElementById("statusDisplay").value;
+
+    // Submit logic here
+    console.log("Submitting status:", status);
+    var inputObj = {
+       "comment" : $("#reasonInput").val(),
+       "status" : status,
+       "movPayoutId" : Number($("#moviePayoutId").val())
+    };
+
+
+console.log(inputObj);
+            sendAjaxRequest(updateMovieStatusReadHistoryUrl, "POST", getAppHeaer(), inputObj, updateStatusFunCallBack );
+        closeModal('updateModal');
+
+
+}
+var updateStatusFunCallBack =  function updateStatusFunCallBackFn(response)
+{
+
+    var data = readFinalResult(response);
+
+   if(data != null)
+   {
+
+        updateStatusUI(data.status);	
+   }
+}
+
+
+   function initiateFullPayment()
+   {
+                let errorMsg = document.getElementById("errorMsg");
+
+     errorMsg.style.display = "none";
+        let inputField = document.getElementById("totalProfitInput");
+
+            if (!inputField.value || inputField.value.trim() === "") {
+                errorMsg.style.display = "block"; // show error
+                inputField.focus();
+                return; // stop function execution
+            }
+          var inputObj = {
+                "movieId" : Number($("#movieSelect").val()),
+                "totalReturnAmount": inputField.value  
+
+                };
+            sendAjaxRequest(initiateMoviePayoutUrl, "POST", getAppHeaer(), inputObj, moviePayoutInitiateCallBack );
+
+
+
+   }
+    var   moviePayoutInitiateCallBack = function moviePayoutInitiateCallBackFun(response)
+        {
+            var data = readFinalResult(response);
+          if(data != null)
+          {
+            alert("Initated succesfully ....");
+                        //  populateProfitSummaryTable("profitSummaryTable", data.listSharePayout);
+
+
+           }
+        }
+
+
+
+    function calculatePayout() {
+                    let errorMsg = document.getElementById("errorMsg");
+
+             errorMsg.style.display = "none";
+
+            let inputField = document.getElementById("totalProfitInput");
+
+            if (!inputField.value || inputField.value.trim() === "") {
+                errorMsg.style.display = "block"; // show error
+                inputField.focus();
+                return; // stop function execution
+            }
+
+            // ✅ Continue your payout calculation logic here
+                var inputObj = {
+                "movieId" : Number($("#movieSelect").val()),
+                "totalReturnAmount": inputField.value  
+
+                };
+            sendAjaxRequest(moviePayoutCalculateUrl, "POST", getAppHeaer(), inputObj, moviePayoutCallBack );
+
+        }
+      var   moviePayoutCallBack = function moviePayoutCallBackfun(response)
+        {
+            var data = readFinalResult(response);
+          if(data != null)
+          {
+                          populateProfitSummaryTable("profitSummaryTable", data.listSharePayout);
+
+
+           }
+        }
+
+    
+
+
+function populateProfitSummaryTable(tableId, data) {
+            const table = document.getElementById(tableId);
+            table.innerHTML = "";
+            // Headers
+            const headers = [
+                "Share Type Name",
+                "Total Shares",
+                "Free Shares",
+                "Per Share Profit",
+                "Profit (Total)",
+                "Platform Comm %",
+                "Profit Comm %",
+                "Total Platform Comm",
+                "Total Profit Comm",
+                "Net Pay"
+            ];
+
+            // Create table header
+            let thead = document.createElement("thead");
+            let headerRow = document.createElement("tr");
+            headers.forEach(text => {
+                let th = document.createElement("th");
+                th.textContent = text;
+                headerRow.appendChild(th);
+            });
+            thead.appendChild(headerRow);
+            table.appendChild(thead);
+
+            // Create table body
+            let tbody = document.createElement("tbody");
+            let totalShares = 0, totalFreeShares = 0, totalProfit = 0, totalPlatformComm = 0, totalProfitComm = 0
+            ,totalNetPay = 0;
+           
+            data.forEach((item, index) => {
+                totalShares += item.totalSharesSold;
+                totalFreeShares += item.totalFreeShare;
+                totalProfit += item.profitPerShareType;
+                totalPlatformComm += item.totalplatFormCommission;
+                totalProfitComm += item.totalprofitCommission;
+                totalNetPay +=item.netPay  ;
+
+                // Main row
+                let row = document.createElement("tr");
+                row.classList.add("clickable");
+                row.innerHTML = `
+                    <td>${item.shareTypeName}</td>
+                    <td>${item.totalSharesSold}</td>
+                    <td>${item.totalFreeShare}</td>
+                    <td>${item.perShareProfit.toFixed(2)}</td>
+                    <td>${item.profitPerShareType.toFixed(2)}</td>
+                    <td>${item.platformCommision}%</td>
+                    <td>${item.profitCommision}%</td>
+                    <td>${item.totalplatFormCommission.toFixed(2)}</td>
+                    <td>${item.totalprofitCommission.toFixed(2)}</td>
+                    <td>${item.netPay .toFixed(2)}</td>
+
+                `;
+                tbody.appendChild(row);
+
+                // Expandable hidden row
+                let detailsRow = document.createElement("tr");
+                detailsRow.classList.add("expand-row");
+                detailsRow.innerHTML = `
+                    <td colspan="9">
+                        <strong>More Details:</strong><br>
+                        Platform Commission Applied Shares: ${item.platformCommissionAppliedShares}<br>
+                        Profit Commission Applied Shares: ${item.profitCommissionAppliedShares}<br>
+                        Discount Amount: ₹${item.totalDiscountAmount.toFixed(2)}<br>
+                        Wallet Amount: ₹${item.totalWalletAmount.toFixed(2)}
+                    </td>
+                `;
+                tbody.appendChild(detailsRow);
+
+                // Toggle expand on click
+                row.addEventListener("click", () => {
+                    detailsRow.style.display = (detailsRow.style.display === "table-row") ? "none" : "table-row";
+                });
+            });
+            table.appendChild(tbody);
+
+            // Footer with totals
+            let tfoot = document.createElement("tfoot");
+            let totalRow = document.createElement("tr");
+            totalRow.innerHTML = `
+                <td><strong>Total</strong></td>
+                <td><strong>${totalShares}</strong></td>
+                <td><strong>${totalFreeShares}</strong></td>
+                <td></td>
+                <td><strong>${totalProfit.toFixed(2)}</strong></td>
+                <td></td>
+                <td></td>
+                <td><strong>${totalPlatformComm.toFixed(2)}</strong></td>
+                <td><strong>${totalProfitComm.toFixed(2)}</strong></td>
+                <td><strong>${totalNetPay.toFixed(2)}</strong></td>
+
+                
+            `;
+            tfoot.appendChild(totalRow);
+            table.appendChild(tfoot);
+        }
+
+        
+function changeProfitEarned(ele,inputId)
+{
+
+formatIndianLabel(ele,inputId)
+
+    const value = parseInt(ele.value);
+
+    if (!value) {
+       $("#labelPercentage").text( "");
+       $("#netProfit").text( "0");
+    }
+    else
+       {
+            budgetInvested = $("#totalInvestedAmount").text();
+            if(parseFloat(budgetInvested)  == 0)
+            {
+             $("#labelPercentage").text( "% 0");
+
+             $("#netProfit").text( "0");
+
+             
+
+            }  
+            else
+            {
+            console.log(  "  " +value   + " " + budgetInvested);
+            $("#labelPercentage").text( "% " + calculatePercentage(value ,budgetInvested ))
+        
+            totalSharePurchased = $("#totalSharesPurchased").text(); 
+             $("#netProfit").text( calculateProfitPerShare(value,budgetInvested,totalSharePurchased));
+
+                
+        }
+       }
+
+}
+
+
+function calculateProfitPerShare(totalProfit, totalBudget, numberOfShares) {
+    totalProfit = parseFloat(totalProfit);
+    totalBudget = parseFloat(totalBudget);
+    numberOfShares = parseInt(numberOfShares);
+
+    if (numberOfShares === 0) return 0;
+
+    return (totalProfit - totalBudget) / numberOfShares;
+}
+
+
+function calculatePercentage(profit, budget) {
+     profit = parseFloat(profit);
+    budget = parseFloat(budget);
+    if (budget === 0) {
+        return 0; // To avoid division by zero
+    }
+   
+
+    // Ensure it never goes above 100%
+    profitx = profit - budget;
+    console.log("profitx "+ profitx)
+     return (profitx / budget) * 100;
+
+}
+   var openHistoryPopupCallBack =  function(response)
+{
+
+     var data = readFinalResult(response);
+     console.log(data)
+      if(data != null)
+   {
+
+	    var historyList = data;
+         let tbody = document.getElementById("historyData");
+        tbody.innerHTML = "";
+
+        historyList.forEach(item => {
+            let row = `<tr>
+                <td>${formatDateTime(item.createdAt)}</td>
+                <td>${item.status}</td>
+                <td>${item.approverName}</td>
+                <td>${item.reason}</td>
+            </tr>`;
+            tbody.innerHTML += row;
+        });
+   }
+
+
+} 
+    // Open popup and populate table
+    function openHistoryPopup() {
+
+        var selectedMoviePayoutId = $("#moviePayoutId").val();
+  
+		sendAjaxRequest(initiateMovieReadHistoryUrl+selectedMoviePayoutId, "GET", getAppHeaer(), null,openHistoryPopupCallBack );
+
+    
+
+     
+     
+      
+
+        document.getElementById("historyModal").style.display = "flex";
+    }
+
+    // Close popup
+    function closeHistoryPopup() {
+        document.getElementById("historyModal").style.display = "none";
+    }
+  function updateStatus(statusText, clickedBtn) {
+        // Remove active class from all buttons
+        $("#reasonError").hide();
+        const reasonInput = document.getElementById("reasonInput");
+        reasonInput.classList.remove("is-invalid");
+
+        const buttons = document.querySelectorAll(".status-btn");
+       // buttons.forEach(btn => btn.classList.remove("active"));
+
+        // Add active class to clicked button
+        //clickedBtn.classList.add("active");
+
+        $("#statusDisplay").val(statusText);
+
+         $("#updateModal").show();
+
+        console.log("✅ Current Status:", statusText);
+    }
+
+
+function onMovieChange() {
+  var selectedMovieId = $('#movieSelect').val();
+
+if (selectedMovieId) {
+            $("#totalProfitInput").prop("disabled", false);
+        } else {
+            $("#totalProfitInput").prop("disabled", true).val("");
+}
+      $("#movieName").text( $('#movieSelect option:selected').text())
+       $("#totalBudget").text("0")
+       $("#totalInvestedAmount").text( "0")
+       $("#totalSharesPurchased").text( "0")
+       $("#totalInvestors").text( "0")
+       $("#totalFreeShare").text( "0")
+       $("#totalDisAndWallet").text( "0")
+	sendAjaxRequest(moviePayoutMovieDetailUrl+selectedMovieId, "GET", getAppHeaer(), null,onMovieSelectPayoutCallBack );
+     sendAjaxRequest(moviePayoutStatusUrl+selectedMovieId, "GET", getAppHeaer(), null,onMovieDisStatuxCallBack );
+  // You can now use the selectedLanguageId to load movies dynamically, etc.
+}
+
+var  onMovieDisStatuxCallBack = function onMovieDisStatuxCallBackFun(response)
+{
+   if(response != null)
+   {
+     if(response.status == "success")
+       {
+            $("#initiatePaymentBtn").prop("disabled", true);
+            $("#totalProfitInput").prop("disabled", true);
+            $("#calculateBtn").prop("disabled", true);
+            
+
+            let integerProfit = Math.floor(response.result.movieProfitSummary.totalProfit); // removes decimal part
+            
+           $("#totalProfitInput").val(integerProfit);
+           $("#lastPaymentDate").text(response.result.lastHistory.createdAt);
+           $("#processedBy").text(response.result.lastHistory.approverName);
+           $("#moviePayoutId").val(response.result.movieProfitSummary.id);
+           
+
+           statusTxt = response.result.movieProfitSummary.status;
+           paymentStatus = response.result.movieProfitSummary.paymentStatus
+            calculatePayout();
+
+            updateStatusUI(response.result.movieProfitSummary.status);
+             systemUpateStatus(statusTxt,paymentStatus);
+           setValuesForPaymentInitiateCount(response.result.userPayoutIniateSummary)
+            
+
+            
+            
+
+
+       }
+       else
+       $("#initiatePaymentBtn").prop("disabled", false);
+
+           
+
+   }
+
+} 
+var  updateFailedJobRestartCallBack = function updateFailedJobRestartCallBackFun(response)
+{
+  var data = readFinalResult(response);
+
+   if(data != null)
+   {
+       
+          $("#jobmodal").hide();
+          alert(data);
+	
+   }
+   
+
+}
+function  runSelectedJob()
+{
+
+const jobSelect = document.getElementById('jobSelect');
+    const errorSpan = document.getElementById('jobSelectError');
+    const selectedJob = jobSelect.value;
+
+    if (!selectedJob) {
+        // Show error message
+        errorSpan.style.display = 'block';
+        // Optionally focus the select box
+        jobSelect.focus();
+        return;
+    } else {
+        // Hide error message if previously shown
+        errorSpan.style.display = 'none';
+    }
+
+    // Proceed with running the job
+    console.log('Running job:', selectedJob);
+
+
+ var selectedMovieId = $('#movieSelect').val();
+ var inputObj = {
+  "movieId" : Number(selectedMovieId),
+  "jobName" : selectedJob
+ };
+ sendAjaxRequest(resheduleProfitSummaryFailureUrl , "POST", getAppHeaer(), inputObj,updateFailedJobRestartCallBack );
+
+
+}
+
+function updateStatusSystem(status, ele)
+{
+      $("#jobmodal").show();
+
+    $('#jobSelect option').each(function () {
+            if ($(this).text().trim() === status) {
+                            $(this).prop('disabled', false);
+
+            }
+            else
+             $(this).prop('disabled', true);
+        });
+
+}
+
+function setValuesForPaymentInitiateCount(data)
+{
+  
+   $("#initiationCount").text(data.fullySuccessful);
+   $("#fullyFailed").text(data.fullyFailed);
+   $("#partialFailure").text(data.partialFailure);
+
+
+}
+function systemUpateStatus(statusTxt,paymentStatus)
+{
+   if(paymentStatus != null && paymentStatus !="")
+            {
+               if(paymentStatus.toLowerCase() === "PARTIALLY_COMPLETED".toLowerCase() || paymentStatus.toLowerCase() === "IN_PROGRESS".toLowerCase())
+               {
+                   $("#systemError").show();
+                    $("#status-verified").removeClass('active green-border').addClass('red-border disabled').prop('disabled', true)
+                    $("#status-sys-verified").addClass('active green-border').prop('disabled', false);
+                } 
+             else  if(paymentStatus.toLowerCase() === "PAYMENT_PARTIALLY_COMPLETED".toLowerCase() || paymentStatus.toLowerCase() === "PAYMENT_FULLY_FAILED".toLowerCase())
+               {
+                   $("#systemErrorPay").show();
+                   $("#status-done").prop('disabled', false);
+                }         
+               else
+               {        
+                   $("#systemError").hide();
+                   $("#systemErrorPay").hide();
+               }
+
+
+
+            }
+}
+
+function updateStatusUI(currentStatusCode) {
+    const statusOrder = ['initiated','system', 'verified', 'on_hold', 'rejected', 'approved', 'completed'];
+    const normalizedStatus = currentStatusCode.toLowerCase();
+    let currentIndex = statusOrder.indexOf(normalizedStatus);
+
+    console.log("Now: " + normalizedStatus + " :currentIndex: " + currentIndex);
+
+    $('.status-btn').each(function(index) {
+        const btnStatus = statusOrder[index];
+        $(this).removeClass('active green-border red-border disabled').prop('disabled', false); // Reset all
+
+        // Make current status button active
+        if (index === currentIndex) {
+            $(this).addClass('active');
+            $(this).prop('disabled', true);
+            return;
+        }
+
+        // ----------------------------
+        // Logic for "approved" status
+        // ----------------------------
+        if (normalizedStatus === 'approved') {
+            if (btnStatus === 'completed' || btnStatus === 'on_hold' || btnStatus === 'rejected') {
+                $(this).addClass('green-border'); // allowed transitions
+            } else {
+                $(this).addClass('red-border disabled').prop('disabled', true); // disallowed
+            }
+            return;
+        }
+
+        // ----------------------------
+        // Logic for "verified" status
+        // ----------------------------
+        if (normalizedStatus === 'verified') {
+            if (['on_hold', 'rejected', 'approved'].includes(btnStatus)) {
+                $(this).addClass('green-border'); // allowed forward options
+            } else {
+                $(this).addClass('red-border disabled').prop('disabled', true); // others disabled
+            }
+            return;
+        }
+       if (normalizedStatus === 'on_hold') {
+
+        if (['rejected', 'approved'].includes(btnStatus)) {
+                $(this).addClass('green-border'); // allowed forward options
+            } else {
+                $(this).addClass('red-border disabled').prop('disabled', true); // others disabled
+            }
+            return;
+       }
+        // ----------------------------
+        // Normal forward-only progression
+        // ----------------------------
+        if (index < currentIndex) {
+            $(this).addClass('green-border disabled').prop('disabled', true); // already done
+        } else if (index === currentIndex + 1) {
+            $(this).addClass('green-border'); // next allowed
+        } else {
+            $(this).addClass('red-border disabled').prop('disabled', true); // future blocked
+        }
+    });
+}
+
+var  onMovieSelectPayoutCallBack = function onMovieSelectPayoutCallBackFun(response)
+{
+console.log("comming onmvieSelct");
+var data = readFinalResult(response);
+
+   if(data != null)
+   {
+         console.log("offerMovie Rebi");
+        //renderOfferMovieSection(data);
+       $("#movieName").text( data.movieName)
+       $("#totalBudget").text( formatIndian(data.budget))
+       $("#totalInvestedAmount").text( formatIndian(data.totalInvestedAmount))
+       $("#totalSharesPurchased").text( formatIndian(data.totalSharesPurchased)  )
+       $("#perShareAmount").text(data.perShareAmount)
+      
+       $("#totalInvestors").text( formatIndian(data.totalInvestors))
+       $("#totalFreeShare").text( formatIndian(data.totalFreeShare))
+       $("#totalDisAndWallet").text( formatIndian(formatNA(data.totalDiscount == null ? 0 : data.totalDiscount ) )
+       + " / " + formatIndian(formatNA(data.totalWalletAmount == null ? 0 : data.totalWalletAmount )))
+
+   
+   }
+
+
+}
+
+
+function onLanguageChange() {
+	//$('#dynamicMoviePayout').empty();
+
+  var selectedLanguageId = $('#languageSelect').val();
+  var selectedLanguageName = $('#languageSelect option:selected').text();
+	sendAjaxRequest(readMovieBylangIdUrl+selectedLanguageId, "GET", getAppHeaer(), null,readMovieByLanCallBack );
+
+  // You can now use the selectedLanguageId to load movies dynamically, etc.
+}
+var  readMovieByLanCallBack =	function readMovieByLanSection(response)
+{
+var data = readFinalResult(response);
+
+   if(data != null)
+   {
+   	     populateSelectBox("movieSelect",data,"id","title");
+         
+         const $movieSelect = $('#movieSelect');
+
+        // Only proceed if there's at least one real option
+        if ($movieSelect.find('option').length > 1) {
+          $movieSelect.prop('selectedIndex', 1).trigger('change');
+         }
+   
+   }
+
+}
+
+
+
+
+
+
+function loadMoviePayout()
+	{
+	   // sendAjaxRequest(readAllOfferUrl, "GET", getAppHeaer(), null,readAllOfferCallBack );
+        
+	  sendAjaxRequest(readMovLanguageUrl, "GET", getAppHeaer(), null,selectBoxLangCallBack );
+      $("#totalProfitInput").prop("disabled", true).val("");
+             $("#initiatePaymentBtn").prop("disabled", true);
+
+
+	
+	}
+var  selectBoxLangCallBack =	function selectBoxLangCallBackFun(response)
+{
+var data = readFinalResult(response);
+
+   if(data != null)
+   {
+   	     populateSelectBox("languageSelect",data,"id","name");
+		 
+         // sendAjaxRequest(readAllOfferUrl, "GET", getAppHeaer(), null,loadOfferSelectBox )
+		 
+		 
+		 const $languageSelect = $('#languageSelect');
+
+        // Only proceed if there's at least one real option
+		console.log("1 am ");
+		 // $('#dynamicMoviePayout').empty();
+
+        if ($languageSelect.find('option').length > 1) {
+          $languageSelect.prop('selectedIndex', 1).trigger('change');
+         } 
+		
+ 
+   
+   }
+
+}
+
+
+</script>
+<style>
+
+   .error-message {
+        color: red;
+        font-size: 12px;
+        display: none;
+        position: absolute;
+    }
+    .position-relative {
+        position: relative;
+    }
+
+.profit-container {
+    background: #fff;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.profit-header {
+    background-color: #ffcc00;
+    color: #000;
+    padding: 12px;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 6px 6px 0 0;
+    text-align: center;
+}
+
+.profit-form {
+    margin-top: 15px;
+}
+
+.profit-form label {
+    font-weight: 600;
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+.profit-form input[type="text"],
+.profit-form input[type="number"] {
+    width: 96%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.profit-form button {
+    margin-top: 15px;
+    background-color: #ffcc00;
+    color: #000;
+    border: none;
+    padding: 12px 18px;
+    font-size: 15px;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.profit-form button:hover {
+    background-color: #ffb400;
+}
+
+.result-section {
+    margin-top: 20px;
+    padding: 12px;
+    background-color: #fff7d1;
+    border: 1px solid #c9b066;
+    border-radius: 6px;
+}
+
+.result-section h4 {
+    margin: 0 0 10px;
+    font-size: 16px;
+    color: #333;
+}
+
+.result-section p {
+    margin: 6px 0;
+    font-size: 14px;
+}
+
+.highlight {
+    font-weight: bold;
+    color: #d17f00;
+}
+.flimbitDivider
+{
+   margin-top:  10px;
+
+
+}
+
+.movie-details {
+    background: #fff;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.movie-details h3 {
+    margin-bottom: 15px;
+}
+
+.movie-details p {
+    margin: 5px 0;
+}
+
+.movie-details .highlight {
+    color: #1a73e8;
+    font-weight: bold;
+}
+
+#totalProfitInput {
+    width: 150px;
+}
+
+#calculateBtn {
+    margin-left: 10px;
+}
+
+.status-section {
+    padding: 15px;
+    background: #fff;
+    border-radius: 8px;
+    margin-top: 15px;
+}
+
+.status-flow {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 10px;
+}
+
+.status-btn {
+    padding: 8px 14px;
+    border: 1px solid #ccc;
+    background-color: #f8f8f8;
+    cursor: pointer;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.status-btn:hover {
+    background-color: #ffe600;
+}
+
+.status-btn.active {
+    background-color: #ffe600;
+    color: #000;
+    font-weight: bold;
+    border-color: #d4b100;
+}
+
+.arrow {
+    font-size: 18px;
+    color: #555;
+}
+
+.status-info-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    align-items: center;
+    margin-top: 8px;
+    background: #f9f9f9;
+    padding: 6px 10px;
+    border-radius: 6px;
+}
+
+.status-info {
+    font-size: 14px;
+    color: #333;
+}
+
+.history-link {
+    color: #0066cc;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.history-link:hover {
+    color: #004d99;
+}
+
+
+
+.btn-filmBit {
+    background-color: #ffeb66;  /* Light Yellow */
+    color: #000;
+    border: 1px solid #ffd633;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-filmBit:hover {
+    background-color: #ffe600;  /* Darker yellow on hover */
+    transform: scale(1.05);
+}
+
+.btn-filmBit:active {
+    background-color: #ffd000;
+    transform: scale(0.98);
+}
+
+
+.flimBitHeaderBlocker
+{
+width: 100%;
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    padding: 8px 12px;
+    background-color: #fff9db;
+    border: 1px solid #ffd700;
+    border-left: 5px solid #ffc107;
+    border-radius: 4px;
+    margin-bottom: 12px;
+
+
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 100%;
+    max-height: 350px;
+    overflow-y: auto;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.close-btn {
+    float: right;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.history-table th,
+.history-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.history-table th {
+    background-color: #ffe600;
+}
+
+ table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        tfoot td {
+            font-weight: bold;
+            background-color: #eaeaea;
+        }
+        .expand-row {
+            background-color: #f9f9f9;
+            display: none;
+        }
+        .clickable {
+            cursor: pointer;
+        }
+
+
+        .status-btn.green-border {
+  border: 2px solid green;
+}
+
+.status-btn.red-border {
+  border: 2px solid red;
+}
+
+.status-btn.disabled {
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.is-invalid {
+    border: 1px solid red;
+}
+.text-danger {
+    color: red;
+}
+    </style>
+</style>

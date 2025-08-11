@@ -1,0 +1,469 @@
+<!-- Announcement Modal -->
+<div id = "modalPartnerDiv" >
+<div class="modal" style="display:none;" id="partnerModal">
+  <div class="modal-content" style="max-width: 70%; padding: 20px; border-radius: 8px;">
+    
+    <div class="movie-user-box divPart" >
+      <h5 class="modal-title" id="announcementModalLabel">Create / Edit Partner</h5>
+      <button type="button" class = "action-button" onclick = "closeModal('partnerModal')">
+        <span>&times;</span>
+      </button>
+    </div>
+    
+    <div class="modal-body divPart" style = "margin-top:0%" >
+      <div id="announcementForm" style="width: 90%;">
+        <input type="hidden" id="partnerIdInput" name="partnerIdInput" />
+
+        <!-- Row 1: Title + Language -->
+        <div class="row">
+          <div class="form-group col-md-6">
+            <label>Name <span id="checkTitle" class="text-success" style="display:none;">✔</span></label>
+            <input type="text" class="form-control" id="partnerName" >
+			 <div class="error-message" id="error-partnerName"></div>
+
+          </div>
+		   <div class="form-group col-md-6">
+            <label>Type</label>
+            <select class="form-control" id="partnerType" oninput="validateFieldValue('partnerType')">
+              <option value="" selected disabled>--Please select--</option>
+			  <option value="Production Company">Distributor</option>
+			  <option value="Partner">Partner</option>
+			  <option value="producer" selected>Producer</option>
+              <option value="Production Company">Production Company</option>
+
+            </select>
+					   <div class="error-message" id="error-partnerType"></div>
+
+          </div>
+        </div>
+
+        <div class = "row">
+		<div class="form-group col-md-6">
+            <label>Language</label>
+            <select class="form-control" id="partnerLanguage" oninput="validateFieldValue('partnerLanguage')">
+              
+            </select>
+					<div class="error-message" id="error-partnerLanguage"></div>
+
+          </div>
+		   <div class="form-group col-md-6">
+            <label>Phone Number <span id="checkTitle" class="text-success" style="display:none;">✔</span></label>
+            <input type="number" class="form-control" id="partnerPhoneNumber" >
+			 <div class="error-message" id="error-partnerPhoneNumber"></div>
+
+          </div>
+
+
+		</div>
+		<div class="row">
+		<div class="form-group col-md-6">
+            <label>Description <span id="checkMessage" class="text-success" style="display:none;">✔</span></label>
+            <textarea class="form-control" id="partnerMessage" rows="3" required=""></textarea>
+            <div class="error-message" id="error-partnerMessage"></div>
+
+		  </div>
+		  
+				   
+		   <div class="form-group col-md-6">
+            <label>Address  <span id="checkTitle" class="text-success" style="display:none;">✔</span></label>
+            <input type="text" class="form-control" id="partnerAddress" >
+			 <div class="error-message" id="error-partnerAddress"></div>
+
+          </div>		  
+		  
+		</div>
+		
+		<div class="row">
+          <div class="form-group col-md-6">
+            <label>Email</label>
+            <input type="text" class="form-control" id="partnerEmailUrl">
+		   <div class="error-message" id="error-partnerEmailUrl"></div>
+
+          </div>
+          <div class="form-group col-md-6">
+            <label>Contact Person</label>
+            <input type="text" class="form-control" id="partnerContactPerson">
+		   <div class="error-message" id="error-partnerContactPerson"></div>
+
+          </div>
+        </div>
+        
+        <!-- Row 3: Start & End Date -->
+      
+
+        <!-- Row 4: Image URL + Link URL -->
+        
+
+        <!-- Row 5: Priority + Status -->
+        <div class="row">
+           
+		 <div class="form-group col-md-6">
+            <label>LogoUrl</label>
+            <input type="text" class="form-control" id="partnersLogoUrl">
+		   <div class="error-message" id="error-partnersLogoUrl"></div>
+
+          </div>
+          <div class="form-group col-md-6">
+            <label>Status</label>
+            <select class="form-control" id="partnerstatus" oninput="validateFieldValue('partnerstatus')">
+              <option value="" selected disabled>--Please select--</option>
+			  <option value="ACTIVE" selected>ACTIVE</option>
+              <option value="INACTIVE">INACTIVE</option>
+            </select>
+					   <div class="error-message" id="error-partnerstatus"></div>
+
+          </div>
+		
+        </div>
+
+        <!-- Row 6: Notification checkboxes -->
+       
+
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn action-button" onclick="submitPartner()">Save</button>
+        <button type="button" class = "btn action-button" onclick = "closeModal('partnerModal')"> Close </button>
+
+    </div>
+
+  </div>
+</div>
+
+</div>
+
+<div class="investment-summary" style = "display:none;">
+    <h3>📊 Investment Summary</h3>
+    <div class="summary-stats">
+      <p><strong>💰 Total Invested:</strong> ₹3,50,000</p>
+      <p><strong>🎬 Movies Invested:</strong> 6</p>
+      <p><strong>🔁 Total Returns:</strong> ₹75,000</p>
+      <p><strong>👤 User:</strong> Raj Kumar</p>
+    </div>
+  </div>
+	
+  <!-- Filter Section -->
+  <div class="filter-section">
+    <div class="filter-fields">
+            <select id="languageSelectPartner" class="form-control" onchange="onLanguageInflu()">
+        <option value="" disabled selected>Select Language</option>
+        <!-- Language options will be populated dynamically -->
+      </select>
+      
+      <select id="partnerTypeSelect" class="form-control">
+	     <option value="" disabled selected>Select Type</option>
+
+		<option value="" >-All-</option>
+		 <option value="Production Company">Distributor</option>
+			  <option value="Partner">Partner</option>
+			  <option value="producer" >Producer</option>
+              <option value="Production Company">Production Company</option>
+        <!-- Movie options will be populated dynamically -->
+      </select>
+      <select id="statusSelectPartner" class="form-control">
+        <option value="" disabled selected>Select Status</option>
+		<option value="" >-All-</option>
+        <option value="active">Active</option>
+        <option value="inactive">Inactive</option>
+      </select>
+      <input type="text" id="searchTextPartner" class="form-control" placeholder="Search..." />
+      <button class="btn" onclick="reloadTablePartner()" style = "    height: 37px;">🔎</button>
+      <div style="width:32%;text-align: right;">
+	  <button class="add-btn" style="background-color: #fffde7; color:black;" onclick="addPartner()">+ Add</button>
+	  </div>   
+
+   </div>
+  </div>
+
+  
+  <!-- Investment Table Section -->
+  <div class="investment-table">
+    <table id="userTablePartner">
+    
+    </table>
+  </div>
+  
+  <script>
+  function addPartner()
+  {
+	$("#partnerModal").show();
+	$("#partnerIdInput").val(0);
+	
+	clearAllFormInsideDiv("#modalPartnerDiv");
+	
+	//$('#influestatus option:first').prop('selected', true);
+
+
+  
+  }
+  
+  
+  function loadPartnerSection()
+	{
+      	sendAjaxRequest(readMovLanguageUrl, "GET", getAppHeaer(), null,readAllLanguagePartner );
+
+        drawPartnerDataTable();
+
+	}
+function formatExpandRowPartner(rowData) {
+  return `
+    <div style="padding: 10px 20px; background-color: #f9f9f9; border-left: 4px solid #007bff;">
+      
+   <strong>Contact:</strong> ${formatNA(rowData.contactPerson)} , ${formatNA(rowData.address)}&nbsp;&nbsp;
+   <strong>Email:</strong> ${formatNA(rowData.email)} &nbsp;&nbsp;
+
+	<strong>CreatedAt:</strong> ${formatDateTime(rowData.createdAt)} &nbsp;&nbsp;
+	<strong>updatedAt:</strong> ${formatDateTime(rowData.updatedAt)} &nbsp;&nbsp;
+
+    <div>  <strong>Address:</strong> ${formatNA(rowData.description)}   </div>    
+    </div>
+
+	
+	   
+  `;
+}
+	
+	function drawPartnerDataTable()
+	{
+	const table = $('#userTablePartner').DataTable({
+    destroy: true,
+    processing: true,
+    serverSide: true,
+    pageLength: 10,
+    dom: 'lrtip',
+    ajax: {
+      url: dataTablePartnerUrl,
+      type: 'GET',
+      headers: getAppHeaer(),
+      data: function (d) {
+        return {
+          draw: d.draw,
+          start: d.start,
+          length: d.length,
+          searchText: $("#searchTextPartner").val(),
+          sortColumn: d.columns[d.order[0].column].data,
+          sortOrder: d.order[0].dir,
+          language: $("#languageSelectPartner").val(),
+          status: $("#statusSelectPartner").val(),
+		  type: $("#partnerTypeSelect").val()
+		  
+        };
+      },
+      dataFilter: function (response) {
+        const fullResponse = JSON.parse(response);
+        const obj = fullResponse.result;
+        $("#rewardCount").text("(" + (obj.recordsTotal ?? 0) + ")");
+        return JSON.stringify({
+          draw: obj.draw || 1,
+          recordsTotal: obj.recordsTotal ?? 0,
+          recordsFiltered: obj.recordsFiltered ?? 0,
+          data: obj.data ?? []
+        });
+      }
+    },
+    columns: [
+      {
+        className: 'dt-control',
+        orderable: false,
+        data: null,
+        defaultContent: '',
+        title: ''
+      },
+      {
+        data: 'name',
+        title: 'Name',
+        render: (data, type, row) => toTitleCase(`${row.name}`)
+      },
+      {
+        data: 'phone',
+        title: 'Phone',
+        render: formatPhoneOnly
+      },
+      { data: 'languageName', title: 'Language' },
+      { data: 'type', title: 'Type' },
+    
+      {
+        data: 'lastLoginDate',
+        title: 'Login',
+        render: formatDateTime
+      },
+      {
+        data: 'status',
+        title: 'Status',
+        render: renderStatus
+      },
+	  
+	  
+	  
+	  {
+  data: null,
+  title: 'Action',
+  orderable: false,
+  render: function (data, type, row) {
+    return `
+      <button class="action-button" onclick="editPartner('${row.id}','${row.status}')">✏️</button>
+      <button class="action-button" onclick="deletePartner('${row.id}')">🗑️</button>
+    `;
+  }
+  }
+	  
+    ]
+  });	
+
+  // Toggle expand row
+  $('#userTablePartner tbody').off('click', 'td.dt-control').on('click', 'td.dt-control', function () {
+    const tr = $(this).closest('tr');
+    const row = table.row(tr);
+
+    if (row.child.isShown()) {
+      row.child.hide();
+      tr.removeClass('shown');
+    } else {
+      row.child(formatExpandRowPartner(row.data())).show();
+      tr.addClass('shown');
+    }
+  });
+  
+  $('#userTablePartner_length').hide();
+
+	
+	
+	}
+	
+	
+	var readAllLanguagePartner =  function readAllLanguageFunPartnerBack(response)
+{
+
+ var data = readFinalResult(response);
+
+   if(data != null)
+   {
+         populateSelectBoxFirstOptAll("languageSelectPartner",data,"id","name");
+		 populateSelectBox("partnerLanguage",data,"id","name");
+
+		 
+		
+
+   }
+
+}
+
+function onLanguageInflu()
+{
+
+
+}
+
+	function submitPartner() {
+   
+   
+   const isValid =
+    validateFieldValue('partnerName') &
+    validateFieldValue('partnerPhoneNumber') &
+    validateFieldValue('partnerMessage') &
+    validateFieldValue('partnerEmailUrl') &
+    validateFieldValue('partnerContactPerson') &
+	validateFieldValue('partnerType')&
+	validateFieldValue('partnerstatus') &
+	validateFieldValue('partnerLanguage') &
+	validateFieldValue('partnerAddress')
+	
+	
+	  if (!isValid) return;
+	  
+
+if(isValid)
+{
+
+     const partnerRequest = {
+      name: $("#partnerName").val(),
+      phone: $("#partnerPhoneNumber").val(),
+      description: $("#partnerMessage").val(),
+      email: $("#partnerEmailUrl").val(),
+      contactPerson: $("#partnerContactPerson").val(),
+      type: $("#partnerType").val(),
+      status: $("#partnerstatus").val(),
+	  languageId: Number($("#partnerLanguage").val()),
+	  address : $("#partnerAddress").val(),
+	  logoUrl : $("#partnersLogoUrl").val()
+    };
+	
+	     var  annonId = Number($("#partnerIdInput").val());
+         	console.log(annonId);
+        urlx =   annonId == 0 ? insertPartnerUrl : updatePartnerUrl +  annonId ;
+		console.log(urlx);
+     	sendAjaxRequest(urlx, "POST", getAppHeaer(), partnerRequest,saveMoviePartnerCall );
+
+}
+
+}
+
+  var saveMoviePartnerCall = function saveMoviePartnerCallFun(response)
+{
+
+var data = readFinalResult(response);
+	if(data !=null)
+		   {
+ 
+      closeModalAndReloadDataTable(response,"#partnerModal","#userTablePartner")
+
+  }
+ 
+}
+function editPartner(id,status)
+{
+$("#partnerIdInput").val(id);
+sendAjaxRequest(readPartnerUrl+id, "GET", getAppHeaer(), null,readPartnerCallBack );
+}
+
+
+var readPartnerCallBack =  function readPartnerCallBackfun(response)
+{
+
+var data = readFinalResult(response);
+	if(data !=null)
+   {
+      $("#partnerModal").show();
+      //console.log(data);
+	  $("#partnerName").val(data.name);
+      $("#partnerType").val(data.type);
+      $("#partnerLanguage").val(data.languageId);
+      $("#partnerPhoneNumber").val(data.phone);
+      $("#partnerMessage").val(data.description);
+      $("#partnerAddress").val(data.address);
+      $("#partnerEmailUrl").val(data.email);
+	  $("#partnerContactPerson").val(data.contactPerson);
+	  $("#contactPerson").val(data.logoUrl);
+      $("#partnerstatus").val(data.status);
+	  $("#partnersLogoUrl").val(data.logoUrl);
+
+		  
+
+	  
+
+    
+   
+    }
+
+}
+
+function deletePartner(id)
+{
+const confirmDelete = confirm("Are you sure you want to delete this offer record?");
+if (confirmDelete) {
+   	 sendAjaxRequest(deletePartnerUrl+id, "GET", getAppHeaer(), null,saveMoviePartnerCall );
+}
+
+
+
+}
+
+function reloadTablePartner()
+{
+
+	     $("#userTablePartner").DataTable().ajax.reload(null, false);
+
+}
+
+  </script>

@@ -1,37 +1,58 @@
-<div class="section-header">
-  <h4>🎁 Promotion Types  <span id="promoCount">(0)</span></h4>
-  <button class="add-btn" onclick="openPromotionTypeModal()">+ Add Promotion Type</button>
+<div class="section-header" style="">
+  <h4 class = "flimBitSectionHead">Promotion Types  </h4>
+  <div >
+  <span class="movie-label-highlight" id="promoCount">(0)</span>
+  <button class="btn" onclick="openPromotionTypeModal()" >+ Add</button>
+  </div>
 </div>
 
+
+<div class = "flimBitMainDiv">
+<div class="divPart">
 <table id ="promotionTypeTable">
   
   
 </table>
+</div>
+</div>
 
 <!-- Promotion Type Modal -->
 <div id="promotionTypeModal" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closePromotionTypeModal()">&times;</span>
-    <h3 id="modalTitle">Add Promotion Type</h3>
-  
-
-  <form id="promotionTypeForm">
+  <div class="modal-content" style = "padding:20px">
+  <div class = "movie-user-box divPart">
+    <h3 id="modalTitle" >Create/Edit Promotion Type</h3>
+	<button type="button" class="action-button" onclick="closeModal('promotionTypeModal')">
+        <span>×</span>
+      </button>
+  </div>
+<div class="divPart" style="margin-top:0px">
+  <div id="promotionTypeForm">
   <input type="hidden" id="promotionTypePageId" />
 
-  <div class="form-group">
+  <div class="row">
+   <div class = "form-group col-md-6" >
     <label for="typeCode">Type Code</label>
+	<span id="checkTitle" class="text-success" style="display:none;">✔</span>
     <input type="text" id="typeCode" class="form-control" />
     <div class="error-message" id="error-typeCode"></div>
-  </div>
+	</div>
 
-  <div class="form-group">
+<div class="form-group col-md-6">
     <label for="description">Description</label>
+		<span id="checkTitle" class="text-success" style="display:none;">✔</span>
+
     <input type="text" id="description" class="form-control" />
     <div class="error-message" id="error-description"></div>
   </div>
+		
+  </div>
 
-  <div class="form-group">
+    <div class="row">
+
+  <div class="form-group col-md-6">
     <label for="status">Status</label>
+		<span id="checkTitle" class="text-success" style="display:none;">✔</span>
+
     <select id="status" class="form-control">
       <option value="">-- Select Status --</option>
       <option value="Active">Active</option>
@@ -41,24 +62,41 @@
     <div class="error-message" id="error-status"></div>
   </div>
 
-  <div class="form-group">
+  <div class="form-group col-md-6">
     <label for="userCount">User Count</label>
+		<span id="checkTitle" class="text-success" style="display:none;">✔</span>
+
     <input type="number" id="userCount" class="form-control" />
     <div class="error-message" id="error-userCount"></div>
   </div>
+  
+    </div>
 
-  <div class="form-group">
+    <div class="row">
+
+  <div class="form-group form-group col-md-6">
     <label for="expiryDays">Expiry Days</label>
+		<span id="checkTitle" class="text-success" style="display:none;">✔</span>
+
     <input type="number" id="expiryDays" class="form-control" />
     <div class="error-message" id="error-expiryDays"></div>
   </div>
 
-  <div class="form-actions" style="margin-top: 15px;">
-    <button type="button" onclick="savePromotionType()" class="btn btn-primary">Save</button>
-    <button type="button" onclick="document.getElementById('promotionTypeModal').style.display='none'" class="btn btn-secondary">Cancel</button>
-  </div>
-</form>
 
+  </div>
+  
+  
+  
+</div>
+
+
+
+</div>
+<div class="modal-footer">
+<button type="button" onclick="savePromotionType()" class="btn action-button">Save</button>
+    <button type="button" onclick="document.getElementById('promotionTypeModal').style.display='none'" class="btn action-button">Cancel</button>
+
+</div>
   </div>
 </div>
 <style>
@@ -66,7 +104,6 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
 }
 .add-btn {
   padding: 6px 12px;
@@ -88,16 +125,13 @@
   background-color: #ffe680;
 }
 .modal {
-  display: none;
-  position: fixed;
-  top: 15%;
-  left: 35%;
-  width: 30%;
-  background-color: transparent;
-
- 
-  padding: 20px;
-  z-index: 1000;
+    display none;
+    position: fixed;
+    top: 8%;
+    left: 20%;
+    background-color: transparent;
+    padding: 20px;
+    z-index: 1000;
 }
 .modal-content {
   position: relative;
@@ -142,9 +176,9 @@
 </style>
 <script>
 function openPromotionTypeModal() {
-  document.getElementById("promotionTypeForm").reset();
+  
+  clearAllFormInsideDiv("promotionTypeForm");
   document.getElementById("promotionTypePageId").value = "";
-  document.getElementById("modalTitle").textContent = "Add Promotion Type";
   document.getElementById("promotionTypeModal").style.display = "block";
   isEdit = false;
   
@@ -184,7 +218,7 @@ let table = $('#promotionTypeTable').DataTable({
         const fullResponse = JSON.parse(responseStr);
         const obj = fullResponse.result;
 		total = obj.recordsTotal ?? 0
-       $("#promoCount").text("(" +total + ")");
+       $("#promoCount").text(" Total : " +total + "");
 
       // Debug: make sure obj is valid
       return JSON.stringify({
@@ -214,8 +248,8 @@ let table = $('#promotionTypeTable').DataTable({
       orderable: false,
       render: function (data) {
         return `
-          <button onclick="editPromotionType(${data.id})">✏️</button>
-          <button onclick="deletePromotionType(${data.id})">🗑️</button>
+          <button onclick="editPromotionType(${data.id})" class = "action-button">✏️</button>
+          <button onclick="deletePromotionType(${data.id})" class = "action-button">🗑️</button>
         `;
       }
     }
@@ -302,41 +336,22 @@ function savePromotionType() {
   const userCount = document.getElementById("userCount").value.trim();
   const expiryDays = document.getElementById("expiryDays").value.trim();
 
-  let hasError = false;
+const isValid =
+    validateFieldValue('typeCode') &
+    validateFieldValue("description") &
+    validateFieldValue("status") &
+    validateFieldValue('userCount') &
+    validateFieldValue('expiryDays') 
+	
+	  if (!isValid) return;
 
-  if (!typeCode) {
-    showError("typeCode", "Type Code is required.");
-    hasError = true;
-  }
 
-  if (!description) {
-    showError("description", "Description is required.");
-    hasError = true;
-  }
 
-  if (!status) {
-    showError("status", "Status is required.");
-    hasError = true;
-  }
 
-  if (!userCount) {
-    showError("userCount", "User Count is required.");
-    hasError = true;
-  } else if (isNaN(userCount) || userCount < 0 || !Number.isInteger(Number(userCount))) {
-    showError("userCount", "Must be a positive integer.");
-    hasError = true;
-  }
-
-  if (!expiryDays) {
-    showError("expiryDays", "Expiry Days is required.");
-    hasError = true;
-  } else if (isNaN(expiryDays) || expiryDays < 0 || !Number.isInteger(Number(expiryDays))) {
-    showError("expiryDays", "Must be a positive integer.");
-    hasError = true;
-  }
-
-  if (hasError) return;
-
+ if(isValid)
+ {
+ 
+ 
   const payload = {
     id: id ? Number(id) : null,
     typeCode,
@@ -347,7 +362,7 @@ function savePromotionType() {
 	edit : isEdit
   };  
    	 sendAjaxRequest(upateInsertPromoTypeUrl, "POST", getAppHeaer(), payload,readPromoTypeCallBack );
-
+}
 
 }
 function deletePromotionType(id)

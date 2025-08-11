@@ -1,14 +1,15 @@
-<div class="modal fade" id="addMovieModal" tabindex="-1" aria-labelledby="addMovieLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
+<div class="modal" id="addMovieModal">
 
-      <div class="modal-header bg-warning">
+<div  class = "modal-content"  style = "left:30%;"> 
+      <div class="movie-user-box divPart">
         <h5 class="modal-title" id="addMovieLabel">🎬 Add New Movie</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
+<button type="button" class = "action-button" onclick = "closeModal('addMovieModal')">
+        <span>&times;</span>
 
-      <div class="modal-body">
-        <form id="movieForm" novalidate>
+		</div>
+
+      <div class="modal-body divPart"	 style = "margin-top:0px">
+        <form id="movieForm" novalidate style= "padding:1%;">
           <div class="row g-3">
             <div class="col-md-6">
               <label class="form-label">Title</label>
@@ -41,13 +42,15 @@
 
             <div class="col-md-6">
               <label class="form-label">Budget</label>
-              <input type="number" class="form-control" id="budget" required>
+			   <label id="formattedLabel" class="formatted-currency"></label>
+              <input type="number" class="form-control" id="budget"  oninput="formatIndianLabel(this,'formattedLabel')" required>
     <div class="invalid-feedback" id="budgetError">Please enter a valid budget.</div>
             </div>
 
             <div class="col-md-6">
               <label class="form-label">Per Share Amount</label>
-              <input type="number" class="form-control" id="addperShareAmount" required>
+			  <label id="formattedLabelShare" class="formatted-currency"></label>
+              <input type="number" class="form-control" id="addperShareAmount" oninput="updateShares('addperShareAmount','budget','formattedLabelShare')" required>
   <div class="invalid-feedback" id="perShareError">Please enter a valid amount per share.</div>
             </div>
 
@@ -89,10 +92,11 @@
       </div>
 
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" onclick = "closeModal('addMovieModal')">Close</button>
         <button type="button" class="btn btn-save btn-primary" onclick="saveMovie()">Save Movie</button>
       </div>
 
     </div>
   </div>
-</div>
+  
+  </div>

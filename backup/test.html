@@ -5,9 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
 	  <script src="./script/jquery-3.6.0.min.js"></script>
-      <script src="./script/api-config.js"></script>
-	  <script src="./script/auth.js"></script>
-
 
     <style>
         /* Basic Styles for Full-Page Layout */
@@ -34,6 +31,7 @@
         /* Logo Styling */
         .login-logo img {
             width: 180px;
+            margin-bottom: 30px;
         }
 
         /* Input Fields Styling */
@@ -61,16 +59,16 @@
             padding: 15px 30px;
             font-size: 16px;
             cursor: pointer;
-            background-color: #fddb23; /* Google Blue */
+            background-color: #4285F4; /* Google Blue */
             color: white;
             border: none;
             border-radius: 5px;
-            width: 106%;
+            width: 100%;
             transition: background-color 0.3s ease;
         }
 
         .login-btn:hover {
-            background-color: #fddb23;
+            background-color: #357AE8;
         }
 
         /* Forgot Password Link Styling */
@@ -143,66 +141,6 @@
     a:hover {
         text-decoration: underline;   /* Add underline on hover */
     }
-	
-	 .login-navigation-wrapper {
-        text-align: center;       /* Center the link horizontally */
-        margin-top: 20px;         /* Optional spacing */
-    }
-
-    .login-nav-item {
-        display: inline-block;
-    }
-
-    .backToLogin {
-        text-decoration: none;
-        color: #007BFF;
-        font-weight: bold;
-    }
-
-    .backToLogin:hover {
-        text-decoration: underline;
-    }
-	
-	.verify-section {
-    max-width: 400px;
-    margin: auto;
-    padding: 20px;
-}
-
-.input-group {
-    margin-bottom: 15px;
-}
-
-.input-group label {
-    display: block;
-    margin-bottom: 5px;
-}
-
-.input-group input {
-    width: 100%;
-    padding: 8px;
-}
-
-
-.password-wrapper {
-    position: relative;
-}
-
-.password-wrapper input {
-    width: 91%;
-    padding-right: 40px; /* space for the icon */
-}
-
-.eye-icon {
-    position: absolute;
-    right:-6px;
-    top: 50%;
-    transform: translateY(-50%);
-    cursor: pointer;
-    font-size: 18px;
-    user-select: none;
-}
-
     </style>
 </head>
 <body>
@@ -212,10 +150,6 @@
         <div class="login-logo">
             <img src="logo.png" alt="Logo" class="logo">
         </div>
-
-        <div id="errorMessage" class="error-message">
-            Invalid username or password.
-        </div>
         
         <!-- Login Form -->
         <form id="loginForm" class="login-form">
@@ -224,14 +158,9 @@
                 <input type="email" id="username" name="username" required placeholder="Enter your email or phone">
             </div>
             <div class="input-group">
-               <div class="input-group password-toggle-group">
-                      <label for="password">Password</label>
-                       <div class="password-wrapper">
-                         <input type="password" id="password" placeholder="Enter your password">
-                        <span id="togglePassword" class="eye-icon">👁️</span>
-                     </div>
-                  </div>            
-               </div>
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required placeholder="Enter your password">
+            </div>
            <div class="input-group">
              <button type="submit" class="login-btn">Login</button>
 		</div>
@@ -250,128 +179,50 @@
                 <button type="submit" class="login-btn">Send Reset Link</button>
             </form>
 
-<div class="login-navigation-wrapper">
-    <div class="login-nav-item">
-        <a href="javascript:void(0);" class="backToLogin" onclick="backToLoginClicked()">Back to Login</a>
-    </div>
-</div>
             <!-- Back to Login Button -->
+            <a href="javascript:void(0);" id="backToLogin" class="back-to-login-btn">Back to Login</a>
         </div>
-
-
-
-
-<div id="otpVerifyContainer" class="verify-section" style = "display:none" >
-    <h3>Verify Your Account</h3>
-    <p>Enter your phone number to receive OTPs via phone and email.</p>
-
-    <!-- Step 1: Phone Input -->
-    <div class="input-group">
-        <label for="phoneNumber">Phone Number</label>
-        <input type="text" id="phoneNumber" placeholder="Enter your phone number">
-    </div>
-    <button id="sendOtpBtn" class="login-btn" onclick="sendOtpClicked()">Send OTP</button>
-
-    <!-- Step 2: OTP Inputs -->
-    <div id="otpSection" style="display: none; margin-top: 20px;">
-        <div class="input-group">
-            <label for="phoneOtp">Phone OTP</label>
-            <input type="text" id="phoneOtp" placeholder="Enter OTP sent to phone">
-        </div>
-        <div class="input-group">
-            <label for="emailOtp">Email OTP</label>
-            <input type="text" id="emailOtp" placeholder="Enter OTP sent to email">
-        </div>
-        <button id="verifyBtn" class="login-btn" style="background-color:#34a853">Verify</button>
-    </div>
-	<div class="login-navigation-wrapper">
-    <div class="login-nav-item">
-        <a href="javascript:void(0);" id="backToLogin" onclick="backToLoginClicked()">Back to Login</a>
-    </div>
-</div>
-	
-</div>
-
-
-
-
 
         <!-- Forgot Password Link -->
 <div class="links-container" id= "linkItem">
     <div class="link-item">
-        <a href="javascript:void(0);" id="verifyLink" onclick= "verifyButtonClicked()">Activate Account</a>
+        <a href="javascript:void(0);" id="verifyLink">Verify</a>
     </div>
     <div class="link-item">
         <a href="javascript:void(0);" id="forgotPasswordLink">Forgot password?</a>
     </div>
 </div>
         <!-- Error Message -->
+        <div id="errorMessage" class="error-message">
+            Invalid username or password.
+        </div>
     </div>
 
     <script>
         // Handle form submission for login
-							
-
-	console.log("xxxx entry "  +getAccessToken())
-	console.log("xxxx entry "  +generateDeviceId())
-	
-	
-
-		function verifyButtonClicked()
-		{
-		
-		  $(".login-form").hide();
-		  $("#linkItem").hide();
-		  $("#otpVerifyContainer").show();
-         }
-		
-		
         document.getElementById('loginForm').addEventListener('submit', function(event) {
             event.preventDefault(); // Prevent form submission to avoid page reload
 
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
-			const deviceIdValue =  generateDeviceId();
 
             // Simulate API call for validation (replace it with your backend API)
-            fetch(adminLoginVerifyUrl, {
+            fetch('/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ userName: username, password: password , deviceId : deviceIdValue })
+                body: JSON.stringify({ username: username, password: password })
             })
             .then(response => {
                 if (response.ok) {
                     // Successful login
-					
-					//sessionStorage.setItem('accessToken', token);
-					 return response.json(); // Parse and return JSON data
-
-
+                    alert('Login successful!');
+                    window.location.href = '/dashboard'; // Redirect or proceed
                 } else {
                     // Invalid credentials
                     document.getElementById('errorMessage').style.display = 'block';
                 }
-            })
-			.then(data => {
-            console.log('Login success:', data); // Access parsed data here
-            // Example: accessToken = data.token;
-			// window.location.href = getBasePath() +'adminPanel.html'; // Redirect or proceed
-            if(data != null)
-			{
-			     if(data.result != null)
-				 {
-				    	
-					saveTokens(data.result.accessToken,data.result.refreshToken);
-					window.location.href = getBasePath() +'adminPanel.html'; // Redirect or proceed
-       
-				 
-				 }
-			
-			
-			}
-			
             })
             .catch(error => {
                 console.error('Error during login:', error);
@@ -419,80 +270,11 @@
             });
         });
 
-        
-		
-		function backToLoginClicked()
-		{
-		  
-		     document.querySelector('.login-form').style.display = 'block';
+        // Handle back to login button click
+        document.getElementById('backToLogin').addEventListener('click', function() {
+            document.querySelector('.login-form').style.display = 'block';
             document.getElementById('forgotPasswordForm').style.display = 'none';
-			
-			 $("#sendOtpBtn").prop('disabled', false).text('Send OTP');
-			 $('#phoneNumber').prop('disabled', false);
-			
-			 $("#otpSection").hide();
-
-			
-			$("#otpVerifyContainer").hide();
-			$("#linkItem").show();
-
-		
-		}
-		
-		function sendOtpClicked()
-		{
-		     
-		      const phone = document.getElementById("phoneNumber").value;
-			  $("#otpSection").show();
-			  
-			 $("#sendOtpBtn").prop('disabled', true).text('Sending...');
-			 $('#phoneNumber').prop('disabled', true);
-
-
-		
-		
-		}
-		
-		function callOtpSendCall()
-		{
-		
-		  fetch("/auth/send-otp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phone: phone })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === "otp_sent") {
-            document.getElementById("otpSection").style.display = "block";
-            alert("OTP sent to phone and email.");
-        } else {
-            alert("Error: " + data.message);
-        }
-    })
-    .catch(error => {
-        console.error(error);
-        alert("Failed to send OTP");
-    });
-		
-		}
-		
-		
-		document.getElementById("togglePassword").addEventListener("click", function () {
-    const passwordInput = document.getElementById("password");
-    const type = passwordInput.getAttribute("type");
-
-    if (type === "password") {
-        passwordInput.setAttribute("type", "text");
-        this.textContent = "🙈"; // Change icon to "hide"
-    } else {
-        passwordInput.setAttribute("type", "password");
-        this.textContent = "👁️"; // Change icon to "show"
-    }
-});
-		
-		
-		
+        });
     </script>
 
 </body>

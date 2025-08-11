@@ -1,19 +1,31 @@
-<div class="section-container promo-code-section">
-  <h3>🎁 Promo Code Management</h3>
-<div style="text-align: right; margin-bottom: 10px;">
-  
-  <button class="btn-yellow" onclick="openPromoCodeModal('new')">+ Add Promo Code</button>
+<div class="section-header">
+  <h4 class = "flimBitSectionHead">Promo Code Management</h4>
+<div style="">
+  <button class="btn" onclick="openPromoCodeModal('new')">+ Add Promo Code</button>
 </div>
 
-  <table id="promoTable">
+  
+</div>
+
+<div class = "flimBitMainDiv">
+<div class="divPart">
+<table id="promoTable">
   </table>
+</div>
 </div>
 
 <!-- 🔸 Modal Window -->
 <div id="promoCodeModal" class="modal">
   <div class="modal-content">
-    <span class="close" onclick="closePromoCodeModal()">&times;</span>
+  <div class = "movie-user-box divPart">
     <h3>➕ Add/Edit Promo Code</h3>
+	<button type="button" class="action-button" onclick="closeModal('promoCodeModal')">
+        <span>×</span>
+      </button>
+	</div>
+	
+	<div class="divPart" style="margin-top:0px">
+
  <div class="form-grid" id = "promoNewDiv">
         <div>
           <label>Promo Code</label>
@@ -45,14 +57,20 @@
 		  <div class="error-message" id="error-promoTypeStatusSelectUser"></div>
 
         </div>	
-      <div style="margin-top: 1.5rem;">
+     
+  </div>
+ 
+ 
+ 
+ 
+  <div class="modal-footer">
 		
 		   <button type="button" class="btn-yellow" onclick = "savePromoCodeNew()">💾 Save</button  >
 		          <button type="button" class="btn-yellow" onclick="closePromoCodeModal()"> Close</button>
 
 </div>  
-  </div>
-  
+</div>
+ 
   </div>
 </div>
 
@@ -62,20 +80,35 @@
 
 <div id="rewardModal" class="modal" style="display:none;">
   <div class="modal-content" style = "max-width:90%;">
-    <span class="close" onclick="closeRewardModal()">&times;</span>
 
     <!-- 🔸 View Rewards Section -->
     <div id="viewRewardSection">
-      <h3>🎁 Rewards for Promo Code: <span id="modalPromoCode"></span></h3>
+	<div class= "movie-user-box divPart">
+      <h3>🎁 Rewards for Promo Code: <span id="modalPromoCode" class="movie-label-highlight"></span></h3>
+	  <button type="button" class="action-button" onclick="closeModal('rewardModal')">
+        <span>×</span>
+      </button>
+	</div>  
+	  
   <div style="text-align: right; margin-bottom: 10px;">
-        <button class="btn-yellow" onclick="openAddAwardSection('new')">+ Add Reward</button>
+        <button class="btn" onclick="openAddAwardSection('new')">+ Add Reward</button>
     </div>
+	
+	<div class = "flimBitMainDiv">
+<div class="divPart">
       <table id="promotionRewardsTable" class="display" style="width:100%">
 
       </table>
+	      </div>
+
+    </div>
+
     </div>
 
     <!-- 🔸 Edit Reward Section (Initially Hidden) -->
+	<div class = "flimBitMainDiv">
+<div class="divPart">
+	
     <div id="editRewardSection" style="display:none;">
       <h3>Edit Reward</h3>
         
@@ -178,6 +211,8 @@
 
    </div>
 
+  </div>
+  </div>
 
      
   </div>
@@ -189,6 +224,14 @@
 
 
 <style>
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+
 .section-container.promo-code-section {
   padding: 2rem;
   background: #fffef3;
@@ -245,7 +288,6 @@
 }
 
 .modal-content {
-  background: #fff;
   margin: 5% auto;
   padding: 2rem;
   border-radius: 10px;

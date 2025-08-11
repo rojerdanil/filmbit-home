@@ -1,0 +1,421 @@
+<!-- Announcement Modal -->
+<div id = "modalDiv" >
+<div class="modal" style="display:none;" id="influencerModal">
+  <div class="modal-content" style="max-width: 70%; padding: 20px; border-radius: 8px;">
+    
+    <div class="movie-user-box divPart" >
+      <h5 class="modal-title" id="announcementModalLabel">Create / Edit influencer</h5>
+      <button type="button" class = "action-button" onclick = "closeModal('influencerModal')">
+        <span>&times;</span>
+      </button>
+    </div>
+    
+    <div class="modal-body divPart" style = "margin-top:0%" >
+      <div id="announcementForm" style="width: 90%;">
+        <input type="hidden" id="influIdInput" name="influIdInput" />
+
+        <!-- Row 1: Title + Language -->
+        <div class="row">
+          <div class="form-group col-md-6">
+            <label>First Name <span id="checkTitle" class="text-success" style="display:none;">✔</span></label>
+            <input type="text" class="form-control" id="influFirstName" >
+			 <div class="error-message" id="error-influFirstName"></div>
+
+          </div>
+		   <div class="form-group col-md-6">
+            <label>Last Name <span id="checkTitle" class="text-success" style="display:none;">✔</span></label>
+            <input type="text" class="form-control" id="influLastName" >
+			 <div class="error-message" id="error-influLastName"></div>
+
+          </div>
+        </div>
+
+        <div class = "row">
+		<div class="form-group col-md-6">
+            <label>Language</label>
+            <select class="form-control" id="influeLanguage" oninput="validateFieldValue('influeLanguage')">
+              
+            </select>
+					<div class="error-message" id="error-influeLanguage"></div>
+
+          </div>
+		   <div class="form-group col-md-6">
+            <label>Phone Number <span id="checkTitle" class="text-success" style="display:none;">✔</span></label>
+            <input type="number" class="form-control" id="influPhoneNumber" >
+			 <div class="error-message" id="error-influPhoneNumber"></div>
+
+          </div>
+
+
+		</div>
+		
+		<div class="row">
+          <div class="form-group col-md-6">
+            <label>Email</label>
+            <input type="text" class="form-control" id="influeEmailUrl">
+		   <div class="error-message" id="error-influeEmailUrl"></div>
+
+          </div>
+          <div class="form-group col-md-6">
+            <label>socialMediaHandle</label>
+            <input type="text" class="form-control" id="influeSocialMediaHandle">
+		   <div class="error-message" id="error-influeSocialMediaHandle"></div>
+
+          </div>
+        </div>
+        
+        <!-- Row 3: Start & End Date -->
+      
+
+        <!-- Row 4: Image URL + Link URL -->
+        
+
+        <!-- Row 5: Priority + Status -->
+        <div class="row">
+           
+		 <div class="form-group col-md-6">
+            <label>PromoCode</label>
+            <input type="text" class="form-control" id="influePromoCode">
+		   <div class="error-message" id="error-influePromoCode"></div>
+
+          </div>
+          <div class="form-group col-md-6">
+            <label>Status</label>
+            <select class="form-control" id="influestatus" oninput="validateFieldValue('influestatus')">
+              <option value="ACTIVE" selected>ACTIVE</option>
+              <option value="INACTIVE">INACTIVE</option>
+            </select>
+					   <div class="error-message" id="error-influestatus"></div>
+
+          </div>
+		
+        </div>
+
+        <!-- Row 6: Notification checkboxes -->
+       
+
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn action-button" onclick="submitInfluencer()">Save</button>
+        <button type="button" class = "btn action-button" onclick = "closeModal('influencerModal')"> Close </button>
+
+    </div>
+
+  </div>
+</div>
+
+</div>
+
+<div class="investment-summary" style = "display:none;">
+    <h3>📊 Investment Summary</h3>
+    <div class="summary-stats">
+      <p><strong>💰 Total Invested:</strong> ₹3,50,000</p>
+      <p><strong>🎬 Movies Invested:</strong> 6</p>
+      <p><strong>🔁 Total Returns:</strong> ₹75,000</p>
+      <p><strong>👤 User:</strong> Raj Kumar</p>
+    </div>
+  </div>
+	
+  <!-- Filter Section -->
+  <div class="filter-section">
+    <div class="filter-fields">
+            <select id="languageSelectInflu" class="form-control" onchange="onLanguageInflu()">
+        <option value="" disabled selected>Select Language</option>
+        <!-- Language options will be populated dynamically -->
+      </select>
+      
+      <select id="movieSelectInflu" class="form-control">
+        <option value="" disabled selected>Select Movie</option>
+        <!-- Movie options will be populated dynamically -->
+      </select>
+      <select id="statusSelectInflu" class="form-control">
+        <option value="" disabled selected>Select Status</option>
+		<option value="" >-All-</option>
+        <option value="active">Active</option>
+        <option value="inactive">Inactive</option>
+      </select>
+      <input type="text" id="searchTextInflu" class="form-control" placeholder="Search..." />
+      <button class="btn" onclick="reloadTableInflu()" style = "    height: 37px;">🔎</button>
+      <div style="width:32%;text-align: right;">
+	  <button class="add-btn" style="background-color: #fffde7; color:black;" onclick="addInfluencer()">+ Add</button>
+	  </div>   
+
+   </div>
+  </div>
+
+  
+  <!-- Investment Table Section -->
+  <div class="investment-table">
+    <table id="userTableInflu">
+    
+    </table>
+  </div>
+  
+  <script>
+  function addInfluencer()
+  {
+	$("#influencerModal").show();
+	$("#influIdInput").val(0);
+	
+	clearAllFormInsideDiv("#modalDiv");
+	
+	$('#influestatus option:first').prop('selected', true);
+		  $('#influePromoCode').prop('disabled', false);
+
+
+  
+  }
+  
+  
+  function loadInfluencerSection()
+	{
+      	sendAjaxRequest(readMovLanguageUrl, "GET", getAppHeaer(), null,readAllLanguageFunInflu );
+       drawInfluencerDataTable();
+
+	}
+function formatExpandRowInflu(rowData) {
+  return `
+    <div style="padding: 10px 20px; background-color: #f9f9f9; border-left: 4px solid #007bff;">
+      <strong>Email:</strong> ${formatNA(rowData.email)} &nbsp;&nbsp;
+      <strong>socialMediaHandle:</strong> ${formatNA(rowData.socialMediaHandle)} &nbsp;&nbsp;
+      
+    &nbsp;&nbsp;    <strong>CreatedAt:</strong> ${formatDateTime(rowData.createdAt)} &nbsp;&nbsp;
+    
+    </div>
+	
+	   
+  `;
+}
+	
+	function drawInfluencerDataTable()
+	{
+	const table = $('#userTableInflu').DataTable({
+    destroy: true,
+    processing: true,
+    serverSide: true,
+    pageLength: 10,
+    dom: 'lrtip',
+    ajax: {
+      url: dataTableInfluencerUrl,
+      type: 'GET',
+      headers: getAppHeaer(),
+      data: function (d) {
+        return {
+          draw: d.draw,
+          start: d.start,
+          length: d.length,
+          searchText: $("#searchTextInflu").val(),
+          sortColumn: d.columns[d.order[0].column].data,
+          sortOrder: d.order[0].dir,
+          language: $("#languageSelectInflu").val(),
+          status: $("#statusSelectInflu").val()
+        };
+      },
+      dataFilter: function (response) {
+        const fullResponse = JSON.parse(response);
+        const obj = fullResponse.result;
+        $("#rewardCount").text("(" + (obj.recordsTotal ?? 0) + ")");
+        return JSON.stringify({
+          draw: obj.draw || 1,
+          recordsTotal: obj.recordsTotal ?? 0,
+          recordsFiltered: obj.recordsFiltered ?? 0,
+          data: obj.data ?? []
+        });
+      }
+    },
+    columns: [
+      {
+        className: 'dt-control',
+        orderable: false,
+        data: null,
+        defaultContent: '',
+        title: ''
+      },
+      {
+        data: 'firstName',
+        title: 'Name',
+        render: (data, type, row) => toTitleCase(`${row.firstName} ${row.lastName}`)
+      },
+      {
+        data: 'phoneNumber',
+        title: 'Phone',
+        render: formatPhoneOnly
+      },
+      { data: 'languageName', title: 'Language' },
+	  { data: 'promoCode', title: 'PromoCode',render : formatNA },
+    
+      {
+        data: 'updatedAt',
+        title: 'UpdatedAt',
+        render: formatDateTime
+      },
+      {
+        data: 'status',
+        title: 'Status',
+        render: renderStatus
+      },
+	  
+	  
+	  
+	  {
+  data: null,
+  title: 'Action',
+  orderable: false,
+  render: function (data, type, row) {
+    return `
+      <button class="action-button" onclick="editInfluencer('${row.id}','${row.status}')">✏️</button>
+      <button class="action-button" onclick="deleteInflue('${row.id}')">🗑️</button>
+    `;
+  }
+  }
+	  
+    ],
+    order: [[1, 'asc']]
+  });	
+
+  // Toggle expand row
+  $('#userTableInflu tbody').off('click', 'td.dt-control').on('click', 'td.dt-control', function () {
+    const tr = $(this).closest('tr');
+    const row = table.row(tr);
+
+    if (row.child.isShown()) {
+      row.child.hide();
+      tr.removeClass('shown');
+    } else {
+      row.child(formatExpandRowInflu(row.data())).show();
+      tr.addClass('shown');
+    }
+  });
+  
+  $('#userTableInflu_length').hide();
+
+	
+	
+	}
+	
+	
+	var readAllLanguageFunInflu =  function readAllLanguageFunInfluBack(response)
+{
+
+ var data = readFinalResult(response);
+
+   if(data != null)
+   {
+         populateSelectBoxFirstOptAll("languageSelectInflu",data,"id","name");
+		 populateSelectBoxFirstOptAll("influeLanguage",data,"id","name");
+
+		 
+		
+
+   }
+
+}
+
+function onLanguageInflu()
+{
+
+
+}
+
+	function submitInfluencer() {
+   
+   
+   const isValid =
+    validateFieldValue('influFirstName') &
+    validateFieldValue('influLastName') &
+    validateFieldValue('influPhoneNumber') &
+    validateFieldValue('influeEmailUrl') &
+    validateFieldValue('influeSocialMediaHandle') &
+	validateFieldValue('influePromoCode')
+	
+	  if (!isValid) return;
+
+if(isValid)
+{
+
+     const influRequest = {
+      firstName: $("#influFirstName").val(),
+      lastName: $("#influLastName").val(),
+      languageId: $("#influeLanguage").val(),
+      phoneNumber: $("#influPhoneNumber").val(),
+      email: $("#influeEmailUrl").val(),
+      socialMediaHandle: $("#influeSocialMediaHandle").val(),
+      promoCode: $("#influePromoCode").val(),
+	  status: $("#influestatus").val()
+    };
+	
+	     var  annonId = Number($("#influIdInput").val());
+         	console.log(annonId);
+        urlx =   annonId == 0 ? insertInfluencerUrl : updateInfluencerUrl +  annonId ;
+		console.log(urlx);
+     	sendAjaxRequest(urlx, "POST", getAppHeaer(), influRequest,saveMovieInfluencerCall );
+
+}
+
+}
+
+  var saveMovieInfluencerCall = function ssaveMovieInfluencerCallFun(response)
+{
+
+var data = readFinalResult(response);
+	if(data !=null)
+		   {
+ 
+      closeModalAndReloadDataTable(response,"#influencerModal","#userTableInflu")
+
+  }
+ 
+}
+function editInfluencer(id,status)
+{
+$("#influIdInput").val(id);
+sendAjaxRequest(readInfluencerUrl+id, "GET", getAppHeaer(), null,readInfluencerCallBack );
+}
+
+
+var readInfluencerCallBack =  function readInfluencerCall(response)
+{
+
+var data = readFinalResult(response);
+	if(data !=null)
+   {
+      $("#influencerModal").show();
+      //console.log(data);
+	  $("#influFirstName").val(data.firstName );
+      $("#influLastName").val(data.lastName);
+      $("#influeLanguage").val(data.languageId);
+      $("#influPhoneNumber").val(data.phoneNumber);
+      $("#influeEmailUrl").val(data.email);
+      $("#influeSocialMediaHandle").val(data.socialMediaHandle);
+      $("#influePromoCode").val(data.promoCode);
+	  $("#influestatus").val(data.status);
+	  
+	  $('#influePromoCode').prop('disabled', true);
+
+    
+   
+    }
+
+}
+
+function deleteInflue(id)
+{
+const confirmDelete = confirm("Are you sure you want to delete this offer record?");
+if (confirmDelete) {
+   	 sendAjaxRequest(deleteInfluencerUrl+id, "GET", getAppHeaer(), null,saveMovieInfluencerCall );
+}
+
+
+
+}
+
+function reloadTableInflu()
+{
+
+	     $("#userTableInflu").DataTable().ajax.reload(null, false);
+
+}
+
+  </script>

@@ -1,28 +1,1036 @@
-  <h4 style="color: #FFD700;">📢 Announcements Management</h4>
 
-  <!-- Add Button -->
-  <div class="d-flex justify-content-end mb-2">
-    <button class="btn btn-warning btn-sm" onclick="openAnnouncementModal()">Add Announcement</button>
+
+
+ <!--<div class="tab-toggle" style="margin-top:2%">
+    <div class="tab-btn active" data-target="#userSection" onclick="switchTab('userSection')" style = "padding:0px">
+
+   </div>
+  
+  <!--modal window---->
+  
+ <!-- Modal -->
+ 	<h3 class = "flimBitSectionHead">Announcement</h3></div>
+
+ <!-- Announcement Modal -->
+<div class="modal" style="display:none;" id="announcementModal">
+  <div class="modal-content" style="max-width: 70%; padding: 20px; border-radius: 8px;">
+    
+    <div class="movie-user-box divPart" >
+      <h5 class="modal-title" id="announcementModalLabel">Create / Edit Announcement</h5>
+      <button type="button" onclick = "closeModal('announcementModal')">
+        <span>&times;</span>
+      </button>
+    </div>
+    
+    <div class="modal-body divPart" style = "margin-top:0%" >
+      <div id="announcementForm" style="width: 90%;">
+        <input type="hidden" id="annonIdInput" name="annonIdInput" />
+
+        <!-- Row 1: Title + Language -->
+        <div class="row">
+          <div class="form-group col-md-6">
+            <label>Title <span id="checkTitle" class="text-success" style="display:none;">✔</span></label>
+            <input type="text" class="form-control" id="announcementTitle" required>
+			 <div class="error-message" id="error-announcementTitle">This field is required</div>
+
+          </div>
+          <div class="form-group col-md-6">
+            <label>Language</label>
+            <select class="form-control" id="announcementLanguage" oninput="validateFieldValue('announcementLanguage')">
+              
+            </select>
+					<div class="error-message" id="error-announcementLanguage"></div>
+
+          </div>
+        </div>
+
+        <!-- Row 2: Message full row -->
+        <div class="row">
+          <div class="form-group col-md-12">
+            <label>Message <span id="checkMessage" class="text-success" style="display:none;">✔</span></label>
+            <textarea class="form-control" id="announcementMessage" rows="3" required></textarea>
+            <div class="error-message" id="error-announcementMessage"></div>
+
+		  </div>
+        </div>
+
+        <!-- Row 3: Start & End Date -->
+        <div class="row">
+          <div class="form-group col-md-6">
+            <label>Start Date <span id="checkStart" class="text-success" style="display:none;">✔</span></label>
+            <input type="datetime-local" class="form-control" id="startDate" required>
+			<div class="error-message" id="error-startDate"></div>
+
+          </div>
+          <div class="form-group col-md-6">
+            <label>Valid Until <span id="checkEnd" class="text-success" style="display:none;">✔</span></label>
+            <input type="datetime-local" class="form-control" id="endDate" required>
+		  <div class="error-message" id="error-endDate"></div>
+
+          </div>
+        </div>
+
+        <!-- Row 4: Image URL + Link URL -->
+        <div class="row">
+          <div class="form-group col-md-6">
+            <label>Image URL</label>
+            <input type="text" class="form-control" id="imageUrl">
+		   <div class="error-message" id="error-imageUrl"></div>
+
+          </div>
+          <div class="form-group col-md-6">
+            <label>Link URL</label>
+            <input type="text" class="form-control" id="linkUrl">
+		   <div class="error-message" id="error-linkUrl"></div>
+
+          </div>
+        </div>
+
+        <!-- Row 5: Priority + Status -->
+        <div class="row">
+          <div class="form-group col-md-6">
+            <label>Priority</label>
+            <select class="form-control" id="priority" oninput="validateFieldValue('priority')">
+              <option value="LOW">LOW</option>
+              <option value="NORMAL" selected>NORMAL</option>
+              <option value="HIGH">HIGH</option>
+            </select>
+		   <div class="error-message" id="error-priority"></div>
+
+          </div>
+          <div class="form-group col-md-6">
+            <label>Status</label>
+            <select class="form-control" id="status" oninput="validateFieldValue('status')">
+              <option value="ACTIVE" selected>ACTIVE</option>
+              <option value="INACTIVE">INACTIVE</option>
+            </select>
+					   <div class="error-message" id="error-status"></div>
+
+          </div>
+        </div>
+
+        <!-- Row 6: Notification checkboxes -->
+        <div class="row">
+          <div class="form-group col-md-12">
+            <label>Notification Methods:</label><br>
+            <label class="mr-3"><input type="checkbox" id="notifyEmail"> Email</label>
+            <label class="mr-3"><input type="checkbox" id="notifySMS"> SMS</label>
+            <label><input type="checkbox" id="notifyPush"> Push</label>
+			<label><input type="checkbox" id="notifyInApp" checked disabled> In-App</label>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn btn-primary" onclick="submitAnnouncement()">Save</button>
+    </div>
+
+  </div>
+</div>
+
+  
+  <!---ModalWindow-->
+  
+
+<div id="userSection" class="flimBitMainDiv">
+    <!-- Add your form or data table for movies here -->
+	
+	<div class="">
+	
+	<!-- Investment Summary Section -->
+  <div class="investment-summary" style = "display:none;">
+    <h3>📊 Investment Summary</h3>
+    <div class="summary-stats">
+      <p><strong>💰 Total Invested:</strong> ₹3,50,000</p>
+      <p><strong>🎬 Movies Invested:</strong> 6</p>
+      <p><strong>🔁 Total Returns:</strong> ₹75,000</p>
+      <p><strong>👤 User:</strong> Raj Kumar</p>
+    </div>
+  </div>
+	
+  <!-- Filter Section -->
+  <div class="filter-section">
+    <div class="filter-fields">
+            <select id="languageSelect" class="form-control" onchange="onLanguageChangeInv()">
+        <option value="" disabled selected>Select Language</option>
+        <!-- Language options will be populated dynamically -->
+      </select>
+      
+      <select id="statusSelect" class="form-control">
+        <option value="" disabled selected>Select Status</option>
+		<option value="" >-All-</option>
+        <option value="active">Active</option>
+        <option value="inactive">Inactive</option>
+      </select>
+      <input type="text" id="searchText" class="form-control" placeholder="Search..." />
+      <button class="btn" onclick="reloadTable()" style = "    height: 37px;">🔎</button>
+	  
+	  <div style = "width:32%;text-align: right;">
+	  <button class="add-btn" style = "background-color: #fffde7; color:black;" onclick="addAnnonce()">+ Add</button>
+	  </div>
+    </div>
   </div>
 
-  <!-- Table -->
-  <div class="table-responsive">
-    <table id="announcementTable" class="display table table-bordered" style="width:100%; background-color: #fdfde7;">
-      <thead class="table-warning">
-        <tr>
-          <th>#</th>
-          <th>Title</th>
-          <th>Date</th>
-          <th>Status</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Dynamically filled -->
-      </tbody>
+  
+  <!-- Investment Table Section -->
+  <div class="investment-table">
+    <table id="userAnnonTable">
+    
     </table>
   </div>
-
-  <!-- Modal -->
+</div>
   
+  </div>
+
+  <div id="movieSection" class="tab-content">
+    <p>Show movie title, release date, language, etc.</p>
+    <!-- Add your form or data table for movies here -->
+  </div>
+
+  <div id="productionSection" class="tab-content">
+    <p>Show producer, budget, cast, shooting schedule, etc.</p>
+    <!-- Add your form or data table for production here -->
+  </div>
+ <script>
+ 
+ function openAnnonceModal()
+ {
+  //clearAllFormInsideDiv("#announcementForm");
+   $("#announcementModal").show();
+ 
+ }
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      event.target.classList.add('active');
+	  
+    }
+	
+    function loadAnnoncementSection()
+	{
+	    drawUserDataTable();
+      	sendAjaxRequest(readMovLanguageUrl, "GET", getAppHeaer(), null,readAllLanguageFun );
+
+
+	}
+
+
+var readAllLanguageFun =  function readLanguageCallBack(response)
+{
+
+ var data = readFinalResult(response);
+
+   if(data != null)
+   {
+         populateSelectBoxFirstOptAll("languageSelect",data,"id","name");
+		 populateSelectBoxFirstOptAll("announcementLanguage",data,"id","name");
+
+  
+    $('#announcementLanguage option').filter(function () {
+  return $(this).text().trim() === '-- All --';
+}).val('0');
+  
+  
+  
+  
+		 
+		  const $languageSelect = $('#languageSelect');
+        if ($languageSelect.find('option').length > 1) {
+          $languageSelect.prop('selectedIndex', 1).trigger('change');
+         } 
+		
+
+   }
+
+}
+
+
+function onLanguageChangeInv() {
+  var selectedLanguageId = $('#languageSelect').val();
+
+
+    if (selectedLanguageId === "" || selectedLanguageId == null) {
+    console.log("Default option selected. Ignoring change.");
+    return; // Exit early, block logic
+  }
+
+
+
+  var selectedLanguageName = $('#languageSelect option:selected').text();
+	sendAjaxRequest(readMovieBylangIdUrl+selectedLanguageId, "GET", getAppHeaer(), null,readMovieByLanCallBack );
+
+  // You can now use the selectedLanguageId to load movies dynamically, etc.
+}
+
+
+var  readMovieByLanCallBack =	function readMovieByLanSection(response)
+{
+var data = readFinalResult(response);
+
+   if(data != null)
+   {
+   	     populateSelectBoxFirstOptAll("movieSelect",data,"id","title");
+         
+        
+   
+   }
+
+}
+
+function formatExpandRow(rowData) {
+  return `
+    <div style="padding: 10px 20px; background-color: #f9f9f9; border-left: 4px solid #007bff;">
+	    
+<strong>E/S/P/I:</strong> 
+		<input type="checkbox" class="custom-checkbox" disabled ${rowData.isNotifyEmail ? 'checked' : ''}>
+         /<input type="checkbox" class="custom-checkbox" disabled ${rowData.isNotifyPush ? 'checked' : ''}>
+         /<input type="checkbox" class="custom-checkbox" disabled ${rowData.isNotifySms ? 'checked' : ''}>
+         /<input type="checkbox" class="custom-checkbox" disabled ${rowData.isNotifyInApp ? 'checked' : ''}>
+   
+	  &nbsp;&nbsp  <strong>ImageUrl:</strong> ${formatNA(rowData.imageUrl)} &nbsp;&nbsp;
+      <strong>LinkUrl:</strong> ${formatNA(rowData.linkUrl)} &nbsp;&nbsp;
+      <strong>Priority:</strong> ${formatNA(rowData.priority)} &nbsp;&nbsp;  
+	  &nbsp;&nbsp;   <strong>CreatedAt:</strong> ${formatDateTime(rowData.createdAt)} &nbsp;&nbsp;
+    &nbsp;&nbsp;    <strong>Updated:</strong> ${formatDateTime(rowData.updateDate)} &nbsp;&nbsp;
+
+
+    </div>
+	<div> <strong> ${formatNA(rowData.message)} </div>
+	
+	   
+  `;
+}
+
+
+function drawUserDataTable() {
+
+
+  const table = $('#userAnnonTable').DataTable({
+    destroy: true,
+    processing: true,
+    serverSide: true,
+    pageLength: 10,
+    dom: 'lrtip',
+    ajax: {
+      url: dataTableAnnounUrl,
+      type: 'GET',
+      headers: getAppHeaer(),
+      data: function (d) {
+        return {
+          draw: d.draw,
+          start: d.start,
+          length: d.length,
+          searchText: $("#searchText").val(),
+          sortColumn: d.columns[d.order[0].column].data,
+          sortOrder: d.order[0].dir,
+          language: $("#languageSelect").val(),
+          status: $("#statusSelect").val()
+        };
+      },
+      dataFilter: function (response) {
+        const fullResponse = JSON.parse(response);
+        const obj = fullResponse.result;
+        $("#rewardCount").text("(" + (obj.recordsTotal ?? 0) + ")");
+        return JSON.stringify({
+          draw: obj.draw || 1,
+          recordsTotal: obj.recordsTotal ?? 0,
+          recordsFiltered: obj.recordsFiltered ?? 0,
+          data: obj.data ?? []
+        });
+      }
+    },
+    columns: [
+	{
+        className: 'dt-control',
+        orderable: false,
+        data: null,
+        defaultContent: '',
+        title: ''
+      },
+     {
+        data: 'title',
+        title: 'Title',
+        render: function (data) {
+          return formatNA(data);
+        }
+      },
+      {
+        data: 'languageName',
+        title: 'Language',
+		render: function (data) {
+          return data == null || data == "0" ? "All" : data
+        }
+      }
+	  ,
+      {
+        data: 'status',
+        title: 'Status',
+        render: function (data) {
+          return renderStatus(data); // your utility to color-code status
+        }
+      },
+      {
+        data: 'startTime',
+        title: 'Start Time',
+        render: function (data) {
+          return formatDateTime(data);
+        }
+      },
+      {
+        data: 'validUntil',
+        title: 'Valid Until',
+        render: function (data) {
+          return formatDateTime(data);
+        }
+      },
+	  {
+  data: null,
+  title: 'Action',
+  orderable: false,
+  render: function (data, type, row) {
+    return `
+      <button class="action-button" onclick="editAnnon('${row.id}')">✏️</button>
+      <button class="action-button" onclick="deleteAnnon('${row.id}')">🗑️</button>
+    `;
+  }
+  }
+	  
+    ],
+    order: [[1, 'asc']]
+  });
+
+
+$('#userAnnonTable tbody').off('click', 'td.dt-control').on('click', 'td.dt-control', function () {
+    const tr = $(this).closest('tr');
+    const row = table.row(tr);
+
+    if (row.child.isShown()) {
+      row.child.hide();
+      tr.removeClass('shown');
+    } else {
+      row.child(formatExpandRow(row.data())).show();
+      tr.addClass('shown');
+    }
+  });
+  
+  // Toggle expand row
+  $('#userAnnonTable_length').hide();
+
+}
+
+
+
+
+function submitAnnouncement() {
+   
+   
+   const isValid =
+    validateFieldValue('announcementTitle') &
+    validateFieldValue('announcementMessage') &
+    validateFieldValue('announcementLanguage') &
+    validateFieldValue('priority') &
+    validateFieldValue('status') 
+	
+	  if (!isValid) return;
+
+	
+
+const validFromDateVal = $('#startDate').val();
+const validToDateVal = $('#endDate').val();
+
+
+if (validFromDateVal && validToDateVal) {
+
+const validFromDate = new Date(validFromDateVal);
+const validToDate = new Date(validToDateVal);
+const validToInput = document.getElementById('endDate');
+const errorDiv = document.getElementById('error-endDate');
+
+
+
+
+if(validFromDate != null &&   validToDate != null)
+{ 
+
+if (validToDate < validFromDate) {
+  validToInput.classList.remove("valid");
+  validToInput.classList.add("invalid");
+  errorDiv.textContent = "'Valid Until' cannot be earlier than 'Start Date'";
+  return;
+} 
+
+else
+{
+ validToInput.classList.remove("invalid");
+  validToInput.classList.add("valid");
+  errorDiv.textContent = "";
+
+}
+
+}
+
+}
+
+if (!validFromDateVal && validToDateVal) {
+const validToDate = new Date(validToDateVal);
+const validToInput = document.getElementById('endDate');
+const errorDiv = document.getElementById('error-endDate');
+
+ if( validToDate != null )
+{
+  validToInput.classList.remove("valid");
+  validToInput.classList.add("invalid");
+  errorDiv.textContent = "'Start Date' cannot be empty'";
+  return;
+
+}
+else
+{
+ validToInput.classList.remove("invalid");
+  validToInput.classList.add("valid");
+  errorDiv.textContent = "";
+
+}
+
+
+}
+
+if(isValid)
+{
+
+
+     const announcement = {
+      title: $("#announcementTitle").val(),
+      message: $("#announcementMessage").val(),
+      languageId: $("#announcementLanguage").val(),
+      startDatetime: toSqlTimestampWithMillis($("#startDate").val()),
+      validUntil: toSqlTimestampWithMillis($("#endDate").val()),
+      imageUrl: $("#imageUrl").val(),
+      linkUrl: $("#linkUrl").val(),
+      priority: $("#priority").val(),
+      status: $("#status").val(),
+      notifyEmail: $("#notifyEmail").is(":checked"),
+      notifySMS: $("#notifySMS").is(":checked"),
+      notifyPush: $("#notifyPush").is(":checked"),
+	  notifyInApp: $("#notifyInApp").is(":checked")
+
+    };
+	
+	     var  annonId = Number($("#annonIdInput").val());
+        urlx =   annonId == 0 ? insertAnnounUrl : updateAnnounUrl +  annonId ;
+     	sendAjaxRequest(urlx, "POST", getAppHeaer(), announcement,saveMovieAnnonCall );
+
+}
+
+}
+
+var saveMovieAnnonCall = function saveMovieAnnonCallFun(response)
+{
+
+var data = readFinalResult(response);
+	if(data !=null)
+		   {
+  //$("#announcementModal").hide();
+ // $('#userAnnonTable').DataTable().clear().destroy();
+  //drawUserDataTable();
+  closeModalAndReloadDataTable(response,"#announcementModal","#userAnnonTable")
+
+  }
+  
+  
+
+
+//closeModalAndReloadDataTable(response,"#announcementModal","#userAnnonTable")
+
+//$("#announcementModal").hide();
+	//     $("#userAnnonTable").DataTable().ajax.reload();
+
+
+}
+
+function deleteAnnon(id)
+{
+
+const confirmDelete = confirm("Are you sure you want to delete this offer record?");
+if (confirmDelete) {
+   	 sendAjaxRequest(deleteAnnounUrl+id, "GET", getAppHeaer(), null,saveMovieAnnonCall );
+}
+
+
+}
+
+function editAnnon(id)
+{
+         $("#annonIdInput").val(id);
+
+      	 sendAjaxRequest(readAnnounUrl+id, "GET", getAppHeaer(), null,readAnnoncementCallBack );
+
+
+}
+
+var readAnnoncementCallBack =  function readAnnoncementCall(response)
+{
+
+var data = readFinalResult(response);
+	if(data !=null)
+   {
+      //console.log(data);
+	  $("#announcementTitle").val( data.title);
+	  $("#announcementLanguage").val(data.languageId);
+	  $("#announcementMessage").val( data.message);
+	  $("#startDate").val(formatDateTimeFromTimeStamp(data.startDatetime) );
+	  $("#endDate").val(formatDateTimeFromTimeStamp(data.validUntil) );
+      $("#imageUrl").val( data.imageUrl);
+      $("#linkUrl").val( data.linkUrl);
+	  $("#priority").val( data.priority);
+      $("#status").val( data.status);
+      $("#notifyEmail").prop('checked',data.notifyEmail);
+	  $("#notifySMS").prop('checked',data.notifySMS);
+      $("#notifyPush").prop('checked', data.notifyPush);
+      $("#notifyInApp").prop('checked',data.notifyInApp);
+
+
+
+
+	  
+	 // $("# ").val( );
+	  //$("# ").val( );
+	  //$("# ").val( );
+	  
+      openAnnonceModal();
+    }
+
+}
+function addAnnonce()
+{
+  $("#annonIdInput").val("0");
+   $("#announcementTitle").val("");
+	  $("#announcementLanguage").val("");
+	  $("#announcementMessage").val("");
+	  $("#startDate").val("");
+	  $("#endDate").val("");
+      $("#imageUrl").val("");
+      $("#linkUrl").val("");
+	  $("#priority").val("");
+      $("#status").val("");
+      $("#notifyEmail").prop('checked',false);
+	  $("#notifySMS").prop('checked',false);
+      $("#notifyPush").prop('checked', false);
+
+$('#priority option:first').prop('selected', true);
+$('#status option:first').prop('selected', true);
+
+  openAnnonceModal();
+}
+function reloadTable() {
+
+	     $("#userAnnonTable").DataTable().ajax.reload(null, false);
+}
+  </script>
+
+ <style>
+ 
+/* Modal Backdrop */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0,0,0,0.6);
+  overflow: auto;
+  font-family: Arial, sans-serif;
+}
+
+/* Modal Content Box */
+.modal-content {
+  background-color: #fffde7;
+  margin: 5% auto;
+  padding: 30px;
+  width: 100%;
+  max-width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Close Button */
+.close {
+  float: right;
+  font-size: 26px;
+  font-weight: bold;
+  color: #444;
+  cursor: pointer;
+}
+.close:hover {
+  color: red;
+}
+
+/* Table Styling */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+th, td {
+  padding: 12px;
+  border: 1px solid #ccc;
+  text-align: center;
+}
+th {
+  background-color: #f2f2f2;
+  color: #333;
+}
+
+/* Buttons */
+button {
+  padding: 3px 16px;
+  margin: 5px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+button:hover {
+  background-color: #0056b3;
+}
+
+/* Edit Section Form */
+#editForm label {
+  display: block;
+  margin: 12px 0 5px;
+}
+#editForm select,
+#editForm textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 4px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+textarea {
+  resize: vertical;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+
+
+.close {
+  position: absolute;
+  top: 20px;
+  right: 25px;
+  font-size: 26px;
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+  z-index: 1000;
+}
+.close:hover {
+  color: red;
+}
+.modal-content {
+  position: relative; /* Important for .close positioning */
+}
+
+ .flimbitButton
+ {
+   background-color :#fddb23;
+ 
+ 
+ }
+ 
+ 
+.tab-toggle {
+       display: flex;
+      gap: 20px;    
+	  }
+
+    .tab-btn {
+      padding: 10px 15px;
+      cursor: pointer;
+      font-weight: bold;
+      color: #555;
+      border-bottom: 3px solid transparent;
+    }
+
+    .tab-btn.active {
+      color: #FFD700;
+    }
+
+    
+    .tab-content.active {
+      display: block;
+    }
+
+
+/* General Section Styling */
+.user-investment-section {
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+}
+
+.filter-section {
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.filter-fields {
+  display: flex;
+  gap: 15px;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+}
+
+.filter-fields select,
+.filter-fields input {
+  padding: 5px 10px; /* Reduced padding */
+  height: 38px; /* Set height to reduce size */
+  width: 200px;
+  font-size: 14px; /* Adjust font size */
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.filter-fields button {
+  padding: 10px;
+  background-color: #ffcc00;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+.filter-fields button:hover {
+  background-color: #ff9900;
+}
+
+.investment-summary {
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.investment-summary h3 {
+  margin-bottom: 15px;
+}
+
+.summary-stats {
+  display: flex;
+  gap: 15px;
+  justify-content: space-between;
+  font-size: 16px;
+}
+
+.summary-stats p {
+  margin: 0;
+  font-weight: bold;
+}
+
+.investment-table {
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.investment-table h3 {
+  margin-bottom: 15px;
+}
+
+.investment-list {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.investment-list th, .investment-list td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+
+.investment-list th {
+  background-color: #f1f1f1;
+  font-weight: bold;
+}
+
+.investment-list td button {
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.investment-list td button:hover {
+  background-color: #0056b3;
+}
+
+
+.filter-fields select,
+.filter-fields input {
+  padding: 8px;
+  width: 200px;
+}
+
+.filter-fields button {
+  padding: 10px;
+  background-color: #fffde7;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  margin-top : 0%;
+}
+
+.filter-fields button:hover {
+  background-color: #FFD700;
+}
+
+table.dataTable>thead>tr>th,table.dataTable>thead>tr>td {
+    padding: 10px;
+    /* border-bottom: 1px solid rgba(0, 0, 0, 0.3); */
+}
+
+
+.investment-summary {
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.investment-summary h3 {
+  margin-bottom: 15px;
+}
+
+.summary-stats {
+  display: flex;
+  gap: 15px;
+  justify-content: space-between;
+  font-size: 16px;
+}
+
+.summary-stats p {
+  margin: 0;
+  font-weight: bold;
+}
+
+.investment-table {
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.investment-table h3 {
+  margin-bottom: 15px;
+}
+
+.investment-list {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.investment-list th, .investment-list td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+
+.investment-list th {
+  background-color: #f1f1f1;
+  font-weight: bold;
+}
+
+.investment-list td button {
+  padding: 3px 16px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.investment-list td button:hover {
+  background-color: #0056b3;
+}
+h3 {
+  font-size: 18px; /* Adjust the font size as needed */
+  font-weight: bold;
+  color: #333; /* Optional: Change the color */
+  margin-bottom: 10px; /* Optional: Adjust margin for spacing */
+}
+
+.error-message {
+    color: red;
+    font-size: 12px;
+    margin-top: 4px;
+  }
+
+  /* Dynamic Movie and User Box */
+        .movie-user-box {
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        /* Movie and User Information */
+        .movie-user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .movie-name, .user-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .movie-name {
+            color: #007bff; /* Blue for Movie Name */
+        }
+
+        .user-name {
+            color: #28a745; /* Green for User Name */
+        }
+		
+		.add-btn {
+    padding: 6px 12px;
+    background-color: #ffcc00;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.row
+{
+margin-bottom : 2%;
+
+
+}
+
+  </style>
 

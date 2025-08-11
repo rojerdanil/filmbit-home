@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FilmBit – Invest in Movies</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f4f4;
+      color: #222;
+      overflow-x: hidden;
+      transition: background-color 0.6s ease;
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: #ffffff;
+      border-bottom: 1px solid #ddd;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+      z-index: 1000;
+    }
+
+    header .logo {
+      font-size: 20px;
+      font-weight: bold;
+      color: #222;
+    }
+
+    header .nav-btn {
+      background-color: #FFD700;
+      color: #000;
+      border: none;
+      padding: 8px 16px;
+      font-weight: bold;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    footer {
+      background-color: #222;
+      color: #ccc;
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    footer h4 {
+      margin-top: 0;
+      color: #fff;
+    }
+
+    footer a {
+      color: #FFD700;
+      text-decoration: none;
+      margin: 0 10px;
+    }
+
+    .slides-container {
+      margin-top: 60px;
+      position: relative;
+      width: 100%;
+      height: calc(100vh - 60px - 160px);
+      overflow: hidden;
+    }
+
+    .slide {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 100%;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      gap: 40px;
+      padding: 40px;
+      text-align: left;
+      transition: left 0.6s ease;
+      opacity: 0;
+      background-color: #fff;
+      border-radius: 20px;
+      box-sizing: border-box;
+    }
+
+    .slide.active {
+      left: 0;
+      opacity: 1;
+      animation: fadeIn 1s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .slide img {
+      width: 40%;
+      height: 100%;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .text-content {
+      width: 50%;
+    }
+
+    .text-content h1 {
+      font-size: 32px;
+      margin-bottom: 10px;
+      color: #333;
+    }
+
+    .text-content p {
+      font-size: 18px;
+      color: #444;
+      line-height: 1.6;
+    }
+
+    .slide-nav {
+      position: absolute;
+      bottom: 20px;
+      width: 100%;
+      text-align: center;
+      z-index: 10;
+    }
+
+    .slide-nav button {
+      background-color: #FFD700;
+      color: #000;
+      border: none;
+      padding: 10px 20px;
+      margin: 0 10px;
+      cursor: pointer;
+      font-weight: bold;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+
+    @media (max-width: 768px) {
+      .slide {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .slide img, .text-content {
+        width: 90%;
+      }
+
+      .text-content {
+        text-align: center;
+      }
+
+      .text-content h1 {
+        font-size: 24px;
+      }
+
+      .text-content p {
+        font-size: 16px;
+      }
+
+      header {
+        flex-direction: column;
+        height: auto;
+        padding: 10px;
+      }
+
+      .slides-container {
+        height: calc(100vh - 140px);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">🎬 FilmBit</div>
+    <button class="nav-btn" onclick="alert('Coming Soon!')">Download App</button>
+  </header>
+
+  <div class="slides-container">
+    <div class="slide" data-bg="#ffffff">
+      <img src="welcomeSlide.png" alt="FilmBit Intro" />
+      <div class="text-content">
+       <div class="text-content">
+    <h1>Welcome to FilmBit</h1>
+    <p>💰 Turn your passion for cinema into profit.<br>
+       🚀 Invest early and be part of the film's journey.</p>
+  </div>
+      </div>
+    </div>
+    <div class="slide" data-bg="#f9f9ff">
+      <img src="howSlide.png" alt="How It Works" />
+      <div class="text-content">
+        <h1>⚙️ How It Works</h1>
+    <p>🎞️ Browse upcoming movies you love.<br>
+       💸 Invest securely in your selected films.<br>
+       📈 Earn returns based on their box office success.</p>
+      </div>
+    </div>
+    <div class="slide" data-bg="#eefcf2">
+      <img src="whySlideOrg.png" alt="Why FilmBit" />
+      <div class="text-content">
+         <h1>❓ Why FilmBit?</h1>
+    <p>🤝 Connects fans, creators, and investors in one place.<br>
+       🎯 Empowers you to fund stories you believe in.<br>
+       🌍 Opens up the film industry to everyone, not just studios.</p>
+      </div>
+    </div>
+    <div class="slide" data-bg="#fff0f7">
+      <img src="riseup.png" alt="RiseUp Technologies" />
+      <div class="text-content">
+        <h1>Backed by RiseUp Technologies</h1>
+         <p>🧠 Driven by innovation and user empowerment.<br>
+       🛠️ Building platforms that disrupt traditional models.<br>
+       🚀 Supporting the next wave of film investment tools.</p>
+      </div>
+    </div>
+    <div class="slide" data-bg="#f6f6f6">
+      <img src="playstore.png" alt="Coming Soon" />
+      <div class="text-content">
+        <h1>📲 Coming Soon</h1>
+    <p>📱 FilmBit will be available soon on both iPhone and Android devices.<br>Stay tuned for the official launch!</p>
+	  <div style="margin-top: 20px;">
+      <button disabled style="opacity: 0.6; background-color: #aaa; color: #fff; border: none; padding: 10px 20px; margin-right: 10px; border-radius: 6px; cursor: not-allowed;">
+        🛑 Google Play (Coming Soon)
+      </button>
+      <button disabled style="opacity: 0.6; background-color: #aaa; color: #fff; border: none; padding: 10px 20px; border-radius: 6px; cursor: not-allowed;">
+        🛑 App Store (Coming Soon)
+      </button>
+    </div>
+
+      </div>
+    </div>
+
+    <div class="slide-nav">
+      <button onclick="prevSlide()">← Prev</button>
+      <button onclick="nextSlide()">Next →</button>
+    </div>
+  </div>
+
+  <footer>
+    <h4>RiseUp Technologies</h4>
+    <p>Building bold, user-powered platforms that transform industries.</p>
+    <div>
+      <a href="#">Privacy</a> | 
+      <a href="#">Terms</a> | 
+      <a href="mailto:info@riseup.tech">Contact</a>
+    </div>
+    <p style="margin-top: 20px;">© 2025 RiseUp Technologies. All rights reserved.</p>
+  </footer>
+
+  <script>
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+
+    function showSlide(index) {
+      slides.forEach((slide, i) => {
+        slide.classList.remove('active');
+        slide.style.left = (i - index) * 100 + '%';
+      });
+
+      const active = slides[index];
+      active.classList.add('active');
+
+      const bgColor = active.getAttribute('data-bg');
+      document.body.style.backgroundColor = bgColor;
+    }
+
+    function nextSlide() {
+      currentSlide = (currentSlide + 1) % slides.length;
+      showSlide(currentSlide);
+    }
+
+    function prevSlide() {
+      currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+      showSlide(currentSlide);
+    }
+
+    showSlide(currentSlide);
+  </script>
+
+</body>
+</html>

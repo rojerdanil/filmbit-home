@@ -1,0 +1,117 @@
+<!-- SETTINGS PANEL UI (Tabbed) -->
+
+<!-- Tab Buttons -->
+<ul class="nav nav-tabs" id="settingsTabs">
+  <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#general">General</a></li>
+  <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#terms">Terms & Policies</a></li>
+  <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#sms">SMS Templates</a></li>
+  <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#email">Email Templates</a></li>
+  <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#notification">Notification Settings</a></li>
+  <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#wallet">Wallet</a></li>
+</ul>
+
+<!-- Tab Content -->
+<div class="tab-content p-4 border border-top-0">
+  <!-- General Tab -->
+  <div class="tab-pane fade show active" id="general">
+    <div class="mb-3">
+      <label>Platform Name</label>
+      <input type="text" class="form-control">
+    </div>
+    <div class="mb-3">
+      <label>Platform Logo</label>
+      <input type="file" class="form-control">
+    </div>
+    <div class="mb-3">
+      <label>Default Language</label>
+      <select class="form-select">
+        <option>English</option>
+        <option>Hindi</option>
+        <option>Tamil</option>
+      </select>
+    </div>
+    <div class="form-check">
+      <input type="checkbox" class="form-check-input" id="maintenanceMode">
+      <label class="form-check-label" for="maintenanceMode">Enable Maintenance Mode</label>
+    </div>
+  </div>
+
+  <!-- Terms Tab -->
+  <div class="tab-pane fade" id="terms">
+    <div class="mb-3">
+      <label>Terms & Conditions</label>
+      <textarea class="form-control" rows="4"></textarea>
+    </div>
+    <div class="mb-3">
+      <label>Privacy Policy</label>
+      <textarea class="form-control" rows="4"></textarea>
+    </div>
+    <div class="mb-3">
+      <label>Refund Policy</label>
+      <textarea class="form-control" rows="4"></textarea>
+    </div>
+  </div>
+
+  <!-- SMS Templates Tab -->
+  <div class="tab-pane fade" id="sms">
+    <div class="mb-3">
+      <label>Template Name</label>
+      <input type="text" class="form-control">
+    </div>
+    <div class="mb-3">
+      <label>Message Body</label>
+      <textarea class="form-control" rows="4" placeholder="Hi {user_name}, your OTP is {otp}"></textarea>
+    </div>
+  </div>
+
+  <!-- Email Templates Tab -->
+  <div class="tab-pane fade" id="email">
+    <div class="mb-3">
+      <label>Email Subject</label>
+      <input type="text" class="form-control">
+    </div>
+    <div class="mb-3">
+      <label>Email Body (HTML Supported)</label>
+      <textarea class="form-control rich-editor" rows="6" placeholder="Dear {user_name},\nThank you for your investment in {share_name}"></textarea>
+    </div>
+  </div>
+
+  <!-- Notification Settings Tab -->
+  <div class="tab-pane fade" id="notification">
+    <div class="form-check">
+      <input type="checkbox" class="form-check-input" id="notifyEmail" checked>
+      <label class="form-check-label" for="notifyEmail">Email</label>
+    </div>
+    <div class="form-check">
+      <input type="checkbox" class="form-check-input" id="notifySMS" checked>
+      <label class="form-check-label" for="notifySMS">SMS</label>
+    </div>
+    <div class="form-check">
+      <input type="checkbox" class="form-check-input" id="notifyPush">
+      <label class="form-check-label" for="notifyPush">Push Notification</label>
+    </div>
+    <div class="form-check">
+      <input type="checkbox" class="form-check-input" id="notifyInApp" checked>
+      <label class="form-check-label" for="notifyInApp">In-App</label>
+    </div>
+  </div>
+
+  <!-- Wallet Settings Tab -->
+  <div class="tab-pane fade" id="wallet">
+    <div class="mb-3">
+      <label>Minimum Recharge Amount</label>
+      <input type="number" class="form-control">
+    </div>
+    <div class="mb-3">
+      <label>Minimum Withdrawal Amount</label>
+      <input type="number" class="form-control">
+    </div>
+    <div class="mb-3">
+      <label>Withdrawal Commission (%)</label>
+      <input type="number" class="form-control">
+    </div>
+  </div>
+</div>
+
+<!-- Include Bootstrap JS if not already -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
