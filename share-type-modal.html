@@ -263,7 +263,7 @@ function saveShareType() {
   const now = new Date();
    now.setSeconds(0, 0);
 
-validateField("startDate", startDate !== "" && new Date(startDate) >= now, "Start date must be in the future");
+//validateField("startDate", startDate !== "" && new Date(startDate) >= now, "Start date must be in the future");
 validateField("endDate", endDate !== "" && new Date(endDate) > new Date(startDate), "End date must be after start date");
 
 validateField("pricePerShare", !isNaN(pricePerShare) && pricePerShare > 0, "Enter a valid price > 0");

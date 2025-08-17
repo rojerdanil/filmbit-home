@@ -1,4 +1,5 @@
-  var baseUrlApi = 'http://localhost:8090';
+  //var baseUrlApi = 'http://localhost:8090';
+  var baseUrlApi = 'https://flimbit-springboot-1.onrender.com';
 	var readMovieUrl = baseUrlApi + "/movie/datatable";
     var readMovieStatusUrl = baseUrlApi + "/movie-status/allstatus";
     var readMovieTypeUrl = baseUrlApi + "/movie-types/alltypes";
